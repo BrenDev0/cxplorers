@@ -31,7 +31,7 @@ export default class GoogleController extends Controller{
             throw new BadRequestError('Missing code or state');
         }
 
-        const redisClient: RedisClientType = Container.resolve("RedisClient");
+        const redisClient = Container.resolve<RedisClientType>("RedisClient");
         const session = await redisClient.get(`oauth_state:${state}`);
         if (!session) {
             throw new BadRequestError('Invalid or expired state');

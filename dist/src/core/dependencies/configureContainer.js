@@ -20,6 +20,8 @@ const MiddlewareService_1 = __importDefault(require("../middleware/MiddlewareSer
 const EncryptionService_1 = __importDefault(require("../services/EncryptionService"));
 const users_dependencies_1 = require("../../modules/users/users.dependencies");
 const EmailService_1 = __importDefault(require("../services/EmailService"));
+const google_dependencies_1 = require("../../modules/google/google.dependencies");
+const RedisService_1 = __importDefault(require("../services/RedisService"));
 function configureContainer(testPool) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -34,11 +36,18 @@ function configureContainer(testPool) {
         // email //
         const emailService = new EmailService_1.default();
         Container_1.default.register("EmailService", emailService);
+        // redis // 
+        const connectionUrl = process.env.REDIS_URL || "";
+        const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
+        Container_1.default.register("RedisClient", redisClient);
+        // google //
+        (0, google_dependencies_1.configureGoogleDependencies)();
         // users //
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // middleware //
         const usersService = Container_1.default.resolve("UsersService");
         const middlewareService = new MiddlewareService_1.default(usersService, errorHandler);
         Container_1.default.register("MiddlewareService", middlewareService);
+        return;
     });
 }

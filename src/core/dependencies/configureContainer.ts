@@ -7,6 +7,9 @@ import { Pool } from 'pg';
 import UserService from '../../modules/users/UsersService';
 import { configureUsersDependencies } from '../../modules/users/users.dependencies';
 import EmailService from '../services/EmailService';
+import { configureGoogleDependencies } from '../../modules/google/google.dependencies';
+import RedisService from '../services/RedisService';
+import { RedisClientType } from 'redis';
 
 
 export async function configureContainer(testPool?: Pool): Promise<void> {
@@ -26,11 +29,22 @@ export async function configureContainer(testPool?: Pool): Promise<void> {
     const emailService = new EmailService();
     Container.register<EmailService>("EmailService", emailService);
 
+     // redis // 
+    const connectionUrl = process.env.REDIS_URL as string || "";
+    const redisClient = await new RedisService(connectionUrl).createClient();
+    Container.register<RedisClientType>("RedisClient", redisClient);
+ 
+
+    // google //
+    configureGoogleDependencies();
+
     // users //
     configureUsersDependencies(pool);
 
    // middleware //
     const usersService = Container.resolve<UserService>("UsersService");
     const middlewareService = new MiddlewareService(usersService, errorHandler);
-    Container.register<MiddlewareService>("MiddlewareService", middlewareService);    
+    Container.register<MiddlewareService>("MiddlewareService", middlewareService);   
+     
+    return;
 }
