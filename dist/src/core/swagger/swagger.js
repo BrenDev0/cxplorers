@@ -26,7 +26,29 @@ const doc = {
                 description: 'Enter JWT token with **Bearer** prefix. Example: "Bearer {token}"'
             }
         },
-        schemas: {}
+        schemas: {
+            createUser: {
+                email: "email",
+                password: "password",
+                name: "name",
+                phone: "phone number",
+                code: "code from users email"
+            },
+            updateUser: {
+                phone: "phone",
+                name: "name",
+                password: "new passoword",
+                oldPassword: "old password"
+            },
+            verifiedUpdateUser: {
+                email: "new email",
+                password: " new password",
+                code: "code from users email"
+            },
+            accountRecovery: {
+                email: "email"
+            }
+        }
     },
 };
 const outputFile = './swagger.json';

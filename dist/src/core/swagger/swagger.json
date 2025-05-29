@@ -75,7 +75,7 @@
                 "tags": [
                     "Users"
                 ],
-                "description": "create user",
+                "description": "create user user. must enter the code from thier email",
                 "responses": {
                     "default": {
                         "description": ""
@@ -103,7 +103,7 @@
                 "tags": [
                     "Users"
                 ],
-                "description": "update user account details with verification code",
+                "description": "update user account details with verification code. user must enter the code from thier email",
                 "parameters": [
                     {
                         "name": "userId",
@@ -141,7 +141,7 @@
                 "tags": [
                     "Users"
                 ],
-                "description": "Send account recovery will return a token, email contains a code that the user needs to input for the next request",
+                "description": "user login",
                 "responses": {
                     "default": {
                         "description": ""
@@ -159,6 +159,16 @@
                     "default": {
                         "description": ""
                     }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/accountRecovery"
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -172,6 +182,79 @@
                 "description": "Enter JWT token with **Bearer** prefix. Example: \"Bearer {token}\""
             }
         },
-        "schemas": {}
+        "schemas": {
+            "createUser": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "name"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "phone number"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "code from users email"
+                    }
+                }
+            },
+            "updateUser": {
+                "type": "object",
+                "properties": {
+                    "phone": {
+                        "type": "string",
+                        "example": "phone"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "name"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "new passoword"
+                    },
+                    "oldPassword": {
+                        "type": "string",
+                        "example": "old password"
+                    }
+                }
+            },
+            "verifiedUpdateUser": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "new email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": " new password"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "code from users email"
+                    }
+                }
+            },
+            "accountRecovery": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "email"
+                    }
+                }
+            }
+        }
     }
 }

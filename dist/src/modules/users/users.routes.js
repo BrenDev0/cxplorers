@@ -53,7 +53,7 @@ const initializeUsersRouter = (customController) => {
    #swagger.tags = ['Users']
    #swagger.path =  '/users/verified/create'
    #swagger.security = [{ "bearerAuth": [] }]
-   #swagger.description = 'create user'
+   #swagger.description = 'create user user. must enter the code from thier email'
    #swagger.requestBody = {
        required: true,
        content: {
@@ -69,7 +69,7 @@ const initializeUsersRouter = (customController) => {
     #swagger.tags = ['Users']
     #swagger.path =  '/users/verified/account/{userId}'
     #swagger.security = [{ "bearerAuth": [] }]
-    #swagger.description = 'update user account details with verification code'
+    #swagger.description = 'update user account details with verification code. user must enter the code from thier email'
     #swagger.requestBody = {
         required: true,
         content: {
@@ -85,7 +85,7 @@ const initializeUsersRouter = (customController) => {
     /*
     #swagger.tags = ['Users']
     #swagger.path =  '/users/login'
-    #swagger.description = 'Send account recovery will return a token, email contains a code that the user needs to input for the next request'
+    #swagger.description = 'user login'
     */
     controller.login.bind(controller));
     router.post("/account-recovery", 
@@ -93,6 +93,14 @@ const initializeUsersRouter = (customController) => {
     #swagger.tags = ['Users']
     #swagger.path =  '/users/account-recovery'
     #swagger.description = 'Send account recovery will return a token, email contains a code that the user needs to input for the next request'
+    #swagger.requestBody = {
+        required: true,
+        content: {
+            "application/json": {
+                schema: { $ref: "#/components/schemas/accountRecovery" }
+            }
+        }
+    }
     */
     controller.accountRecoveryEmail.bind(controller));
     router.use("/verify-email", 
