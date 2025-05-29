@@ -1,0 +1,177 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CXplorers",
+    "description": "Endpoints",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users/secure/resource": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get current user",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/secure/account": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "update user account details",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/secure/delete": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Delete current user",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/verified/create": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "create user",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/verified/account/{userId}": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "update user account details with verification code",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/verifiedUpdateUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Send account recovery will return a token, email contains a code that the user needs to input for the next request",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/account-recovery": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Send account recovery will return a token, email contains a code that the user needs to input for the next request",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "Enter JWT token with **Bearer** prefix. Example: \"Bearer {token}\""
+      }
+    },
+    "schemas": {}
+  }
+}

@@ -9,11 +9,11 @@ const options = {
 };
 const doc = {
     info: {
-        title: 'Project',
+        title: 'CXplorers',
         description: 'Endpoints',
         version: '1.0.0',
     },
-    host: '',
+    host: 'https://cxplorers-app.up.railway.app',
     basePath: '/',
     schemes: ['https'],
     paths: {},
@@ -31,6 +31,7 @@ const doc = {
 };
 const outputFile = './swagger.json';
 const endpointsFiles = [
-    'routes'
+    // users //
+    '../../modules/users/users.routes.ts'
 ];
 (0, swagger_autogen_1.default)(options)(outputFile, endpointsFiles, doc);

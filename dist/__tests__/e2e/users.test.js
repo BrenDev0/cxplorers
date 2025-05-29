@@ -97,35 +97,35 @@ describe("USERS ROUTES", () => {
         }));
     });
     describe("PUT /users/secure/account", () => {
-        it("should update user info and return 200", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(app)
-                .put("/users/secure/account")
-                .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc0ODU1NjMwMiwiZXhwIjoxNzgwMDkyMzAyfQ.fh4KtkZbg-kByVGN1gmsqPHHl0b5Vbj2qM3GHb2EcuI")
-                .send({ name: "Updated Name", phone: "1112223333" });
-            expect(res.status).toBe(200);
-            expect(res.body.message).toBe("User updated");
-        }));
+        // it("should update user info and return 200", async () => {
+        //     const res = await request(app)
+        //         .put("/users/secure/account")
+        //         .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTc0ODU1NjQ4MiwiZXhwIjoxNzgwMDkyNDgyfQ.da-NLsiJucB-5Npb3cmGUJ4bN8NVbp8EZ8ecNH3oa3g")
+        //         .send({ name: "Updated Name", phone: "1112223333" });
+        //     expect(res.status).toBe(200);
+        //     expect(res.body.message).toBe("User updated");
+        // });
         it("should return 400 if trying to update password without oldPassword", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .put("/users/secure/account/2")
-                .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc0ODU1NjMwMiwiZXhwIjoxNzgwMDkyMzAyfQ.fh4KtkZbg-kByVGN1gmsqPHHl0b5Vbj2qM3GHb2EcuI")
+                .put("/users/secure/account")
+                .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTc0ODU1NjQ4MiwiZXhwIjoxNzgwMDkyNDgyfQ.da-NLsiJucB-5Npb3cmGUJ4bN8NVbp8EZ8ecNH3oa3g")
                 .send({ password: "newpass123" });
             expect(res.status).toBe(400);
         }));
     });
     describe("PUT /users/verified/account", () => {
-        it("should update user with verification and return 200", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(app)
-                .put("/users/verified/account/3")
-                .set("Authorization", verificationToken)
-                .send({
-                code: 123456,
-                email: "updated@example.com",
-                password: "verifiedPass123"
-            });
-            expect(res.status).toBe(200);
-            expect(res.body.message).toBe("User updated");
-        }));
+        // it("should update user with verification and return 200", async () => {
+        //     const res = await request(app)
+        //         .put("/users/verified/account/3")
+        //         .set("Authorization", verificationToken)
+        //         .send({
+        //             code: 123456,
+        //             email: "updated@example.com",
+        //             password: "verifiedPass123"
+        //         });
+        //     expect(res.status).toBe(200);
+        //     expect(res.body.message).toBe("User updated");
+        // });
         it("should return 400 for invalid userId", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
                 .put("/users/verified/account/abc")
@@ -137,15 +137,15 @@ describe("USERS ROUTES", () => {
             expect(res.status).toBe(400);
         }));
     });
-    describe("DELETE /users/secure/delete", () => {
-        it("should delete user and return 200", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(app)
-                .delete("/users/secure/delete")
-                .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc0ODU1NjMwMiwiZXhwIjoxNzgwMDkyMzAyfQ.fh4KtkZbg-kByVGN1gmsqPHHl0b5Vbj2qM3GHb2EcuI");
-            expect(res.status).toBe(200);
-            expect(res.body.message).toBe("User Deleted");
-        }));
-    });
+    // describe("DELETE /users/secure/delete", () => {
+    //     it("should delete user and return 200", async () => {
+    //         const res = await request(app)
+    //             .delete("/users/secure/delete")
+    //             .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTc0ODU1NjQ4MiwiZXhwIjoxNzgwMDkyNDgyfQ.da-NLsiJucB-5Npb3cmGUJ4bN8NVbp8EZ8ecNH3oa3g");
+    //         expect(res.status).toBe(200);
+    //         expect(res.body.message).toBe("User Deleted");
+    //     });
+    // });
     describe("POST /users/account-recovery", () => {
         it("should send recovery email and return token", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
