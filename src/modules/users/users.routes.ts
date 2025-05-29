@@ -31,7 +31,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
         #swagger.tags = ['Users']
         #swagger.path =  '/users/secure/account'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'update user account details'
+        #swagger.description = 'update user account details, if updating password the users current password must be provided'
         #swagger.requestBody = {
             required: true,
             content: {

@@ -29,7 +29,7 @@
                 "tags": [
                     "Users"
                 ],
-                "description": "update user account details",
+                "description": "update user account details, if updating password the users current password must be provided",
                 "responses": {
                     "default": {
                         "description": ""
