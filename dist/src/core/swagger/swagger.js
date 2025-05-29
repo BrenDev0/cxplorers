@@ -13,7 +13,7 @@ const doc = {
         description: 'Endpoints',
         version: '1.0.0',
     },
-    host: 'https://cxplorers-app.up.railway.app',
+    host: 'cxplorers-app.up.railway.app',
     basePath: '/',
     schemes: ['https'],
     paths: {},

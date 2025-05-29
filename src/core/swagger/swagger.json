@@ -5,6 +5,11 @@
     "description": "Endpoints",
     "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "https://cxplorers-app.up.railway.app/"
+    }
+  ],
   "paths": {
     "/users/secure/resource": {
       "get": {
