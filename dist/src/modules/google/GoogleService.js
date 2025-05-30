@@ -20,8 +20,14 @@ class GoogleService {
     }
     getUrl(oauth2Client) {
         const scopes = [
+            // Google Sheets (read/write)
+            'https://www.googleapis.com/auth/spreadsheets',
+            // Google Calendar (read/write)
             'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/calendar.events'
+            // Google Drive (read/write + folder/file access)
+            'https://www.googleapis.com/auth/drive',
+            // Google Docs (read/write)
+            'https://www.googleapis.com/auth/documents'
         ];
         const redisClient = Container_1.default.resolve("RedisClient");
         const state = crypto_1.default.randomBytes(32).toString('hex');

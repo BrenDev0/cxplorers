@@ -12,8 +12,17 @@ export default class GoogleService {
     getUrl(oauth2Client: OAuth2Client) {
       
         const scopes = [
-            'https://www.googleapis.com/auth/calendar', 
-            'https://www.googleapis.com/auth/calendar.events' 
+            // Google Sheets (read/write)
+            'https://www.googleapis.com/auth/spreadsheets',
+
+            // Google Calendar (read/write)
+            'https://www.googleapis.com/auth/calendar',
+
+            // Google Drive (read/write + folder/file access)
+            'https://www.googleapis.com/auth/drive',
+
+            // Google Docs (read/write)
+            'https://www.googleapis.com/auth/documents'
         ];
 
        
