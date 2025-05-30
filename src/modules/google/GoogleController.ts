@@ -6,11 +6,11 @@ import GoogleService from "./GoogleService";
 import EncryptionService from "../../core/services/EncryptionService";
 import { OAuth2Client } from "google-auth-library";
 import UsersService from "../users/UsersService";
-import Controller from "../../core/class/Controller";
 
 
 
-export default class GoogleController extends Controller{
+
+export default class GoogleController {
     private readonly block = "google.controller";
     private client: OAuth2Client
     private googleService: GoogleService; 
@@ -19,7 +19,6 @@ export default class GoogleController extends Controller{
         FOLDER: "folder"
     }
     constructor(client: OAuth2Client, googleService: GoogleService) {
-        super();
         this.client = client;
         this.googleService = googleService
     }

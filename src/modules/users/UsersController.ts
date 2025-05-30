@@ -1,17 +1,18 @@
 import { Request, Response } from "express";
-import Controller from "../../core/class/Controller";
 import { BadRequestError } from "../../core/errors/errors";
 import UsersService from "./UsersService";
 import { UserData } from "./users.interface";
 import EmailService from "../../core/services/EmailService";
+import HttpService from "../../core/services/HttpService";
 
-export default class UsersController extends Controller { 
+export default class UsersController { 
+  private httpService: HttpService;
   private usersService: UsersService; 
   private emailService: EmailService; 
   private block = "users.controller"; 
 
-  constructor(usersService: UsersService, emailService: EmailService) {
-    super();
+  constructor(httpService: HttpService, usersService: UsersService, emailService: EmailService) {
+    this.httpService = httpService
     this.usersService = usersService;
     this.emailService = emailService;
   }
@@ -20,17 +21,13 @@ export default class UsersController extends Controller {
       const block = `${this.block}.verifyEmail`
       try {
           const { email } = req.body;
+          const requiredFields = ["email"]
       
           const update = req.query.update === "true";
 
-          if(!email) {
-              throw new BadRequestError("All fields required.", {
-              block: `${this.block}.dataValidation`,
-              request: req.body
-              })
-          };
+          this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
-          const encryptedEmail = this.encryptionService.encryptData(email);
+          const encryptedEmail = this.httpService.encryptionService.encryptData(email);
 
           const emailExists = await this.usersService.resource("email", encryptedEmail);
 
@@ -43,7 +40,7 @@ export default class UsersController extends Controller {
 
           const requestType = update ? "UPDATE": "NEW"
 
-          const token = await this.emailService.handleRequest(email, requestType, this.webtokenService);
+          const token = await this.emailService.handleRequest(email, requestType, this.httpService.webtokenService);
 
           res.status(200).json({
               message: "Verification email sent.",
@@ -58,22 +55,16 @@ export default class UsersController extends Controller {
     const block = `${this.block}.createRequest`;
     try {
       const { email, password, phone, name } = req.body;
+      const requiredFields =  ["email", "password", "phone", "name"]
      
+      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
-      if (!email || !password || !phone || !name) {
-        throw new BadRequestError(undefined, {
-          block: `${block}.dataValidation`,
-          request: req.body,
-        });
-      }
-
-      const hashedPassword = await super.hashPassword(password);
+      const hashedPassword = await this.httpService.passwordService.hashPassword(password);
 
       const userData = {
-        email: email,
+        ...req.body,
         password: hashedPassword,
-        name: name,
-        phone: phone
+       
       };
 
       await this.usersService.create(userData);
@@ -87,7 +78,7 @@ export default class UsersController extends Controller {
   async resourceRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.resourceRequest`;
     try {
-      const user = (req as any).user;
+      const user = req.user;
 
       const data = this.usersService.mapFromDb(user);
       res.status(200).json({ data: data }); 
@@ -99,10 +90,10 @@ export default class UsersController extends Controller {
   async updateRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.updateRequest`;
     try { 
-      const user = (req as any).user;
+      const user = req.user;
       const allowedChanges = ["phone", "name", "password"];
 
-      const filteredChanges = super.filterUpdateRequest<UserData>(allowedChanges, req.body, block);
+      const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<UserData>(allowedChanges, req.body, block);
 
       if(req.body.password){
         const { password, oldPassword } = req.body;
@@ -110,12 +101,12 @@ export default class UsersController extends Controller {
           throw new BadRequestError("Current password required for password update");
         };
 
-        const correctPassword = super.comparePassword(oldPassword, user.password);
+        const correctPassword = this.httpService.passwordService.comparePassword(oldPassword, user.password);
         if(!correctPassword) {
           throw new BadRequestError("Incorrect password")
         }
 
-        const hashedPassword = await super.hashPassword(password);
+        const hashedPassword = await this.httpService.passwordService.hashPassword(password);
 
         filteredChanges.password = hashedPassword
       }
@@ -131,13 +122,19 @@ export default class UsersController extends Controller {
   async verifiedUpdateRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.verifiedUpdateRequest`;
     try {
-      const userId = Number(req.params.userId);
-      super.validateId(userId, "userId", block);
+      const userId = req.params.userId;
+      const user = await this.usersService.resource("user_id", userId);
+      if(!user) {
+        throw new BadRequestError(undefined, {
+          block: `${block}.userCheck`,
+          user: user || "user not found"
+        })
+      }
       const allowedChanges = ["email", "password"];
-      const filteredChanges = super.filterUpdateRequest<UserData>(allowedChanges, req.body, block);
+      const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<UserData>(allowedChanges, req.body, block);
 
       if(filteredChanges.password) {
-        const hashedPassword = await super.hashPassword(filteredChanges.password);
+        const hashedPassword = await this.httpService.passwordService.hashPassword(filteredChanges.password);
         filteredChanges.password = hashedPassword;
       }
 
@@ -166,26 +163,22 @@ export default class UsersController extends Controller {
     const block  = `${this.block}.login`
     try {
         const { email, password } = req.body;
+        const requiredFields =  ["email", "password"];
 
-        if(!email || !password) {
-            throw new BadRequestError("All fields required", {
-                block: `${block}.dataValidation`,
-                request: req.body
-            })
-        };
+        this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
-        const encryptedEmail = this.encryptionService.encryptData(email)
+        const encryptedEmail = this.httpService.encryptionService.encryptData(email)
         const userExists = await this.usersService.resource("email", encryptedEmail);
 
         if(!userExists) {
             throw new BadRequestError("Incorrect email or password", {
                 block: `${block}.userExists`,
                 email: email,
-                userExists: userExists
+                userExists: userExists || "No user found in db"
             })
         };
 
-        const correctPassword = await super.comparePassword(password, userExists.password!);
+        const correctPassword = await this.httpService.passwordService.comparePassword(password, userExists.password!);
 
         if(!correctPassword) {
             throw new BadRequestError("Incorrect email or password", {
@@ -194,7 +187,7 @@ export default class UsersController extends Controller {
             })
         };
 
-        const token = this.webtokenService.generateToken({
+        const token = this.httpService.webtokenService.generateToken({
             userId: userExists.user_id!
         }, "7d")
 
@@ -211,18 +204,22 @@ export default class UsersController extends Controller {
     const block  = `${this.block}.accountRecoveryEmail`
     try {
       const { email } = req.body;
+      const requiredFields =  ["email"];
 
-      const encryptedEmail = this.encryptionService.encryptData(email);
+      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+
+      const encryptedEmail = this.httpService.encryptionService.encryptData(email);
       const emailExists = await this.usersService.resource("email", encryptedEmail);
 
       if(!emailExists) {
           throw new BadRequestError("Incorrect email", {
-              block: `${block}.emailInUse`,
-              email: email
+              block: `${block}.emailCheck`,
+              email: email,
+              emailExists: emailExists || "No user found in db"
           })
       };
 
-      const token = await this.emailService.handleRequest(email, "RECOVERY", this.webtokenService)
+      const token = await this.emailService.handleRequest(email, "RECOVERY", this.httpService.webtokenService)
 
       res.status(200).json({ 
         message: "Recovery email sent",

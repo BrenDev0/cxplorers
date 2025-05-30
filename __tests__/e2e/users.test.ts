@@ -71,21 +71,21 @@ describe("USERS ROUTES", () => {
     });
 
     describe("POST /users/verified/create", () => {
-        // it("should create a user and return 200", async () => {
-        //     const res = await request(app)
-        //         .post("/users/verified/create")
-        //         .set("Authorization", verificationToken)
-        //         .send({
-        //             code: 123456,
-        //             email: "test@gmail.com",
-        //             password: "carpincha",
-        //             phone: "1234567890",
-        //             name: "Create User"
-        //         });
+        it("should create a user and return 200", async () => {
+            const res = await request(app)
+                .post("/users/verified/create")
+                .set("Authorization", verificationToken)
+                .send({
+                    code: 123456,
+                    email: "test@gmail.com",
+                    password: "carpincha",
+                    phone: "1234567890",
+                    name: "Create User"
+                });
 
-        //     expect(res.status).toBe(200);
-        //     expect(res.body.message).toBe("User added.");
-        // });
+            expect(res.status).toBe(200);
+            expect(res.body.message).toBe("User added.");
+        });
 
         it("should return 400 if any required field is missing", async () => {
             const res = await request(app)

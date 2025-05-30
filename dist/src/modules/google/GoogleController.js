@@ -14,10 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-const Controller_1 = __importDefault(require("../../core/class/Controller"));
-class GoogleController extends Controller_1.default {
+class GoogleController {
     constructor(client, googleService) {
-        super();
         this.block = "google.controller";
         this.filterOptions = {
             SHEET: "sheet",

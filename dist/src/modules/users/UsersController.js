@@ -8,16 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Controller_1 = __importDefault(require("../../core/class/Controller"));
 const errors_1 = require("../../core/errors/errors");
-class UsersController extends Controller_1.default {
-    constructor(usersService, emailService) {
-        super();
+class UsersController {
+    constructor(httpService, usersService, emailService) {
         this.block = "users.controller";
+        this.httpService = httpService;
         this.usersService = usersService;
         this.emailService = emailService;
     }
@@ -26,15 +22,10 @@ class UsersController extends Controller_1.default {
             const block = `${this.block}.verifyEmail`;
             try {
                 const { email } = req.body;
+                const requiredFields = ["email"];
                 const update = req.query.update === "true";
-                if (!email) {
-                    throw new errors_1.BadRequestError("All fields required.", {
-                        block: `${this.block}.dataValidation`,
-                        request: req.body
-                    });
-                }
-                ;
-                const encryptedEmail = this.encryptionService.encryptData(email);
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const encryptedEmail = this.httpService.encryptionService.encryptData(email);
                 const emailExists = yield this.usersService.resource("email", encryptedEmail);
                 if (emailExists) {
                     throw new errors_1.BadRequestError("Email in use", {
@@ -43,7 +34,7 @@ class UsersController extends Controller_1.default {
                     });
                 }
                 const requestType = update ? "UPDATE" : "NEW";
-                const token = yield this.emailService.handleRequest(email, requestType, this.webtokenService);
+                const token = yield this.emailService.handleRequest(email, requestType, this.httpService.webtokenService);
                 res.status(200).json({
                     message: "Verification email sent.",
                     token: token
@@ -55,26 +46,14 @@ class UsersController extends Controller_1.default {
         });
     }
     createRequest(req, res) {
-        const _super = Object.create(null, {
-            hashPassword: { get: () => super.hashPassword }
-        });
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.createRequest`;
             try {
                 const { email, password, phone, name } = req.body;
-                if (!email || !password || !phone || !name) {
-                    throw new errors_1.BadRequestError(undefined, {
-                        block: `${block}.dataValidation`,
-                        request: req.body,
-                    });
-                }
-                const hashedPassword = yield _super.hashPassword.call(this, password);
-                const userData = {
-                    email: email,
-                    password: hashedPassword,
-                    name: name,
-                    phone: phone
-                };
+                const requiredFields = ["email", "password", "phone", "name"];
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const hashedPassword = yield this.httpService.passwordService.hashPassword(password);
+                const userData = Object.assign(Object.assign({}, req.body), { password: hashedPassword });
                 yield this.usersService.create(userData);
                 res.status(200).json({ message: "User added." });
             }
@@ -97,28 +76,23 @@ class UsersController extends Controller_1.default {
         });
     }
     updateRequest(req, res) {
-        const _super = Object.create(null, {
-            filterUpdateRequest: { get: () => super.filterUpdateRequest },
-            comparePassword: { get: () => super.comparePassword },
-            hashPassword: { get: () => super.hashPassword }
-        });
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateRequest`;
             try {
                 const user = req.user;
                 const allowedChanges = ["phone", "name", "password"];
-                const filteredChanges = _super.filterUpdateRequest.call(this, allowedChanges, req.body, block);
+                const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 if (req.body.password) {
                     const { password, oldPassword } = req.body;
                     if (!oldPassword) {
                         throw new errors_1.BadRequestError("Current password required for password update");
                     }
                     ;
-                    const correctPassword = _super.comparePassword.call(this, oldPassword, user.password);
+                    const correctPassword = this.httpService.passwordService.comparePassword(oldPassword, user.password);
                     if (!correctPassword) {
                         throw new errors_1.BadRequestError("Incorrect password");
                     }
-                    const hashedPassword = yield _super.hashPassword.call(this, password);
+                    const hashedPassword = yield this.httpService.passwordService.hashPassword(password);
                     filteredChanges.password = hashedPassword;
                 }
                 yield this.usersService.update(user.user_id, filteredChanges);
@@ -130,20 +104,21 @@ class UsersController extends Controller_1.default {
         });
     }
     verifiedUpdateRequest(req, res) {
-        const _super = Object.create(null, {
-            validateId: { get: () => super.validateId },
-            filterUpdateRequest: { get: () => super.filterUpdateRequest },
-            hashPassword: { get: () => super.hashPassword }
-        });
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.verifiedUpdateRequest`;
             try {
-                const userId = Number(req.params.userId);
-                _super.validateId.call(this, userId, "userId", block);
+                const userId = req.params.userId;
+                const user = yield this.usersService.resource("user_id", userId);
+                if (!user) {
+                    throw new errors_1.BadRequestError(undefined, {
+                        block: `${block}.userCheck`,
+                        user: user || "user not found"
+                    });
+                }
                 const allowedChanges = ["email", "password"];
-                const filteredChanges = _super.filterUpdateRequest.call(this, allowedChanges, req.body, block);
+                const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 if (filteredChanges.password) {
-                    const hashedPassword = yield _super.hashPassword.call(this, filteredChanges.password);
+                    const hashedPassword = yield this.httpService.passwordService.hashPassword(filteredChanges.password);
                     filteredChanges.password = hashedPassword;
                 }
                 yield this.usersService.update(userId, filteredChanges);
@@ -168,31 +143,23 @@ class UsersController extends Controller_1.default {
         });
     }
     login(req, res) {
-        const _super = Object.create(null, {
-            comparePassword: { get: () => super.comparePassword }
-        });
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.login`;
             try {
                 const { email, password } = req.body;
-                if (!email || !password) {
-                    throw new errors_1.BadRequestError("All fields required", {
-                        block: `${block}.dataValidation`,
-                        request: req.body
-                    });
-                }
-                ;
-                const encryptedEmail = this.encryptionService.encryptData(email);
+                const requiredFields = ["email", "password"];
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const encryptedEmail = this.httpService.encryptionService.encryptData(email);
                 const userExists = yield this.usersService.resource("email", encryptedEmail);
                 if (!userExists) {
                     throw new errors_1.BadRequestError("Incorrect email or password", {
                         block: `${block}.userExists`,
                         email: email,
-                        userExists: userExists
+                        userExists: userExists || "No user found in db"
                     });
                 }
                 ;
-                const correctPassword = yield _super.comparePassword.call(this, password, userExists.password);
+                const correctPassword = yield this.httpService.passwordService.comparePassword(password, userExists.password);
                 if (!correctPassword) {
                     throw new errors_1.BadRequestError("Incorrect email or password", {
                         block: `${block}.passwordValidation`,
@@ -200,7 +167,7 @@ class UsersController extends Controller_1.default {
                     });
                 }
                 ;
-                const token = this.webtokenService.generateToken({
+                const token = this.httpService.webtokenService.generateToken({
                     userId: userExists.user_id
                 }, "7d");
                 res.status(200).json({
@@ -217,16 +184,19 @@ class UsersController extends Controller_1.default {
             const block = `${this.block}.accountRecoveryEmail`;
             try {
                 const { email } = req.body;
-                const encryptedEmail = this.encryptionService.encryptData(email);
+                const requiredFields = ["email"];
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const encryptedEmail = this.httpService.encryptionService.encryptData(email);
                 const emailExists = yield this.usersService.resource("email", encryptedEmail);
                 if (!emailExists) {
                     throw new errors_1.BadRequestError("Incorrect email", {
-                        block: `${block}.emailInUse`,
-                        email: email
+                        block: `${block}.emailCheck`,
+                        email: email,
+                        emailExists: emailExists || "No user found in db"
                     });
                 }
                 ;
-                const token = yield this.emailService.handleRequest(email, "RECOVERY", this.webtokenService);
+                const token = yield this.emailService.handleRequest(email, "RECOVERY", this.httpService.webtokenService);
                 res.status(200).json({
                     message: "Recovery email sent",
                     token: token

@@ -22,6 +22,10 @@ const users_dependencies_1 = require("../../modules/users/users.dependencies");
 const EmailService_1 = __importDefault(require("../services/EmailService"));
 const google_dependencies_1 = require("../../modules/google/google.dependencies");
 const RedisService_1 = __importDefault(require("../services/RedisService"));
+const HttpService_1 = __importDefault(require("../services/HttpService"));
+const WebtokenService_1 = __importDefault(require("../services/WebtokenService"));
+const HttpRequestValidationService_1 = __importDefault(require("../services/HttpRequestValidationService"));
+const PasswordService_1 = __importDefault(require("../services/PasswordService"));
 function configureContainer(testPool) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -30,12 +34,23 @@ function configureContainer(testPool) {
         // Encryption //
         const encryptionService = new EncryptionService_1.default();
         Container_1.default.register("EncryptionService", encryptionService);
+        // password //
+        const passwordService = new PasswordService_1.default();
+        Container_1.default.register("PasswordService", passwordService);
+        // webtoken //
+        const webtokenService = new WebtokenService_1.default();
+        Container_1.default.register("WebtokenService", webtokenService);
+        // http request validation //
+        const httpRequestValidationService = new HttpRequestValidationService_1.default();
+        Container_1.default.register("HttpRequestValidationService", httpRequestValidationService);
         // errors //
         const errorHandler = new ErrorHandler_1.default(pool);
         Container_1.default.register("ErrorHandler", errorHandler);
         // email //
         const emailService = new EmailService_1.default();
         Container_1.default.register("EmailService", emailService);
+        const httpService = new HttpService_1.default(httpRequestValidationService, passwordService, webtokenService, encryptionService);
+        Container_1.default.register("HttpService", httpService);
         // redis // 
         const connectionUrl = process.env.REDIS_URL || "";
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
@@ -44,9 +59,9 @@ function configureContainer(testPool) {
         (0, google_dependencies_1.configureGoogleDependencies)();
         // users //
         (0, users_dependencies_1.configureUsersDependencies)(pool);
-        // middleware //
+        // middleware --- must configure users above this block //
         const usersService = Container_1.default.resolve("UsersService");
-        const middlewareService = new MiddlewareService_1.default(usersService, errorHandler);
+        const middlewareService = new MiddlewareService_1.default(webtokenService, usersService, errorHandler);
         Container_1.default.register("MiddlewareService", middlewareService);
         return;
     });

@@ -10,6 +10,10 @@ import EmailService from '../services/EmailService';
 import { configureGoogleDependencies } from '../../modules/google/google.dependencies';
 import RedisService from '../services/RedisService';
 import { RedisClientType } from 'redis';
+import HttpService from '../services/HttpService';
+import WebTokenService from '../services/WebtokenService';
+import HttpRequestValidationService from '../services/HttpRequestValidationService';
+import PasswordService from '../services/PasswordService';
 
 
 export async function configureContainer(testPool?: Pool): Promise<void> {
@@ -20,6 +24,18 @@ export async function configureContainer(testPool?: Pool): Promise<void> {
     // Encryption //
     const encryptionService = new EncryptionService();
     Container.register<EncryptionService>("EncryptionService", encryptionService);
+
+    // password //
+    const passwordService = new PasswordService();
+    Container.register<PasswordService>("PasswordService", passwordService);
+
+    // webtoken //
+    const webtokenService = new WebTokenService();
+    Container.register<WebTokenService>("WebtokenService", webtokenService);
+
+    // http request validation //
+    const httpRequestValidationService = new HttpRequestValidationService();
+    Container.register<HttpRequestValidationService>("HttpRequestValidationService", httpRequestValidationService);
     
     // errors //
     const errorHandler = new ErrorHandler(pool)
@@ -28,6 +44,9 @@ export async function configureContainer(testPool?: Pool): Promise<void> {
     // email //
     const emailService = new EmailService();
     Container.register<EmailService>("EmailService", emailService);
+
+    const httpService = new HttpService(httpRequestValidationService, passwordService, webtokenService, encryptionService);
+    Container.register<HttpService>("HttpService", httpService);
 
      // redis // 
     const connectionUrl = process.env.REDIS_URL as string || "";
@@ -41,9 +60,9 @@ export async function configureContainer(testPool?: Pool): Promise<void> {
     // users //
     configureUsersDependencies(pool);
 
-   // middleware //
+   // middleware --- must configure users above this block //
     const usersService = Container.resolve<UserService>("UsersService");
-    const middlewareService = new MiddlewareService(usersService, errorHandler);
+    const middlewareService = new MiddlewareService(webtokenService, usersService, errorHandler);
     Container.register<MiddlewareService>("MiddlewareService", middlewareService);   
      
     return;

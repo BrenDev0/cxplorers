@@ -12,14 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Controller_1 = __importDefault(require("../class/Controller"));
 const AppError_1 = __importDefault(require("../errors/AppError"));
 const errors_1 = require("../../core/errors/errors");
 const errors_2 = require("../errors/errors");
 const crypto_1 = __importDefault(require("crypto"));
-class MiddlewareService extends Controller_1.default {
-    constructor(usersService, errorHanlder) {
-        super();
+const validator_1 = require("validator");
+class MiddlewareService {
+    constructor(webtokenService, usersService, errorHanlder) {
+        this.webtokenService = webtokenService;
         this.usersService = usersService;
         this.errorHandler = errorHanlder;
     }
@@ -47,9 +47,9 @@ class MiddlewareService extends Controller_1.default {
                     });
                 }
                 ;
-                if (isNaN(Number(decodedToken.userId))) {
+                if (!(0, validator_1.isUUID)(decodedToken.userId)) {
                     throw new errors_1.AuthorizationError("Forbidden", {
-                        reason: "id not a  number",
+                        reason: "Invalid id",
                         userId: decodedToken.userId
                     });
                 }
@@ -148,27 +148,23 @@ class MiddlewareService extends Controller_1.default {
     }
     handleErrors(error, req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            const defaultErrorMessage = "Unable to process request at this time";
             try {
                 yield this.errorHandler.handleError(error);
                 if (error instanceof AppError_1.default) {
-                    res.status(error.statusCode).json({
-                        success: false,
-                        message: error.statusCode === 500 ? this.errorMessage : error.message,
-                        //...(process.env.NODE_ENV === 'development' ? { stack: error.stack } : {}),
-                    });
+                    res.status(error.statusCode).json(Object.assign({ success: false, message: error.statusCode === 500 ? defaultErrorMessage : error.message }, (process.env.NODE_ENV !== 'production' ? { context: error.context } : {})));
                     return;
                 }
                 res.status(500).json({
                     success: false,
-                    message: this.errorMessage,
-                    //...(process.env.NODE_ENV === 'development' ? { stack: (error as Error).stack } : {}),
+                    message: defaultErrorMessage,
                 });
             }
             catch (loggingError) {
                 console.error('Error handling failed:', loggingError);
                 res.status(500).json({
                     success: false,
-                    message: this.errorMessage,
+                    message: defaultErrorMessage,
                 });
                 return;
             }

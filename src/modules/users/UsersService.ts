@@ -22,7 +22,7 @@ export default class UserService {
     }
 
     // do not map user for internal use, handle mapping in controller for frontend use
-    async resource(whereCol: string, identifier: number | string): Promise<User | null> {
+    async resource(whereCol: string, identifier: string): Promise<User | null> {
         try {
             const result = await this.repository.selectOne(whereCol, identifier);
             if(!result) {
@@ -35,7 +35,7 @@ export default class UserService {
         }
     }
 
-    async update(userId: number, changes: UserData): Promise<User> {
+    async update(userId: string, changes: UserData): Promise<User> {
         const mappedChanges = this.mapToDb(changes);
         const cleanedChanges = Object.fromEntries(
             Object.entries(mappedChanges).filter(([_, value]) => value !== undefined)
@@ -48,7 +48,7 @@ export default class UserService {
         }
     }
 
-    async delete(userId: number): Promise<User> {
+    async delete(userId: string): Promise<User> {
         try {
             return await this.repository.delete("user_id", userId) as User;
         } catch (error) {
