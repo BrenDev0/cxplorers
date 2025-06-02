@@ -67,6 +67,7 @@ class Database {
     getPool() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("GETTING POOL");
                 if (!this.isconnected || this.pool === null) {
                     if (this.initPromise === null) {
                         console.log('Reconnecting to the database...');

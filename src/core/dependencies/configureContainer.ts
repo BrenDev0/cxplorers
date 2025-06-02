@@ -14,6 +14,7 @@ import HttpService from '../services/HttpService';
 import WebTokenService from '../services/WebtokenService';
 import HttpRequestValidationService from '../services/HttpRequestValidationService';
 import PasswordService from '../services/PasswordService';
+import { configureTokensDependencies } from '../../modules/tokens/tokens.dependencies';
 
 
 export async function configureContainer(testPool?: Pool): Promise<void> {
@@ -56,6 +57,9 @@ export async function configureContainer(testPool?: Pool): Promise<void> {
 
     // google //
     configureGoogleDependencies();
+
+    // tokens //
+    configureTokensDependencies(pool);
 
     // users //
     configureUsersDependencies(pool);

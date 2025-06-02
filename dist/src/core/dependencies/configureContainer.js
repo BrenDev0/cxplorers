@@ -26,6 +26,7 @@ const HttpService_1 = __importDefault(require("../services/HttpService"));
 const WebtokenService_1 = __importDefault(require("../services/WebtokenService"));
 const HttpRequestValidationService_1 = __importDefault(require("../services/HttpRequestValidationService"));
 const PasswordService_1 = __importDefault(require("../services/PasswordService"));
+const tokens_dependencies_1 = require("../../modules/tokens/tokens.dependencies");
 function configureContainer(testPool) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -57,6 +58,8 @@ function configureContainer(testPool) {
         Container_1.default.register("RedisClient", redisClient);
         // google //
         (0, google_dependencies_1.configureGoogleDependencies)();
+        // tokens //
+        (0, tokens_dependencies_1.configureTokensDependencies)(pool);
         // users //
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // middleware --- must configure users above this block //

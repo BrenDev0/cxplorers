@@ -44,6 +44,15 @@ const doc = {
       },
       accountRecovery: {
         email: "email"
+      },
+      createToken: {
+        token: "token",
+        userId: "uuid",
+        type: "refresh or access",
+        service: "google"
+      },
+      updateToken: {
+        token: "new Token"
       }
     }
   },

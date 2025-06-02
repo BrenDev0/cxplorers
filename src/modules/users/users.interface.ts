@@ -1,3 +1,5 @@
+import { IRepository } from "../../core/repository/repository.interface";
+
 export interface User {
   user_id?: string;
   email: string;
@@ -14,4 +16,12 @@ export interface UserData {
   phone: string;
   password: string;
   createdAt?: Date;
+}
+
+export interface UserGoogleData {
+  refresh_token: string;
+}
+
+export interface IUserRepository<User> extends IRepository<User> {
+  getGoogleData(userId: string): Promise<UserGoogleData>
 }

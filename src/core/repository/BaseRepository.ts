@@ -40,7 +40,7 @@ export default class BaseRepository<T extends Record<string, any>> implements IR
         return result.rows[0] || null;
     }
 
-    async select(whereCol: string, identifier:number): Promise<T[]> {
+    async select(whereCol: string, identifier: number | string): Promise<T[]> {
         const sqlSelect = `
             SELECT * FROM ${this.table}
             WHERE ${whereCol} = $1;

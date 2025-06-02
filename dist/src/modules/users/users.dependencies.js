@@ -4,12 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.configureUsersDependencies = configureUsersDependencies;
-const BaseRepository_1 = __importDefault(require("../../core/repository/BaseRepository"));
 const UsersService_1 = __importDefault(require("./UsersService"));
 const UsersController_1 = __importDefault(require("./UsersController"));
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
+const UsersRepository_1 = __importDefault(require("./UsersRepository"));
 function configureUsersDependencies(pool) {
-    const repository = new BaseRepository_1.default(pool, "users");
+    const repository = new UsersRepository_1.default(pool);
     const service = new UsersService_1.default(repository);
     const emailService = Container_1.default.resolve("EmailService");
     const httpService = Container_1.default.resolve("HttpService");

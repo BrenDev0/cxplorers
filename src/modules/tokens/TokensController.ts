@@ -1,0 +1,131 @@
+import { Request, Response } from "express";
+import HttpService from "../../core/services/HttpService"
+import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/errors/errors";
+import TokensService from "./TokensService";
+import { TokenData } from "./tokens.interface";
+
+export default class TokensController { 
+  private httpService: HttpService;
+  private tokensService: TokensService;  
+  private block = "tokens.controller"; 
+  
+
+  constructor(httpService: HttpService, tokensService: TokensService) {
+    this.httpService = httpService;
+    this.tokensService = tokensService;
+  }
+
+  async createRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.createRequest`;
+    try {
+      const { token, service, type} = req.body;
+      const user = req.user;
+      const requiredFields = ["token", "type", "service"];
+
+      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+
+      const usersTokens = await this.tokensService.collection(user.user_id);
+      const tokenExist = usersTokens.find(
+        (token) => token.type === type && token.service === service
+      );
+
+      const tokenData = {
+        ...req.body,
+        userId: user.user_id
+      };
+
+      if(tokenExist) {
+        await this.tokensService.update(tokenExist.tokenId!, tokenData);
+        res.status(200).json({ message: "Token updated"});
+        return;
+      }
+
+      await this.tokensService.create(tokenData);
+
+      res.status(200).json({ message: "Token added." });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async resourceRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.resourceRequest`;
+    try {
+      const tokenId = req.params.tokenId;
+      this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
+
+      const resource = await this.tokensService.resource(tokenId);
+      if(!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.resourceCheck`,
+          id: tokenId,
+          resource: resource || "no token found in db"
+        })
+      }
+
+      res.status(200).json({ data: resource})
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.updateRequest`;
+    try { 
+      const user = req.user;
+      const tokenId = req.params.tokenId;
+      this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
+
+     const resource = await this.tokensService.resource(tokenId);
+      if (!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.notFound`,
+        });
+      }
+
+      if(resource.userId != user.user_id) {
+        throw new AuthorizationError(undefined, {
+          tokenUserId: resource.userId,
+          userId: user.user_id
+        })
+      }
+      const allowedChanges = ["token", "type", "service"];
+
+      const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<TokenData>(allowedChanges, req.body, block);
+
+      await this.tokensService.update(tokenId, filteredChanges);
+
+      res.status(200).json({ message: "token updated" });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.deleteRequest`;
+    try {
+      const user = req.user;
+      const tokenId = req.params.tokenId;
+      this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
+
+     const resource = await this.tokensService.resource(tokenId);
+      if (!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.notFound`,
+        });
+      }
+
+      if(resource.userId != user.user_id) {
+        throw new AuthorizationError(undefined, {
+          tokenUserId: resource.userId,
+          userId: user.user_id
+        })
+      }
+
+      await this.tokensService.delete(tokenId);
+      res.status(200).json({ message: "Token deleted"})
+    } catch (error) {
+      throw error;
+    }
+  }
+}
