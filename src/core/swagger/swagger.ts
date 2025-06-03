@@ -42,6 +42,10 @@ const doc = {
         password: " new password",
         code: "code from users email"
       },
+      login: {
+        email: "email",
+        password: "password"
+      },
       accountRecovery: {
         email: "email"
       },

@@ -86,6 +86,14 @@ const initializeUsersRouter = (customController) => {
     #swagger.tags = ['Users']
     #swagger.path =  '/users/login'
     #swagger.description = 'user login'
+     #swagger.requestBody = {
+        required: true,
+        content: {
+            "application/json": {
+                schema: { $ref: "#/components/schemas/login" }
+            }
+        }
+    }
     */
     controller.login.bind(controller));
     router.post("/account-recovery", 

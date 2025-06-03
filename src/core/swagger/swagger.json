@@ -373,6 +373,16 @@
           "default": {
             "description": ""
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
         }
       }
     },
@@ -493,6 +503,19 @@
           "code": {
             "type": "string",
             "example": "code from users email"
+          }
+        }
+      },
+      "login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
           }
         }
       },
