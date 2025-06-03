@@ -6,15 +6,13 @@ import createApp from '../../src/createApp'
 import Container from '../../src/core/dependencies/Container';
 import { configureContainer } from '../../src/core/dependencies/configureContainer';
 import MiddlewareService from '../../src/core/middleware/MiddlewareService';
-import request from 'supertest'
-import { initializeTokensRouter } from '../../src/modules/tokens/tokens.routes';
-import UsersService from '../../src/modules/users/UsersService';
+import GoogleService from '../../src/modules/google/GoogleService';
+
 
 
 describe("USERS ROUTES", () => {
     let pool: Pool
     let app: Express
-    let usersService: UsersService;
 
     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5MDMxODEsImV4cCI6MTc4MDQzOTE4MX0.arPjmKvtSO49QXP1j79CA3Q8kWji2wB9gBO1EHq9lSk";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q"
@@ -31,7 +29,6 @@ describe("USERS ROUTES", () => {
         app = createApp();
 
         await configureContainer(pool);
-        usersService = Container.resolve<UsersService>("UsersService");
     })
 
     afterAll(async() =>  {
@@ -43,10 +40,11 @@ describe("USERS ROUTES", () => {
         it("should return users google data", async() =>{
             const userId = "3bd37764-4cd3-4e79-85d0-50f1c0c38421"
 
-            const data = await usersService.getUsersGoogleData(userId);
-            console.log(data)
+            const googleService = Container.resolve<GoogleService>("GoogleService");
+            const data = await googleService.getGoogleData(userId);
+            console.log("::::::::::::", data)
 
-            expect(data).toHaveProperty("refresh_token")
+            expect(data).toHaveProperty("token")
         })
     })
 })

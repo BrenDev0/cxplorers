@@ -5,9 +5,28 @@ import Container from '../../core/dependencies/Container';
 import { OAuth2Client } from 'google-auth-library';
 import { NotFoundError } from '../../core/errors/errors';
 import { GoogleError } from './google.errors';
+import { GoogleRepository } from './GoogleRepository';
+import { GoogleUser } from './google.interface';
+import { handleServiceError } from '../../core/errors/error.service';
 
 export default class GoogleService {
-    private block = "google.service"
+    private block = "google.service";
+    private repository: GoogleRepository;
+
+    constructor(repository: GoogleRepository) {
+        this.repository = repository;
+    }
+
+    async getGoogleData(userId: string): Promise<GoogleUser> {
+        try {
+            const data = await this.repository.getGoogleUser(userId);
+
+            return data;
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "update", {userId})
+            throw error;
+        }
+    }
 
     getUrl(oauth2Client: OAuth2Client) {
       

@@ -233,15 +233,4 @@ describe("USERS ROUTES", () => {
     expect(res.body.token.length).toBeGreaterThan(10);
   });
     })
-
-     describe("GET GOOGLE DATA", () => {
-        it("should return users google data", async() =>{
-            const userId = "3bd37764-4cd3-4e79-85d0-50f1c0c38421"
-            const usersService = Container.resolve<UsersService>("UsersService");
-            const data = await usersService.getUsersGoogleData(userId);
-            console.log(data)
-
-            expect(data).toHaveProperty("refresh_token")
-        })
-    })
 })

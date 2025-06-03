@@ -63,6 +63,8 @@ const doc = {
 const outputFile = './swagger.json';
 const endpointsFiles = [
     // users //
+    '../../modules/google/google.routes.ts',
+    '../../modules/tokens/tokens.routes.ts',
     '../../modules/users/users.routes.ts'
 ];
 (0, swagger_autogen_1.default)(options)(outputFile, endpointsFiles, doc);

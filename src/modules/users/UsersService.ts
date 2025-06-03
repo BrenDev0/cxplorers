@@ -3,12 +3,11 @@ import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
-import UsersRepository from './UsersRepository';
 
 export default class UsersService {
-    private repository: UsersRepository;
+    private repository: BaseRepository<User>;
     private block = "users.service"
-    constructor(repository: UsersRepository) {
+    constructor(repository: BaseRepository<User>) {
         this.repository = repository
     }
 
@@ -34,16 +33,6 @@ export default class UsersService {
             return result
         } catch (error) {
             handleServiceError(error as Error, this.block, "resource", {whereCol, identifier})
-            throw error;
-        }
-    }
-
-    async getUsersGoogleData(userId: string): Promise<UserGoogleData> {
-        try {
-            const result = await this.repository.getGoogleData(userId);
-            return result
-        } catch (error) {
-            handleServiceError(error as Error, this.block, "update", {userId})
             throw error;
         }
     }

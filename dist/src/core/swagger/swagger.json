@@ -11,6 +11,144 @@
         }
     ],
     "paths": {
+        "/google/secure/url": {
+            "get": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "get google auth href",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tokens/secure/create": {
+            "post": {
+                "tags": [
+                    "Tokens"
+                ],
+                "description": "create token",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createToken"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tokens/secure/resource/{tokenId}": {
+            "get": {
+                "tags": [
+                    "Tokens"
+                ],
+                "description": "get token by id",
+                "parameters": [
+                    {
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tokens/secure/{tokenId}": {
+            "put": {
+                "tags": [
+                    "Tokens"
+                ],
+                "description": "Update token",
+                "parameters": [
+                    {
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateToken"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tokens"
+                ],
+                "description": "delete token by id",
+                "parameters": [
+                    {
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/users/secure/resource": {
             "get": {
                 "tags": [
@@ -257,6 +395,36 @@
                     "email": {
                         "type": "string",
                         "example": "email"
+                    }
+                }
+            },
+            "createToken": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "token"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "example": "uuid"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "refresh or access"
+                    },
+                    "service": {
+                        "type": "string",
+                        "example": "google"
+                    }
+                }
+            },
+            "updateToken": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "new Token"
                     }
                 }
             }

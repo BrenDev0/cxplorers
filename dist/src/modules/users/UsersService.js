@@ -49,18 +49,6 @@ class UsersService {
             }
         });
     }
-    getUsersGoogleData(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const result = yield this.repository.getGoogleData(userId);
-                return result;
-            }
-            catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "update", { userId });
-                throw error;
-            }
-        });
-    }
     update(userId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);

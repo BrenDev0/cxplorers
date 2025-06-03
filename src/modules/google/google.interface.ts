@@ -1,7 +1,8 @@
-export interface Google {
-  // Define your database interface fields here
+export interface GoogleUser {
+  user_id: string;
+  refresh_token: string;
 }
 
-export interface GoogleData {
-  // Define your data interface fields here
+export interface IGoogleRepository {
+  getGoogleUser(userId: string): Promise<GoogleUser>
 }

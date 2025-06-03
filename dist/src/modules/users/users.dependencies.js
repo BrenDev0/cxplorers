@@ -7,9 +7,9 @@ exports.configureUsersDependencies = configureUsersDependencies;
 const UsersService_1 = __importDefault(require("./UsersService"));
 const UsersController_1 = __importDefault(require("./UsersController"));
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-const UsersRepository_1 = __importDefault(require("./UsersRepository"));
+const BaseRepository_1 = __importDefault(require("../../core/repository/BaseRepository"));
 function configureUsersDependencies(pool) {
-    const repository = new UsersRepository_1.default(pool);
+    const repository = new BaseRepository_1.default(pool, "users");
     const service = new UsersService_1.default(repository);
     const emailService = Container_1.default.resolve("EmailService");
     const httpService = Container_1.default.resolve("HttpService");

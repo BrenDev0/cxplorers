@@ -57,7 +57,7 @@ function configureContainer(testPool) {
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
         Container_1.default.register("RedisClient", redisClient);
         // google //
-        (0, google_dependencies_1.configureGoogleDependencies)();
+        (0, google_dependencies_1.configureGoogleDependencies)(pool);
         // tokens //
         (0, tokens_dependencies_1.configureTokensDependencies)(pool);
         // users //

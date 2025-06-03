@@ -56,7 +56,7 @@ export async function configureContainer(testPool?: Pool): Promise<void> {
  
 
     // google //
-    configureGoogleDependencies();
+    configureGoogleDependencies(pool);
 
     // tokens //
     configureTokensDependencies(pool);

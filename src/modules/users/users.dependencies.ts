@@ -4,10 +4,11 @@ import UsersController from "./UsersController";
 import Container from "../../core/dependencies/Container";
 import EmailService from "../../core/services/EmailService";
 import HttpService from "../../core/services/HttpService";
-import UsersRepository from "./UsersRepository";
+import BaseRepository from "../../core/repository/BaseRepository";
+import { User } from "./users.interface";
 
 export function configureUsersDependencies(pool: Pool): void {
-    const repository = new UsersRepository(pool);
+    const repository = new BaseRepository<User>(pool, "users");
     const service = new UsersService(repository);
     const emailService = Container.resolve<EmailService>("EmailService");
     const httpService = Container.resolve<HttpService>("HttpService");

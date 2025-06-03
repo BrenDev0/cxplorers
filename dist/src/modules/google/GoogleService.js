@@ -14,9 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = __importDefault(require("crypto"));
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
+const error_service_1 = require("../../core/errors/error.service");
 class GoogleService {
-    constructor() {
+    constructor(repository) {
         this.block = "google.service";
+        this.repository = repository;
+    }
+    getGoogleData(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = yield this.repository.getGoogleUser(userId);
+                return data;
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "update", { userId });
+                throw error;
+            }
+        });
     }
     getUrl(oauth2Client) {
         const scopes = [
