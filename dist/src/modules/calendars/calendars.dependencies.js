@@ -11,7 +11,8 @@ const Container_1 = __importDefault(require("../../core/dependencies/Container")
 function configureCalendarsDependencies(pool) {
     const repository = new BaseRepository_1.default(pool, "calendars");
     const service = new CalendarsService_1.default(repository);
-    const controller = new CalendarsController_1.default(service);
+    const httpService = Container_1.default.resolve("HttpService");
+    const controller = new CalendarsController_1.default(httpService, service);
     Container_1.default.register("CalendarsService", service);
     Container_1.default.register("CalendarsController", controller);
     return;

@@ -12,22 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const googleapis_1 = require("googleapis");
 const crypto_1 = __importDefault(require("crypto"));
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
+const errors_1 = require("../../core/errors/errors");
 const error_service_1 = require("../../core/errors/error.service");
 class GoogleService {
     constructor(repository) {
         this.block = "google.service";
         this.repository = repository;
     }
-    getGoogleData(userId) {
+    getUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = yield this.repository.getGoogleUser(userId);
-                return data;
+                return this.mapGoogleUser(data);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "update", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "getUser", { userId });
                 throw error;
             }
         });
@@ -55,6 +57,17 @@ class GoogleService {
             state: state
         });
         return authorizationUrl;
+    }
+    listCalendars(oauth2Client) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+            const res = yield calendar.calendarList.list();
+            const calendars = res.data.items;
+            if (!calendars || calendars.length === 0) {
+                throw new errors_1.NotFoundError("no calendars found in google drive");
+            }
+            return calendars.filter((calendar) => calendar.accessRole === 'owner');
+        });
     }
     // async searchDrive(oauth2Client: OAuth2Client, filter: string, customQuery?: string) {
     //     const block = `${this.block}.SearchDrive`
@@ -98,6 +111,12 @@ class GoogleService {
                 throw error;
             }
         });
+    }
+    mapGoogleUser(user) {
+        const encryptionService = Container_1.default.resolve("EncryptionService");
+        return {
+            refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
+        };
     }
 }
 exports.default = GoogleService;

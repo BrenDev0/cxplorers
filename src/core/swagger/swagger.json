@@ -11,6 +11,108 @@
     }
   ],
   "paths": {
+    "/calendars/secure/create": {
+      "post": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "Create calendar",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createCalendar"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calendars/secure/resource/{calendarId}": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "get calendar by id",
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/calendars/secure/collection": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "get users calendars",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/calendars/secure/{calendarId}": {
+      "delete": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "Delete calendars",
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/google/secure/url": {
       "get": {
         "tags": [
@@ -27,6 +129,16 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/calendars": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/tokens/secure/create": {
@@ -425,6 +537,31 @@
           "token": {
             "type": "string",
             "example": "new Token"
+          }
+        }
+      },
+      "createCalendar": {
+        "type": "object",
+        "properties": {
+          "referenceId": {
+            "type": "string",
+            "example": "id from google"
+          },
+          "title": {
+            "type": "string",
+            "example": "summary from google"
+          },
+          "description": {
+            "type": "string",
+            "example": "from google default null"
+          },
+          "backgroundColor": {
+            "type": "string",
+            "example": "from google default null"
+          },
+          "forgroundColor": {
+            "type": "string",
+            "example": "from google default null"
           }
         }
       }

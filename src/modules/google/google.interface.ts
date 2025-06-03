@@ -1,5 +1,4 @@
 export interface GoogleUser {
-  user_id: string;
   refresh_token: string;
 }
 

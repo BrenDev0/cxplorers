@@ -64,5 +64,31 @@ class GoogleController {
             }
         });
     }
+    getCalendars(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = req.user;
+                const googleUser = yield this.credentializeClient(user.user_id);
+                const calendars = yield this.googleService.listCalendars(this.client);
+                res.status(200).json({ data: calendars });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    credentializeClient(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.googleService.getUser(userId);
+            this.client.setCredentials({
+                refresh_token: user.refresh_token
+            });
+            const accessToken = yield this.googleService.refreshAccessToken(this.client);
+            this.client.setCredentials({
+                access_token: accessToken
+            });
+            return user;
+        });
+    }
 }
 exports.default = GoogleController;

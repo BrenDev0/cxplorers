@@ -21,7 +21,7 @@ class CalendarService {
     }
     create(calendar) {
         return __awaiter(this, void 0, void 0, function* () {
-            const mappedCalendar = this.mapToDb(calendars);
+            const mappedCalendar = this.mapToDb(calendar);
             try {
                 return this.repository.create(mappedCalendar);
             }
@@ -31,27 +31,41 @@ class CalendarService {
             }
         });
     }
-    resource() {
+    resource(calendarId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne();
+                const result = yield this.repository.selectOne("calendar_id", calendarId);
                 if (!result) {
                     return null;
                 }
                 return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource");
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { calendarId });
                 throw error;
             }
         });
     }
-    update(changes) {
+    collection(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select("user_id", userId);
+                const data = result.map((calendar) => this.mapFromDb(calendar));
+                return data;
+            }
+            catch (error) {
+                console.log(error, "ERROR:::::::::::::::");
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { userId });
+                throw error;
+            }
+        });
+    }
+    update(calendarId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
             const cleanedChanges = Object.fromEntries(Object.entries(mappedChanges).filter(([_, value]) => value !== undefined));
             try {
-                return yield this.repository.update();
+                return yield this.repository.update("calendar_id", calendarId, cleanedChanges);
             }
             catch (error) {
                 (0, error_service_1.handleServiceError)(error, this.block, "update", cleanedChanges);
@@ -59,24 +73,38 @@ class CalendarService {
             }
         });
     }
-    delete() {
+    delete(calendarId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield this.repository.delete();
+                return yield this.repository.delete("calendar_id", calendarId);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "delete");
+                (0, error_service_1.handleServiceError)(error, this.block, "delete", { calendarId });
                 throw error;
             }
         });
     }
     mapToDb(calendar) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
-        return {};
+        return {
+            user_id: calendar.userId,
+            reference_id: calendar.referenceId && encryptionService.encryptData(calendar.referenceId),
+            title: calendar.title,
+            description: calendar.description || null,
+            background_color: calendar.backgroundColor || null,
+            foreground_color: calendar.foregroundColor || null
+        };
     }
     mapFromDb(calendar) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
-        return {};
+        return {
+            userId: calendar.user_id,
+            referenceId: encryptionService.decryptData(calendar.reference_id),
+            title: calendar.title,
+            description: calendar.description,
+            backgroundColor: calendar.background_color,
+            foregroundColor: calendar.foreground_color
+        };
     }
 }
 exports.default = CalendarService;

@@ -5,7 +5,7 @@ import Container from "../../core/dependencies/Container";
 import GoogleService from "./GoogleService";
 import EncryptionService from "../../core/services/EncryptionService";
 import { OAuth2Client } from "google-auth-library";
-import UsersService from "../users/UsersService";
+import { GoogleUser } from "./google.interface";
 
 
 
@@ -70,22 +70,35 @@ export default class GoogleController {
         }
     }
 
+    async getCalendars(req: Request, res: Response): Promise<void> {
+        try {
+            const user = req.user;
+            const googleUser = await this.credentializeClient(user.user_id);
+
+            const calendars = await this.googleService.listCalendars(this.client);
+
+            res.status(200).json({ data: calendars })
+        } catch (error) {
+            throw error 
+        }
+    }
+
   
-  // async credentializeClient(userId: number): Promise<UserGoogleInfo> {
-  //     const usersService: UsersService = Container.resolve("UsersService");
-  //     const user = await usersService.getGoogleInfo(userId);
+  async credentializeClient(userId: string): Promise<GoogleUser> {
+    
+      const user = await this.googleService.getUser(userId)
       
-  //     this.client.setCredentials({
-  //         refresh_token: user.refresh_token
-  //     })
+      this.client.setCredentials({
+          refresh_token: user.refresh_token
+      })
 
-  //     const accessToken = await this.googleService.refreshAccessToken(this.client);
+      const accessToken = await this.googleService.refreshAccessToken(this.client);
 
-  //     this.client.setCredentials({
-  //         access_token: accessToken
-  //     })
-  //     return user;
-  // } 
+      this.client.setCredentials({
+          access_token: accessToken
+      })
+      return user;
+  } 
 }
 
    

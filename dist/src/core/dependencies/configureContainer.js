@@ -27,7 +27,8 @@ const WebtokenService_1 = __importDefault(require("../services/WebtokenService")
 const HttpRequestValidationService_1 = __importDefault(require("../services/HttpRequestValidationService"));
 const PasswordService_1 = __importDefault(require("../services/PasswordService"));
 const tokens_dependencies_1 = require("../../modules/tokens/tokens.dependencies");
-function configureContainer(testPool) {
+const calendars_dependencies_1 = require("../../modules/calendars/calendars.dependencies");
+function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
         const pool = testPool !== null && testPool !== void 0 ? testPool : yield Database_1.default.getPool();
@@ -53,9 +54,11 @@ function configureContainer(testPool) {
         const httpService = new HttpService_1.default(httpRequestValidationService, passwordService, webtokenService, encryptionService);
         Container_1.default.register("HttpService", httpService);
         // redis // 
-        const connectionUrl = process.env.REDIS_URL || "";
+        const connectionUrl = testRedis !== null && testRedis !== void 0 ? testRedis : (process.env.REDIS_URL || "");
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
         Container_1.default.register("RedisClient", redisClient);
+        // calendars //
+        (0, calendars_dependencies_1.configureCalendarsDependencies)(pool);
         // google //
         (0, google_dependencies_1.configureGoogleDependencies)(pool);
         // tokens //

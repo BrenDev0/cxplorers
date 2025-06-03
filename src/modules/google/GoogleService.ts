@@ -8,6 +8,7 @@ import { GoogleError } from './google.errors';
 import { GoogleRepository } from './GoogleRepository';
 import { GoogleUser } from './google.interface';
 import { handleServiceError } from '../../core/errors/error.service';
+import EncryptionService from '../../core/services/EncryptionService';
 
 export default class GoogleService {
     private block = "google.service";
@@ -17,13 +18,13 @@ export default class GoogleService {
         this.repository = repository;
     }
 
-    async getGoogleData(userId: string): Promise<GoogleUser> {
+    async getUser(userId: string): Promise<GoogleUser> {
         try {
             const data = await this.repository.getGoogleUser(userId);
 
-            return data;
+            return this.mapGoogleUser(data);
         } catch (error) {
-            handleServiceError(error as Error, this.block, "update", {userId})
+            handleServiceError(error as Error, this.block, "getUser", {userId})
             throw error;
         }
     }
@@ -63,6 +64,20 @@ export default class GoogleService {
         return authorizationUrl;
     }
 
+    async listCalendars(oauth2Client: OAuth2Client) {
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client});
+
+        const res = await calendar.calendarList.list();
+        
+        const calendars = res.data.items
+        
+        if (!calendars || calendars.length === 0) {
+            throw new NotFoundError("no calendars found in google drive")
+        }
+
+        return calendars.filter((calendar) => calendar.accessRole === 'owner');
+    }
+
     // async searchDrive(oauth2Client: OAuth2Client, filter: string, customQuery?: string) {
     //     const block = `${this.block}.SearchDrive`
     //     try {
@@ -97,8 +112,6 @@ export default class GoogleService {
     //     }
     // }
 
- 
-
     async refreshAccessToken(oauth2Client: OAuth2Client) {
         try {
             const { token } = await oauth2Client.getAccessToken();
@@ -107,6 +120,13 @@ export default class GoogleService {
         } catch (error) {
             console.error('Error refreshing access token', error);
             throw error;
+        }
+    }
+
+    mapGoogleUser(user: GoogleUser): GoogleUser {
+        const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+        return {
+            refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
         }
     }
 }

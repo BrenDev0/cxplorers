@@ -53,6 +53,13 @@ const doc = {
       },
       updateToken: {
         token: "new Token"
+      },
+      createCalendar: {
+        referenceId: "id from google",
+        title: "summary from google",
+        description: "from google default null",
+        backgroundColor: "from google default null",
+        forgroundColor: "from google default null"
       }
     }
   },
@@ -62,6 +69,7 @@ const outputFile = './swagger.json';
 const endpointsFiles = [
   // users //
 
+  '../../modules/calendars/calendars.routes.ts',
   '../../modules/google/google.routes.ts',
   '../../modules/tokens/tokens.routes.ts',
   '../../modules/users/users.routes.ts'

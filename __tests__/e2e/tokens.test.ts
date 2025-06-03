@@ -8,6 +8,7 @@ import { configureContainer } from '../../src/core/dependencies/configureContain
 import MiddlewareService from '../../src/core/middleware/MiddlewareService';
 import request from 'supertest'
 import { initializeTokensRouter } from '../../src/modules/tokens/tokens.routes';
+import { RedisClientType } from 'redis';
 
 
 describe("USERS ROUTES", () => {
@@ -39,9 +40,12 @@ describe("USERS ROUTES", () => {
     })
 
     afterAll(async() =>  {
-        await pool.end();
-        Container.clear();
-    })
+      await pool.end();
+      const redisClient = Container.resolve<RedisClientType>("RedisClient")
+      await redisClient.quit();
+      Container.clear();
+      
+  })
 
 
 const baseUrl = "/tokens/secure";

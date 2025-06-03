@@ -18,11 +18,12 @@ const pg_1 = require("pg");
 const createApp_1 = __importDefault(require("../../src/createApp"));
 const Container_1 = __importDefault(require("../../src/core/dependencies/Container"));
 const configureContainer_1 = require("../../src/core/dependencies/configureContainer");
+const supertest_1 = __importDefault(require("supertest"));
+const google_routes_1 = require("../../src/modules/google/google.routes");
 describe("USERS ROUTES", () => {
     let pool;
     let app;
-    let googleService;
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5MDMxODEsImV4cCI6MTc4MDQzOTE4MX0.arPjmKvtSO49QXP1j79CA3Q8kWji2wB9gBO1EHq9lSk";
+    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5Njk2MDIsImV4cCI6MTc4MDUwNTYwMn0.JiTqY9FHBaSofTdUnrxmGOLODvNLKvmsqpmOzFA5mSU";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q";
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         pool = new pg_1.Pool({
@@ -32,19 +33,26 @@ describe("USERS ROUTES", () => {
             }
         });
         app = (0, createApp_1.default)();
-        yield (0, configureContainer_1.configureContainer)(pool);
-        googleService = Container_1.default.resolve("GoogleService");
+        yield (0, configureContainer_1.configureContainer)(pool, process.env.REDIS_URL);
+        const middlewareService = Container_1.default.resolve("MiddlewareService");
+        const router = (0, google_routes_1.initializeGoogleRouter)();
+        app.use("/google", router);
+        app.use(middlewareService.handleErrors.bind(middlewareService));
     }));
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield pool.end();
+        const redisClient = Container_1.default.resolve("RedisClient");
+        yield redisClient.quit();
         Container_1.default.clear();
     }));
-    describe("GET GOOGLE DATA", () => {
-        it("should return users google data", () => __awaiter(void 0, void 0, void 0, function* () {
-            const userId = "3bd37764-4cd3-4e79-85d0-50f1c0c38421";
-            const data = yield googleService.getUser(userId);
-            console.log("::::::::::::", data);
-            expect(data).toHaveProperty("token");
+    describe("GET GOOGLE CALENDARS", () => {
+        it("should return a list of calendars", () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get("/google/secure/calendars")
+                .set("Authorization", token);
+            console.log("res:::::: ", res.body);
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("data");
         }));
     });
 });

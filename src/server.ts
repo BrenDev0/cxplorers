@@ -8,6 +8,7 @@ import MiddlewareService from './core/middleware/MiddlewareService';
 import { initializeGoogleRouter } from './modules/google/google.routes';
 import { initializeUsersRouter } from './modules/users/users.routes';
 import { initializeTokensRouter } from './modules/tokens/tokens.routes';
+import { initializeCalendarsRouter } from './modules/calendars/calendars.routes';
 
 
 const server = async() => {
@@ -17,6 +18,7 @@ const server = async() => {
     const middlewareService: MiddlewareService =  Container.resolve("MiddlewareService");
 
     // routers //
+    const calendarsRouter = initializeCalendarsRouter();
     const googleRouter = initializeGoogleRouter();
     const tokensRouter = initializeTokensRouter();
     const  usersRouter = initializeUsersRouter();
@@ -27,6 +29,7 @@ const server = async() => {
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
+    app.use("/calendars",   calendarsRouter);
     app.use("/google", googleRouter);
     app.use("/tokens", tokensRouter);
     app.use("/users", usersRouter);

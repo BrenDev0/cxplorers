@@ -17,7 +17,7 @@ class GoogleRepository {
     getGoogleUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `
-            SELECT token
+            SELECT token AS refresh_token
             FROM tokens
             WHERE user_id = $1
         `;

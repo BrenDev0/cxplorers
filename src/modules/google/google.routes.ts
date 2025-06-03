@@ -21,6 +21,11 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         */
         controller.getUrl.bind(controller)
     );
+
+    secureRouter.get("/calendars", 
+
+        controller.getCalendars.bind(controller)
+    )
    
     // unprotected //
 

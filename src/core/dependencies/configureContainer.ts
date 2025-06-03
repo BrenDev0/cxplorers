@@ -15,9 +15,10 @@ import WebTokenService from '../services/WebtokenService';
 import HttpRequestValidationService from '../services/HttpRequestValidationService';
 import PasswordService from '../services/PasswordService';
 import { configureTokensDependencies } from '../../modules/tokens/tokens.dependencies';
+import { configureCalendarsDependencies } from '../../modules/calendars/calendars.dependencies';
 
 
-export async function configureContainer(testPool?: Pool): Promise<void> {
+export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
     // pool //
     const pool =  testPool ?? await databaseInstance.getPool();
     Container.register<Pool>("Pool", pool);
@@ -50,11 +51,14 @@ export async function configureContainer(testPool?: Pool): Promise<void> {
     Container.register<HttpService>("HttpService", httpService);
 
      // redis // 
-    const connectionUrl = process.env.REDIS_URL as string || "";
+    const connectionUrl = testRedis ?? (process.env.REDIS_URL as string || "");
     const redisClient = await new RedisService(connectionUrl).createClient();
     Container.register<RedisClientType>("RedisClient", redisClient);
  
 
+    // calendars //
+    configureCalendarsDependencies(pool);
+    
     // google //
     configureGoogleDependencies(pool);
 

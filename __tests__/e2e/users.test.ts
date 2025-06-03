@@ -9,6 +9,7 @@ import { initializeUsersRouter } from '../../src/modules/users/users.routes';
 import MiddlewareService from '../../src/core/middleware/MiddlewareService';
 import request from 'supertest'
 import UsersService from '../../src/modules/users/UsersService';
+import { RedisClientType } from 'redis';
 
 
 describe("USERS ROUTES", () => {
@@ -41,7 +42,10 @@ describe("USERS ROUTES", () => {
 
     afterAll(async() =>  {
         await pool.end();
+        const redisClient = Container.resolve<RedisClientType>("RedisClient")
+        await redisClient.quit();
         Container.clear();
+        
     })
 
     describe("POST /users/verify-email", () => {
