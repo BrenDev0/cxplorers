@@ -55,4 +55,15 @@ describe("USERS ROUTES", () => {
             expect(res.body).toHaveProperty("data");
         }));
     });
+    describe("GET GOOGLE CALENDARS EVENTS", () => {
+        it("should return a list of calendars", () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get("/google/secure/calendars/events/31ab5f2d1d183690b964a7bc9ba1b8fbd94e280f24823659e972ca6be393bda2@group.calendar.google.com")
+                .set("Authorization", token);
+            console.log("attendees::::", res.body.data[1].attendees);
+            console.log("EVENTS:::", res.body.data);
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("data");
+        }));
+    });
 });

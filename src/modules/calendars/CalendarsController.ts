@@ -3,6 +3,8 @@ import HttpService from "../../core/services/HttpService"
 import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/errors/errors";
 import CalendarsService from "./CalendarsService";
 import { CalendarData } from "./calendars.interface";
+import Container from "../../core/dependencies/Container";
+import GoogleService from "../google/GoogleService";
 
 export default class CalendarsController { 
   private httpService: HttpService;

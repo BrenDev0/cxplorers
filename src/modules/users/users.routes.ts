@@ -144,7 +144,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
         */
         controller.verifyEmail.bind(controller)
     );
-
+    
     // mounts //
 
     router.use("/secure", secureRouter);

@@ -17,9 +17,8 @@ class GoogleRepository {
     getGoogleUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `
-            SELECT token AS refresh_token, calendars.reference_id
+            SELECT token AS refresh_token
             FROM tokens
-            LEFT JOIN calendars ON tokens.user_id = calendars.user_id
             WHERE user_id = $1
         `;
             const result = yield this.pool.query(sqlRead, [userId]);

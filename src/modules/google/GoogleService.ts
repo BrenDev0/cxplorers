@@ -9,7 +9,8 @@ import { GoogleRepository } from './GoogleRepository';
 import { GoogleUser } from './google.interface';
 import { handleServiceError } from '../../core/errors/error.service';
 import EncryptionService from '../../core/services/EncryptionService';
-import GoogleCalendarService from './services/googleCalendarService';
+import GoogleCalendarService from './services/changeName';
+import CalendarService from '../calendars/CalendarsService';
 
 export default class GoogleService {
     private block = "google.service";
@@ -24,8 +25,7 @@ export default class GoogleService {
     async getUser(userId: string): Promise<GoogleUser> {
         try {
             const data = await this.repository.getGoogleUser(userId);
-            console.log("Raw data :::::::::::", data)
-
+          
             return this.mapGoogleUser(data);
         } catch (error) {
             console.log("ERROR:::::", error)

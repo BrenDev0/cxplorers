@@ -31,6 +31,16 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         */
         controller.getCalendars.bind(controller)
     )
+
+    secureRouter.get("/calendars/events/:calendarId", 
+        /*
+        #swagger.tags = ['Google'] 
+         #swagger.security = [{ "bearerAuth": [] }]
+        #swagger.path = '/google/secure/calendars/events/{calendarId}' 
+        #swagger.description = 'get users calendars from drive'
+        */
+        controller.getCalendarEvents.bind(controller)
+    )
    
     // unprotected //
 
@@ -38,6 +48,12 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         // #swagger.ignore = true    
         controller.callback.bind(controller)
     );
+
+     router.post("/calendars/notifications", 
+
+        controller.handleCalendarNotifications.bind(controller)
+    )
+
 
     // mounts // 
     router.use("/secure", secureRouter);

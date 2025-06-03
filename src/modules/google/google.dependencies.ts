@@ -4,10 +4,12 @@ import GoogleController from './GoogleController';
 import GoogleService from './GoogleService';
 import { GoogleRepository } from './GoogleRepository';
 import { Pool } from 'pg';
-import GoogleCalendarService from './services/googleCalendarService';
+import GoogleCalendarService from './services/changeName';
+import HttpService from '../../core/services/HttpService';
 
 export function configureGoogleDependencies(pool: Pool) {
     const repository = new GoogleRepository(pool);
+    const httpService = Container.resolve<HttpService>("HttpService");
     const calendarService = new GoogleCalendarService;
     const googleService = new GoogleService(repository, calendarService);
     
@@ -16,7 +18,7 @@ export function configureGoogleDependencies(pool: Pool) {
         process.env.GOOGLE_CLIENT_SECRET,
         process.env.REDIRECT_URL
     );
-    const googleController = new GoogleController(googleClient, googleService);
+    const googleController = new GoogleController(httpService, googleClient, googleService);
 
     Container.register<GoogleService>("GoogleService", googleService);
     Container.register("GoogleClient", googleClient);

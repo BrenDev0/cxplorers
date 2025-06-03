@@ -6,19 +6,19 @@ import GoogleService from "./GoogleService";
 import EncryptionService from "../../core/services/EncryptionService";
 import { OAuth2Client } from "google-auth-library";
 import { GoogleUser } from "./google.interface";
-
-
-
+import HttpService from "../../core/services/HttpService";
 
 export default class GoogleController {
     private readonly block = "google.controller";
+    private httpService: HttpService;
     private client: OAuth2Client
     private googleService: GoogleService; 
     private readonly filterOptions = {
         SHEET: "sheet",
         FOLDER: "folder"
     }
-    constructor(client: OAuth2Client, googleService: GoogleService) {
+    constructor(httpService: HttpService , client: OAuth2Client, googleService: GoogleService) {
+        this.httpService = httpService
         this.client = client;
         this.googleService = googleService
     }
@@ -70,6 +70,16 @@ export default class GoogleController {
         }
     }
 
+    async handleCalendarNotifications(req: Request, res: Response): Promise<void> {
+        try {
+            console.log(req.body);
+
+            res.status(200).send();
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getCalendars(req: Request, res: Response): Promise<void> {
         try {
             const user = req.user;
@@ -83,8 +93,21 @@ export default class GoogleController {
         }
     }
 
+    async getCalendarEvents(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.getCalendarEvents`
+        try {
+            const user = req.user;
+            const calendarId = req.params.calendarId;
+            await this.credentializeClient(user.user_id);
+
+            const data = await this.googleService.calendarService.listEvents(calendarId, this.client);
+            res.status(200).json({ data: data })
+        } catch (error) {
+            throw error;
+        }
+    }
   
-  async credentializeClient(userId: string): Promise<GoogleUser> {
+   async credentializeClient(userId: string): Promise<GoogleUser> {
     
       const user = await this.googleService.getUser(userId)
       
@@ -98,7 +121,7 @@ export default class GoogleController {
           access_token: accessToken
       })
       return user;
-  } 
+   } 
 }
 
    

@@ -15,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class GoogleController {
-    constructor(client, googleService) {
+    constructor(httpService, client, googleService) {
         this.block = "google.controller";
         this.filterOptions = {
             SHEET: "sheet",
             FOLDER: "folder"
         };
+        this.httpService = httpService;
         this.client = client;
         this.googleService = googleService;
     }
@@ -64,6 +65,17 @@ class GoogleController {
             }
         });
     }
+    handleCalendarNotifications(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log(req.body);
+                res.status(200).send();
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     getCalendars(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -71,6 +83,21 @@ class GoogleController {
                 const googleUser = yield this.credentializeClient(user.user_id);
                 const calendars = yield this.googleService.calendarService.listCalendars(this.client);
                 res.status(200).json({ data: calendars });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getCalendarEvents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.getCalendarEvents`;
+            try {
+                const user = req.user;
+                const calendarId = req.params.calendarId;
+                yield this.credentializeClient(user.user_id);
+                const data = yield this.googleService.calendarService.listEvents(calendarId, this.client);
+                res.status(200).json({ data: data });
             }
             catch (error) {
                 throw error;

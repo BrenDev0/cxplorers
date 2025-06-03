@@ -25,7 +25,6 @@ class GoogleService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = yield this.repository.getGoogleUser(userId);
-                console.log("Raw data :::::::::::", data);
                 return this.mapGoogleUser(data);
             }
             catch (error) {
