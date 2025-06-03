@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../../core/errors/errors");
 const googleapis_1 = require("googleapis");
 const google_errors_1 = require("../google.errors");
+const axios_1 = __importDefault(require("axios"));
 class GoogleCalendarService {
     constructor() {
         this.block = "google.services.calendar";
@@ -40,6 +44,33 @@ class GoogleCalendarService {
                     throw new errors_1.NotFoundError("no calendars found in google drive");
                 }
                 return events;
+            }
+            catch (error) {
+                throw new google_errors_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    requestCalendarNotifications(calendarReferenceId, calendarId, accessKey) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.requesNotifications`;
+            try {
+                const response = yield axios_1.default.post(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarReferenceId)}/events/watch`, {
+                    id: calendarId,
+                    type: 'web_hook',
+                    address: `${process.env.HOST}/calendars/notifications`,
+                    params: {
+                        ttl: 86400 // Optional: time in seconds (1 day)
+                    }
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${accessKey}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                console.log('Watch response:', response.data);
             }
             catch (error) {
                 throw new google_errors_1.GoogleError(undefined, {

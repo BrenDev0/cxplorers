@@ -4,7 +4,7 @@ import GoogleController from './GoogleController';
 import GoogleService from './GoogleService';
 import { GoogleRepository } from './GoogleRepository';
 import { Pool } from 'pg';
-import GoogleCalendarService from './services/changeName';
+import GoogleCalendarService from './services/GoogleCalendarService';
 import HttpService from '../../core/services/HttpService';
 
 export function configureGoogleDependencies(pool: Pool) {

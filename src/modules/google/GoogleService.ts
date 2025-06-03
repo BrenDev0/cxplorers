@@ -9,7 +9,7 @@ import { GoogleRepository } from './GoogleRepository';
 import { GoogleUser } from './google.interface';
 import { handleServiceError } from '../../core/errors/error.service';
 import EncryptionService from '../../core/services/EncryptionService';
-import GoogleCalendarService from './services/changeName';
+import GoogleCalendarService from './services/GoogleCalendarService';
 import CalendarService from '../calendars/CalendarsService';
 
 export default class GoogleService {
