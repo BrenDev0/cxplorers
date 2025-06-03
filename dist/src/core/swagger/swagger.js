@@ -48,6 +48,9 @@ const doc = {
             accountRecovery: {
                 email: "email"
             },
+            verifyEmail: {
+                email: "new email"
+            },
             createToken: {
                 token: "token",
                 userId: "uuid",

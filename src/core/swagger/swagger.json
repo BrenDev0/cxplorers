@@ -404,10 +404,20 @@
         "tags": [
           "Users"
         ],
-        "description": "verify users email",
+        "description": "verify user email, token recieved must be used for create user request. for update email verification add query /users/verify-email?update=true",
         "responses": {
           "default": {
             "description": ""
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/verifyEmail"
+              }
+            }
           }
         }
       }
@@ -492,6 +502,15 @@
           "email": {
             "type": "string",
             "example": "email"
+          }
+        }
+      },
+      "verifyEmail": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "new email"
           }
         }
       },

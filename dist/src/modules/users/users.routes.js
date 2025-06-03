@@ -107,7 +107,15 @@ const initializeUsersRouter = (customController) => {
     /*
    #swagger.tags = ['Users']
    #swagger.path =  '/users/verify-email'
-   #swagger.description = 'verify users email'
+   #swagger.description = 'verify user email, token recieved must be used for create user request. for update email verification add query /users/verify-email?update=true'
+   #swagger.requestBody = {
+       required: true,
+       content: {
+           "application/json": {
+               schema: { $ref: "#/components/schemas/verifyEmail" }
+           }
+       }
+   }
    */
     controller.verifyEmail.bind(controller));
     // mounts //
