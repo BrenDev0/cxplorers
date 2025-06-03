@@ -131,14 +131,22 @@
                 ]
             }
         },
-        "/calendars": {
+        "/google/secure/calendars": {
             "get": {
-                "description": "",
+                "tags": [
+                    "Google"
+                ],
+                "description": "get users calendars from drive",
                 "responses": {
                     "default": {
                         "description": ""
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/tokens/secure/create": {
@@ -198,42 +206,6 @@
             }
         },
         "/tokens/secure/{tokenId}": {
-            "put": {
-                "tags": [
-                    "Tokens"
-                ],
-                "description": "Update token",
-                "parameters": [
-                    {
-                        "name": "tokenId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/updateToken"
-                            }
-                        }
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "Tokens"

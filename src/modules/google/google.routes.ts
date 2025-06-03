@@ -23,7 +23,12 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     );
 
     secureRouter.get("/calendars", 
-
+        /*
+        #swagger.tags = ['Google'] 
+         #swagger.security = [{ "bearerAuth": [] }]
+        #swagger.path = '/google/secure/calendars' 
+        #swagger.description = 'get users calendars from drive'
+        */
         controller.getCalendars.bind(controller)
     )
    

@@ -21,7 +21,14 @@ const initializeGoogleRouter = (customController) => {
     #swagger.description = 'get google auth href'
     */
     controller.getUrl.bind(controller));
-    secureRouter.get("/calendars", controller.getCalendars.bind(controller));
+    secureRouter.get("/calendars", 
+    /*
+    #swagger.tags = ['Google']
+     #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.path = '/google/secure/calendars'
+    #swagger.description = 'get users calendars from drive'
+    */
+    controller.getCalendars.bind(controller));
     // unprotected //
     router.get("/callback", 
     // #swagger.ignore = true    

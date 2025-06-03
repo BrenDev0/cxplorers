@@ -41,23 +41,23 @@ export const initializeTokensRouter = (customController?: TokensController) => {
         controller.resourceRequest.bind(controller)
     )
 
-    secureRouter.put("/:tokenId",
-         /*
-        #swagger.tags = ['Tokens']
-        #swagger.path =  '/tokens/secure/{tokenId}'
-        #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Update token'
-        #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: { $ref: "#/components/schemas/updateToken" }
-                }
-            }
-        }
-        */
-        controller.updateRequest.bind(controller)
-    )
+    // secureRouter.put("/:tokenId",
+    //      /*
+    //     #swagger.tags = ['Tokens']
+    //     #swagger.path =  '/tokens/secure/{tokenId}'
+    //     #swagger.security = [{ "bearerAuth": [] }] 
+    //     #swagger.description = 'Update token'
+    //     #swagger.requestBody = {
+    //         required: true,
+    //         content: {
+    //             "application/json": {
+    //                 schema: { $ref: "#/components/schemas/updateToken" }
+    //             }
+    //         }
+    //     }
+    //     */
+    //     controller.updateRequest.bind(controller)
+    // )
   
     secureRouter.delete("/:tokenId", 
          /*
