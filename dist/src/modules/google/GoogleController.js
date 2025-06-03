@@ -69,7 +69,7 @@ class GoogleController {
             try {
                 const user = req.user;
                 const googleUser = yield this.credentializeClient(user.user_id);
-                const calendars = yield this.googleService.listCalendars(this.client);
+                const calendars = yield this.googleService.calendarService.listCalendars(this.client);
                 res.status(200).json({ data: calendars });
             }
             catch (error) {

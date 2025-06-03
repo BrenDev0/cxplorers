@@ -103,7 +103,7 @@ const initializeUsersRouter = (customController) => {
     }
     */
     controller.accountRecoveryEmail.bind(controller));
-    router.use("/verify-email", 
+    router.post("/verify-email", 
     /*
    #swagger.tags = ['Users']
    #swagger.path =  '/users/verify-email'

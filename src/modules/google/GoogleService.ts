@@ -9,21 +9,26 @@ import { GoogleRepository } from './GoogleRepository';
 import { GoogleUser } from './google.interface';
 import { handleServiceError } from '../../core/errors/error.service';
 import EncryptionService from '../../core/services/EncryptionService';
+import GoogleCalendarService from './services/googleCalendarService';
 
 export default class GoogleService {
     private block = "google.service";
     private repository: GoogleRepository;
+    calendarService: GoogleCalendarService;
 
-    constructor(repository: GoogleRepository) {
+    constructor(repository: GoogleRepository, calendarService: GoogleCalendarService) {
         this.repository = repository;
+        this.calendarService = calendarService;
     }
 
     async getUser(userId: string): Promise<GoogleUser> {
         try {
             const data = await this.repository.getGoogleUser(userId);
+            console.log("Raw data :::::::::::", data)
 
             return this.mapGoogleUser(data);
         } catch (error) {
+            console.log("ERROR:::::", error)
             handleServiceError(error as Error, this.block, "getUser", {userId})
             throw error;
         }
@@ -62,20 +67,6 @@ export default class GoogleService {
         });
 
         return authorizationUrl;
-    }
-
-    async listCalendars(oauth2Client: OAuth2Client) {
-        const calendar = google.calendar({ version: 'v3', auth: oauth2Client});
-
-        const res = await calendar.calendarList.list();
-        
-        const calendars = res.data.items
-        
-        if (!calendars || calendars.length === 0) {
-            throw new NotFoundError("no calendars found in google drive")
-        }
-
-        return calendars.filter((calendar) => calendar.accessRole === 'owner');
     }
 
     // async searchDrive(oauth2Client: OAuth2Client, filter: string, customQuery?: string) {

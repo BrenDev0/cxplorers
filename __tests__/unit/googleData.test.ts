@@ -7,6 +7,7 @@ import Container from '../../src/core/dependencies/Container';
 import { configureContainer } from '../../src/core/dependencies/configureContainer';
 import MiddlewareService from '../../src/core/middleware/MiddlewareService';
 import GoogleService from '../../src/modules/google/GoogleService';
+import { RedisClientType } from 'redis';
 
 
 
@@ -35,7 +36,10 @@ describe("USERS ROUTES", () => {
 
     afterAll(async() =>  {
         await pool.end();
+        const redisClient = Container.resolve<RedisClientType>("RedisClient")
+        await redisClient.quit();
         Container.clear();
+        
     })
 
     describe("GET GOOGLE DATA", () => {

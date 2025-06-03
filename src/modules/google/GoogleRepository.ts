@@ -10,8 +10,9 @@ export class GoogleRepository implements IGoogleRepository {
 
     async getGoogleUser(userId: string): Promise<GoogleUser> {
          const sqlRead =  `
-            SELECT token AS refresh_token
+            SELECT token AS refresh_token, calendars.reference_id
             FROM tokens
+            LEFT JOIN calendars ON tokens.user_id = calendars.user_id
             WHERE user_id = $1
         `
 

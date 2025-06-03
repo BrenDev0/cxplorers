@@ -9,9 +9,11 @@ const Container_1 = __importDefault(require("../../core/dependencies/Container")
 const GoogleController_1 = __importDefault(require("./GoogleController"));
 const GoogleService_1 = __importDefault(require("./GoogleService"));
 const GoogleRepository_1 = require("./GoogleRepository");
+const googleCalendarService_1 = __importDefault(require("./services/googleCalendarService"));
 function configureGoogleDependencies(pool) {
     const repository = new GoogleRepository_1.GoogleRepository(pool);
-    const googleService = new GoogleService_1.default(repository);
+    const calendarService = new googleCalendarService_1.default;
+    const googleService = new GoogleService_1.default(repository, calendarService);
     const googleClient = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.REDIRECT_URL);
     const googleController = new GoogleController_1.default(googleClient, googleService);
     Container_1.default.register("GoogleService", googleService);

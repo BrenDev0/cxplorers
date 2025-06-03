@@ -37,6 +37,8 @@ describe("USERS ROUTES", () => {
     }));
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield pool.end();
+        const redisClient = Container_1.default.resolve("RedisClient");
+        yield redisClient.quit();
         Container_1.default.clear();
     }));
     describe("GET GOOGLE DATA", () => {

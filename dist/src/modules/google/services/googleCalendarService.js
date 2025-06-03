@@ -9,22 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GoogleRepository = void 0;
-class GoogleRepository {
-    constructor(pool) {
-        this.pool = pool;
-    }
-    getGoogleUser(userId) {
+const errors_1 = require("../../../core/errors/errors");
+const googleapis_1 = require("googleapis");
+class GoogleCalendarService {
+    listCalendars(oauth2Client) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sqlRead = `
-            SELECT token AS refresh_token, calendars.reference_id
-            FROM tokens
-            LEFT JOIN calendars ON tokens.user_id = calendars.user_id
-            WHERE user_id = $1
-        `;
-            const result = yield this.pool.query(sqlRead, [userId]);
-            return result.rows[0];
+            const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+            const res = yield calendar.calendarList.list();
+            const calendars = res.data.items;
+            if (!calendars || calendars.length === 0) {
+                throw new errors_1.NotFoundError("no calendars found in google drive");
+            }
+            return calendars.filter((calendar) => calendar.accessRole === 'owner');
         });
     }
 }
-exports.GoogleRepository = GoogleRepository;
+exports.default = GoogleCalendarService;

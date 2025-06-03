@@ -75,7 +75,7 @@ export default class GoogleController {
             const user = req.user;
             const googleUser = await this.credentializeClient(user.user_id);
 
-            const calendars = await this.googleService.listCalendars(this.client);
+            const calendars = await this.googleService.calendarService.listCalendars(this.client);
 
             res.status(200).json({ data: calendars })
         } catch (error) {

@@ -4,10 +4,12 @@ import GoogleController from './GoogleController';
 import GoogleService from './GoogleService';
 import { GoogleRepository } from './GoogleRepository';
 import { Pool } from 'pg';
+import GoogleCalendarService from './services/googleCalendarService';
 
 export function configureGoogleDependencies(pool: Pool) {
-    const repository = new GoogleRepository(pool)
-    const googleService = new GoogleService(repository);
+    const repository = new GoogleRepository(pool);
+    const calendarService = new GoogleCalendarService;
+    const googleService = new GoogleService(repository, calendarService);
     
     const googleClient = new google.auth.OAuth2(
         process.env.GOOGLE_CLIENT_ID,
