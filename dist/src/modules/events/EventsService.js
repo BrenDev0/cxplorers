@@ -33,19 +33,19 @@ class EventsService {
     }
     upsert(events) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log;
             const mappedEvents = events.map((event) => this.mapToDb(event));
             const cols = Object.keys(mappedEvents[0]);
             const values = mappedEvents.flatMap(event => cols.map(col => { var _a; return (_a = event[col]) !== null && _a !== void 0 ? _a : null; }));
+            console.log(`cols:::: ${cols}, values:::: ${values}`);
             try {
                 const result = yield this.repository.upsertMany(cols, values);
                 return result;
             }
             catch (error) {
+                console.log(error);
                 (0, error_service_1.handleServiceError)(error, this.block, "resource", {
                     cols,
-                    values,
-                    error: error
+                    values
                 });
                 throw error;
             }
