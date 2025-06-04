@@ -96,7 +96,6 @@ class GoogleController {
                     return;
                 }
                 ;
-                console.log("result after map::::", resource);
                 yield this.credentializeClient(resource.userId);
                 const events = yield this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
                 yield this.googleService.calendarService.updateCalendar(resource.calendarId, events);

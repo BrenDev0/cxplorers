@@ -40,7 +40,7 @@ export default class CalendarsService {
             if(!result) {
                 return null
             }
-            console.log("result before map:::", result)
+           
             return this.mapFromDb(result)
         } catch (error) {
             handleServiceError(error as Error, this.block, "collection", {channelId})
