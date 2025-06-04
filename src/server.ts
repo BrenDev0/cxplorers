@@ -36,6 +36,7 @@ const server = async() => {
 
 
     app.use((req: Request, res: Response) => {
+        console.log(req.headers)
         res.status(404).json({ message: "Route not found." });
     });
 

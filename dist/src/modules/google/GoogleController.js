@@ -138,17 +138,18 @@ class GoogleController {
                 if (!resource) {
                     throw new errors_1.NotFoundError(undefined, {
                         calendarId,
-                        resource: resource || "Calnedar not found"
+                        resource: resource || "Calendar not found"
                     });
                 }
-                if (!resource.watchChannel) {
+                if (!resource.watchChannel || !resource.watchChannelResourceId) {
                     throw new errors_1.BadRequestError("Calendar is not synced", {
                         resource
                     });
                 }
                 yield this.credentializeClient(user.user_id);
                 const accessToken = this.client.credentials.access_token;
-                yield this.googleService.calendarService.CancelCalendarNotifications(resource.calendarReferenceId, resource.watchChannel, accessToken);
+                console.log("CALENDAR IN DB::::::", resource);
+                yield this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, accessToken);
                 res.status(200).json({ message: "calendar synced" });
             }
             catch (error) {

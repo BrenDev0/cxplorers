@@ -86,12 +86,12 @@ class GoogleCalendarService {
             }
         });
     }
-    CancelCalendarNotifications(calendarReferenceId, channelId, accessToken) {
+    CancelCalendarNotifications(channelResourceId, channelId, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield axios_1.default.post('https://www.googleapis.com/calendar/v3/channels/stop', {
                     id: channelId,
-                    resourceId: calendarReferenceId,
+                    resourceId: channelResourceId,
                 }, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -99,6 +99,7 @@ class GoogleCalendarService {
                     },
                 });
                 console.log('Channel stopped successfully');
+                return;
             }
             catch (error) {
                 throw error;

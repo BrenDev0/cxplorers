@@ -48,7 +48,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
         #swagger.description = 'unSync users calendar'
         */
-        controller.syncCalendar.bind(controller)
+        controller.unSyncCalendar.bind(controller)
     )
 
     secureRouter.get("/calendars", 

@@ -78,7 +78,8 @@ export default class CalendarsService {
             description: calendar.description,
             background_color: calendar.backgroundColor,
             foreground_color: calendar.foregroundColor,
-            watch_channel: calendar.watchChannel,
+            watch_channel: calendar.watchChannel && encryptionService.encryptData(calendar.watchChannel),
+            watch_channel_resource_id: calendar.watchChannelResourceId && encryptionService.encryptData(calendar.watchChannelResourceId),
             channel_expiration_ms: calendar.channelExpirationMs
         }
     }
@@ -92,7 +93,8 @@ export default class CalendarsService {
             description: calendar.description ,
             backgroundColor: calendar.background_color,
             foregroundColor: calendar.foreground_color,
-            watchChannel: calendar.watch_channel,
+            watchChannel: calendar.watch_channel && encryptionService.decryptData(calendar.watch_channel),
+            watchChannelResourceId: calendar.watch_channel_resource_id && encryptionService.decryptData(calendar.watch_channel_resource_id),
             channelExpirationMs: calendar.channel_expiration_ms
         }
     }

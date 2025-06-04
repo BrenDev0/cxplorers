@@ -86,13 +86,13 @@ export default class GoogleCalendarService {
         }
     }
 
-    async CancelCalendarNotifications(calendarReferenceId: string, channelId: string, accessToken: string) {
+    async CancelCalendarNotifications(channelResourceId: string, channelId: string, accessToken: string) {
         try {
           await axios.post(
             'https://www.googleapis.com/calendar/v3/channels/stop',
             {
                 id: channelId,
-                resourceId: calendarReferenceId,
+                resourceId: channelResourceId,
             },
             {
                 headers: {
@@ -102,6 +102,7 @@ export default class GoogleCalendarService {
             }
             );
             console.log('Channel stopped successfully');
+            return;
         } catch (error) {
            throw error;
         }

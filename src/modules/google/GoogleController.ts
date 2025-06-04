@@ -131,6 +131,7 @@ export default class GoogleController {
                 watchChannel: result.watchId,
                 channelExpirationMs: result.expiration
             }
+
             await calendarService.update(resource.calendarId!, changes as CalendarData);
             res.status(200).json({ message: "calendar synced"})
         } catch (error) {
@@ -155,7 +156,7 @@ export default class GoogleController {
                 })
             }
 
-            if(!resource.watchChannel) {
+            if(!resource.watchChannel || !resource.watchChannelResourceId) {
                 throw new BadRequestError("Calendar is not synced", {
                     resource
                 })
@@ -163,8 +164,9 @@ export default class GoogleController {
 
             await this.credentializeClient(user.user_id);
             const accessToken = this.client.credentials.access_token;
+            console.log("CALENDAR IN DB::::::", resource)
           
-            await this.googleService.calendarService.CancelCalendarNotifications(resource.calendarReferenceId, resource.watchChannel, accessToken!);
+            await this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, accessToken!);
             res.status(200).json({ message: "calendar synced"})
         } catch (error) {
             throw error;
