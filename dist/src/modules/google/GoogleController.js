@@ -89,7 +89,8 @@ class GoogleController {
                     res.status(200).send();
                     return;
                 }
-                const resource = yield calendarsService.findByChannel(channelId);
+                const encryptedChannelId = this.httpService.encryptionService.encryptData(channelId);
+                const resource = yield calendarsService.findByChannel(encryptedChannelId);
                 if (!resource) {
                     res.status(404).send();
                     return;

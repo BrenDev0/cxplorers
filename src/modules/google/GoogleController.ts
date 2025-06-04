@@ -101,7 +101,8 @@ export default class GoogleController {
                 return;
             }
 
-            const resource = await calendarsService.findByChannel(channelId);
+            const encryptedChannelId = this.httpService.encryptionService.encryptData(channelId) 
+            const resource = await calendarsService.findByChannel(encryptedChannelId);
             if(!resource) {
                 res.status(404).send();
                 return;
