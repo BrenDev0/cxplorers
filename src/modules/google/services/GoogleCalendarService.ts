@@ -1,6 +1,6 @@
 import { NotFoundError } from "../../../core/errors/errors";
 import { OAuth2Client } from 'google-auth-library';
-import { google } from 'googleapis';
+import { calendar_v3, google } from 'googleapis';
 import { GoogleError } from "../google.errors";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';

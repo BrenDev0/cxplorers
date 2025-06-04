@@ -9,6 +9,7 @@ import { GoogleUser } from "./google.interface";
 import HttpService from "../../core/services/HttpService";
 import CalendarsService from "../calendars/CalendarsService";
 import { CalendarData } from "../calendars/calendars.interface";
+import { GoogleEvent } from "../events/events.interface";
 
 export default class GoogleController {
     private readonly block = "google.controller";
@@ -110,9 +111,9 @@ export default class GoogleController {
 
             await this.credentializeClient(resource.userId);
 
-            const events = await this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
+            const events: unknown = await this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
 
-            
+            await this.googleService.calendarService.updateCalendar(resource.calendarId!, events as GoogleEvent[]);
 
             res.status(200).send();
         } catch (error) {
