@@ -53,6 +53,7 @@ class CalendarsService {
                 if (!result) {
                     return null;
                 }
+                console.log("result before map:::", result);
                 return this.mapFromDb(result);
             }
             catch (error) {

@@ -108,7 +108,7 @@ export default class GoogleController {
                 res.status(404).send();
                 return;
             };
-            console.log(resource, "Rescource")
+            console.log("result after map::::", resource)
 
             await this.credentializeClient(resource.userId);
 
