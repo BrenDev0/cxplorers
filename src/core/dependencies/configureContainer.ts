@@ -16,6 +16,7 @@ import HttpRequestValidationService from '../services/HttpRequestValidationServi
 import PasswordService from '../services/PasswordService';
 import { configureTokensDependencies } from '../../modules/tokens/tokens.dependencies';
 import { configureCalendarsDependencies } from '../../modules/calendars/calendars.dependencies';
+import { configureEventsDependencies } from '../../modules/events/events.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -58,6 +59,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // calendars //
     configureCalendarsDependencies(pool);
+
+    // events // 
+    configureEventsDependencies(pool);
     
     // google //
     configureGoogleDependencies(pool);
