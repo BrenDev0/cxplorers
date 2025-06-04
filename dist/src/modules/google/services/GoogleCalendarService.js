@@ -75,6 +75,7 @@ class GoogleCalendarService {
                 console.log('Watch response:', response.data);
                 return {
                     watchId,
+                    resourceId: response.data.resourceId,
                     expiration: response.data.expiration
                 };
             }

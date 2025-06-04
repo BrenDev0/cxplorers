@@ -6,8 +6,9 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface notificationResult {
-    watchId: string,
-    expiration: number
+    watchId: string;
+    resourceId: string;
+    expiration: number;
 }
 
 export default class GoogleCalendarService {
@@ -76,6 +77,7 @@ export default class GoogleCalendarService {
 
             return {
                 watchId, 
+                resourceId: response.data.resourceId,
                 expiration: response.data.expiration
             };
         } catch (error) {

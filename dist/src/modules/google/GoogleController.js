@@ -116,8 +116,10 @@ class GoogleController {
                 const result = yield this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, accessToken);
                 const changes = {
                     watchChannel: result.watchId,
+                    watchChannelResourceId: result.resourceId,
                     channelExpirationMs: result.expiration
                 };
+                console.log("changes::::", changes);
                 yield calendarService.update(resource.calendarId, changes);
                 res.status(200).json({ message: "calendar synced" });
             }
@@ -150,7 +152,13 @@ class GoogleController {
                 const accessToken = this.client.credentials.access_token;
                 console.log("CALENDAR IN DB::::::", resource);
                 yield this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, accessToken);
-                res.status(200).json({ message: "calendar synced" });
+                const changes = {
+                    watchChannel: null,
+                    watchChannelResourceId: null,
+                    channelExpirationMs: null
+                };
+                yield calendarService.update(resource.calendarId, changes);
+                res.status(200).json({ message: "calendar unsynced" });
             }
             catch (error) {
                 throw error;
