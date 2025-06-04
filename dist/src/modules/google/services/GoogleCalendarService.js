@@ -17,6 +17,7 @@ const googleapis_1 = require("googleapis");
 const google_errors_1 = require("../google.errors");
 const axios_1 = __importDefault(require("axios"));
 const uuid_1 = require("uuid");
+const Container_1 = __importDefault(require("../../../core/dependencies/Container"));
 class GoogleCalendarService {
     constructor() {
         this.block = "google.services.calendar";
@@ -45,6 +46,25 @@ class GoogleCalendarService {
                     throw new errors_1.NotFoundError("no calendars found in google drive");
                 }
                 return events;
+            }
+            catch (error) {
+                throw new google_errors_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    updateCalendar(calnedarId, events) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.updateCalendar`;
+            try {
+                const eventsService = Container_1.default.resolve("EventsService");
+                const mappedEvents = events.map((event) => {
+                    return Object.assign(Object.assign({}, event), { calendarId: calnedarId });
+                });
+                yield eventsService.upsert(mappedEvents);
+                return;
             }
             catch (error) {
                 throw new google_errors_1.GoogleError(undefined, {

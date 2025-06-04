@@ -46,6 +46,21 @@ class CalendarsService {
             }
         });
     }
+    findByChannel(channelId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.selectOne("watch_channel", channelId);
+                if (!result) {
+                    return null;
+                }
+                return this.mapFromDb(result);
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { channelId });
+                throw error;
+            }
+        });
+    }
     collection(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -54,7 +69,6 @@ class CalendarsService {
                 return data;
             }
             catch (error) {
-                console.log(error, "ERROR:::::::::::::::");
                 (0, error_service_1.handleServiceError)(error, this.block, "collection", { userId });
                 throw error;
             }

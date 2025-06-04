@@ -27,9 +27,12 @@ export default class CalendarsController {
         userId: user.user_id
       };
 
-      await this.calendarsService.create(calendarData);
+      const calendar = await this.calendarsService.create(calendarData);
 
-      res.status(200).json({ message: "Calendar added." });
+      res.status(200).json({ 
+        message: "Calendar added." ,
+        calendarId: calendar.calendar_id
+      });
     } catch (error) {
       throw error;
     }

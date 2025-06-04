@@ -92,7 +92,26 @@ export default class GoogleController {
    //calendar //
     async handleCalendarNotifications(req: Request, res: Response): Promise<void> {
         try {
-            console.log(req.headers);
+            const headers = req.headers;
+            const calendarsService = Container.resolve<CalendarsService>("CalendarsService");
+            const channelId = headers['x-goog-channel-id'] as string;
+
+            if(!channelId) {
+                res.status(200).send();
+                return;
+            }
+
+            const resource = await calendarsService.findByChannel(channelId);
+            if(!resource) {
+                res.status(404).send();
+                return;
+            };
+
+            await this.credentializeClient(resource.userId);
+
+            const events = await this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
+
+            
 
             res.status(200).send();
         } catch (error) {

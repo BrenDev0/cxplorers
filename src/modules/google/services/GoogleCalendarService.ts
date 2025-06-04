@@ -4,6 +4,9 @@ import { google } from 'googleapis';
 import { GoogleError } from "../google.errors";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import Container from "../../../core/dependencies/Container";
+import EventsService from "../../events/EventsService";
+import { GoogleEvent } from "../../events/events.interface";
 
 export interface notificationResult {
     watchId: string;
@@ -12,7 +15,8 @@ export interface notificationResult {
 }
 
 export default class GoogleCalendarService {
-    private readonly block = "google.services.calendar"
+    private readonly block = "google.services.calendar";
+
     async listCalendars(oauth2Client: OAuth2Client) {
         const calendar = google.calendar({ version: 'v3', auth: oauth2Client});
 
@@ -49,6 +53,28 @@ export default class GoogleCalendarService {
                 originalError: (error as Error).message
             });
         }
+    }
+
+    async updateCalendar(calnedarId: string, events: GoogleEvent[]) {
+        const block = `${this.block}.updateCalendar`
+        try {
+            const eventsService = Container.resolve<EventsService>("EventsService");
+            const mappedEvents = events.map((event) => {
+                return {
+                    ...event,
+                    calendarId: calnedarId
+                }
+            })
+            await eventsService.upsert(mappedEvents);
+
+            return;
+        } catch (error) {
+             throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+
     }
 
     async requestCalendarNotifications(calendarReferenceId: string, accessKey: string): Promise<notificationResult> {

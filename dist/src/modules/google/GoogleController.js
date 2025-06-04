@@ -82,7 +82,21 @@ class GoogleController {
     handleCalendarNotifications(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.headers);
+                const headers = req.headers;
+                const calendarsService = Container_1.default.resolve("CalendarsService");
+                const channelId = headers['x-goog-channel-id'];
+                if (!channelId) {
+                    res.status(200).send();
+                    return;
+                }
+                const resource = yield calendarsService.findByChannel(channelId);
+                if (!resource) {
+                    res.status(404).send();
+                    return;
+                }
+                ;
+                yield this.credentializeClient(resource.userId);
+                const events = yield this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
                 res.status(200).send();
             }
             catch (error) {

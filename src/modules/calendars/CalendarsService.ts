@@ -34,6 +34,19 @@ export default class CalendarsService {
         }
     }
 
+    async findByChannel(channelId: string): Promise<CalendarData | null> {
+        try {
+            const result = await this.repository.selectOne("watch_channel", channelId);
+            if(!result) {
+                return null
+            }
+            return this.mapFromDb(result)
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "collection", {channelId})
+            throw error;
+        }
+    }
+
     async collection(userId: string): Promise<CalendarData[]> {
         try {
             const result = await this.repository.select("user_id", userId);
@@ -41,7 +54,6 @@ export default class CalendarsService {
 
             return data;
         } catch (error) {
-            console.log(error, "ERROR:::::::::::::::")
             handleServiceError(error as Error, this.block, "collection", {userId})
             throw error;
         }
