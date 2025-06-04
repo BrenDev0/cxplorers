@@ -33,6 +33,7 @@ export default class GoogleCalendarService {
 
     async listEvents(calendarReferenceId: string, oauth2Client: OAuth2Client) {
         const block = `${this.block}.listEvents`
+    
         try {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 

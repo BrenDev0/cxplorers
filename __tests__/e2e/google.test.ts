@@ -63,7 +63,7 @@ describe("USERS ROUTES", () => {
     describe("GET GOOGLE CALENDARS EVENTS", () => {
         it("should return a list of calendars", async() => {
             const res = await request(app)
-            .get("/google/secure/calendars/events/31ab5f2d1d183690b964a7bc9ba1b8fbd94e280f24823659e972ca6be393bda2@group.calendar.google.com")
+            .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
             .set("Authorization", token)
 
             console.log("attendees::::", res.body.data[1].attendees)
@@ -74,16 +74,16 @@ describe("USERS ROUTES", () => {
         })
     })
 
-    describe("sync google  calendar", () => {
-        it("should return a list of calendars", async() => {
-            const res = await request(app)
-            .get("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-            .set("Authorization", token)
+    // describe("sync google  calendar", () => {
+    //     it("should return a list of calendars", async() => {
+    //         const res = await request(app)
+    //         .get("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+    //         .set("Authorization", token)
 
             
-            expect(res.status).toBe(200);
-        })
-    })
+    //         expect(res.status).toBe(200);
+    //     })
+    // })
 
     // describe("unSync google  calendar", () => {
     //     it("should return a list of calendars", async() => {

@@ -96,6 +96,7 @@ class GoogleController {
                     return;
                 }
                 ;
+                console.log(resource, "Rescource");
                 yield this.credentializeClient(resource.userId);
                 const events = yield this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
                 yield this.googleService.calendarService.updateCalendar(resource.calendarId, events);
@@ -195,7 +196,13 @@ class GoogleController {
                 const user = req.user;
                 const calendarId = req.params.calendarId;
                 yield this.credentializeClient(user.user_id);
-                const data = yield this.googleService.calendarService.listEvents(calendarId, this.client);
+                this.httpService.requestValidation.validateUuid(calendarId, "calenderId", block);
+                const calendarService = Container_1.default.resolve("CalendarsService");
+                const resource = yield calendarService.resource(calendarId);
+                if (!resource) {
+                    throw new errors_1.NotFoundError();
+                }
+                const data = yield this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
                 res.status(200).json({ data: data });
             }
             catch (error) {

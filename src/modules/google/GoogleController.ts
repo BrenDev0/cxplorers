@@ -108,6 +108,7 @@ export default class GoogleController {
                 res.status(404).send();
                 return;
             };
+            console.log(resource, "Rescource")
 
             await this.credentializeClient(resource.userId);
 
@@ -216,7 +217,14 @@ export default class GoogleController {
             const calendarId = req.params.calendarId;
             await this.credentializeClient(user.user_id);
 
-            const data = await this.googleService.calendarService.listEvents(calendarId, this.client);
+            this.httpService.requestValidation.validateUuid(calendarId, "calenderId", block);
+            const calendarService = Container.resolve<CalendarsService>("CalendarsService");
+            const resource = await calendarService.resource(calendarId);
+            if(!resource) {
+                throw new NotFoundError();
+            }
+
+            const data = await this.googleService.calendarService.listEvents(resource.calendarReferenceId, this.client);
             res.status(200).json({ data: data })
         } catch (error) {
             throw error;
