@@ -93,14 +93,19 @@ class CalendarsService {
             description: calendar.description,
             background_color: calendar.backgroundColor,
             foreground_color: calendar.foregroundColor,
-            watch_channel: calendar.watchChannel && encryptionService.encryptData(calendar.watchChannel),
-            watch_channel_resource_id: calendar.watchChannelResourceId && encryptionService.encryptData(calendar.watchChannelResourceId),
+            watch_channel: calendar.watchChannel === null
+                ? null
+                : encryptionService.encryptData(calendar.watchChannel),
+            watch_channel_resource_id: calendar.watchChannelResourceId === null
+                ? null
+                : encryptionService.encryptData(calendar.watchChannelResourceId),
             channel_expiration_ms: calendar.channelExpirationMs
         };
     }
     mapFromDb(calendar) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            calendarId: calendar.calendar_id,
             userId: calendar.user_id,
             calendarReferenceId: encryptionService.decryptData(calendar.calendar_reference_id),
             title: calendar.title,

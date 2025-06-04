@@ -38,7 +38,6 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use("/tokens", tokensRouter);
     app.use("/users", usersRouter);
     app.use((req, res) => {
-        console.log(req.headers);
         res.status(404).json({ message: "Route not found." });
     });
     app.use(middlewareService.handleErrors.bind(middlewareService));

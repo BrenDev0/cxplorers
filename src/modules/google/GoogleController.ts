@@ -92,13 +92,7 @@ export default class GoogleController {
    //calendar //
     async handleCalendarNotifications(req: Request, res: Response): Promise<void> {
         try {
-            const headers = req.headers;
-             console.log('X-Goog-Resource-State:', headers['x-goog-resource-state']);
-            console.log('X-Goog-Resource-ID:', headers['x-goog-resource-id']);
-            console.log('X-Goog-Channel-ID:', headers['x-goog-channel-id']);
-            console.log('X-Goog-Message-Number:', headers['x-goog-message-number']);
-            console.log('X-Goog-Resource-URI:', headers['x-goog-resource-uri']);
-            console.log('X-Goog-Changed:', headers['x-goog-changed']);
+            console.log(req.headers);
 
             res.status(200).send();
         } catch (error) {
