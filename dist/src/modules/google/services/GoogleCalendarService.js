@@ -16,6 +16,7 @@ const errors_1 = require("../../../core/errors/errors");
 const googleapis_1 = require("googleapis");
 const google_errors_1 = require("../google.errors");
 const axios_1 = __importDefault(require("axios"));
+const uuid_1 = require("uuid");
 class GoogleCalendarService {
     constructor() {
         this.block = "google.services.calendar";
@@ -53,14 +54,15 @@ class GoogleCalendarService {
             }
         });
     }
-    requestCalendarNotifications(calendarReferenceId, calendarId, accessKey) {
+    requestCalendarNotifications(calendarReferenceId, accessKey) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.requesNotifications`;
             try {
+                const watchId = (0, uuid_1.v4)();
                 const response = yield axios_1.default.post(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarReferenceId)}/events/watch`, {
-                    id: calendarId,
+                    id: watchId,
                     type: 'web_hook',
-                    address: `${process.env.HOST}/calendars/notifications`,
+                    address: `https://${process.env.HOST}/google/calendars/notifications`,
                     params: {
                         ttl: 86400 // Optional: time in seconds (1 day)
                     }
@@ -71,12 +73,35 @@ class GoogleCalendarService {
                     }
                 });
                 console.log('Watch response:', response.data);
+                return {
+                    watchId,
+                    expiration: response.data.expiration
+                };
             }
             catch (error) {
                 throw new google_errors_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message
                 });
+            }
+        });
+    }
+    CancelCalendarNotifications(calendarReferenceId, channelId, accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield axios_1.default.post('https://www.googleapis.com/calendar/v3/channels/stop', {
+                    id: channelId,
+                    resourceId: calendarReferenceId,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                console.log('Channel stopped successfully');
+            }
+            catch (error) {
+                throw error;
             }
         });
     }

@@ -65,11 +65,91 @@ class GoogleController {
             }
         });
     }
+    credentializeClient(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.googleService.getUser(userId);
+            this.client.setCredentials({
+                refresh_token: user.refresh_token
+            });
+            const accessToken = yield this.googleService.refreshAccessToken(this.client);
+            this.client.setCredentials({
+                access_token: accessToken
+            });
+            return user;
+        });
+    }
+    //calendar //
     handleCalendarNotifications(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.body);
+                const headers = req.headers;
+                console.log('X-Goog-Resource-State:', headers['x-goog-resource-state']);
+                console.log('X-Goog-Resource-ID:', headers['x-goog-resource-id']);
+                console.log('X-Goog-Channel-ID:', headers['x-goog-channel-id']);
+                console.log('X-Goog-Message-Number:', headers['x-goog-message-number']);
+                console.log('X-Goog-Resource-URI:', headers['x-goog-resource-uri']);
+                console.log('X-Goog-Changed:', headers['x-goog-changed']);
                 res.status(200).send();
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    syncCalendar(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.syncCalendar`;
+            try {
+                const calendarId = req.params.calendarId;
+                const user = req.user;
+                this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+                const calendarService = Container_1.default.resolve("CalendarsService");
+                const resource = yield calendarService.resource(calendarId);
+                if (!resource) {
+                    throw new errors_1.NotFoundError(undefined, {
+                        calendarId,
+                        resource: resource || "Calnedar not found"
+                    });
+                }
+                yield this.credentializeClient(user.user_id);
+                const accessToken = this.client.credentials.access_token;
+                const result = yield this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, accessToken);
+                const changes = {
+                    watchChannel: result.watchId,
+                    channelExpirationMs: result.expiration
+                };
+                yield calendarService.update(resource.calendarId, changes);
+                res.status(200).json({ message: "calendar synced" });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    unSyncCalendar(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.syncCalendar`;
+            try {
+                const calendarId = req.params.calendarId;
+                const user = req.user;
+                this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+                const calendarService = Container_1.default.resolve("CalendarsService");
+                const resource = yield calendarService.resource(calendarId);
+                if (!resource) {
+                    throw new errors_1.NotFoundError(undefined, {
+                        calendarId,
+                        resource: resource || "Calnedar not found"
+                    });
+                }
+                if (!resource.watchChannel) {
+                    throw new errors_1.BadRequestError("Calendar is not synced", {
+                        resource
+                    });
+                }
+                yield this.credentializeClient(user.user_id);
+                const accessToken = this.client.credentials.access_token;
+                yield this.googleService.calendarService.CancelCalendarNotifications(resource.calendarReferenceId, resource.watchChannel, accessToken);
+                res.status(200).json({ message: "calendar synced" });
             }
             catch (error) {
                 throw error;
@@ -102,19 +182,6 @@ class GoogleController {
             catch (error) {
                 throw error;
             }
-        });
-    }
-    credentializeClient(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.googleService.getUser(userId);
-            this.client.setCredentials({
-                refresh_token: user.refresh_token
-            });
-            const accessToken = yield this.googleService.refreshAccessToken(this.client);
-            this.client.setCredentials({
-                access_token: accessToken
-            });
-            return user;
         });
     }
 }

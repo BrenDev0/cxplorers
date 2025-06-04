@@ -4,7 +4,7 @@ import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
 
-export default class CalendarService {
+export default class CalendarsService {
     private repository: BaseRepository<Calendar>;
     private block = "calendars.service"
     constructor(repository: BaseRepository<Calendar>) {
@@ -73,11 +73,13 @@ export default class CalendarService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             user_id: calendar.userId,
-            reference_id: calendar.referenceId && encryptionService.encryptData(calendar.referenceId),
+            calendar_reference_id: calendar.calendarReferenceId && encryptionService.encryptData(calendar.calendarReferenceId),
             title: calendar.title,
-            description: calendar.description || null,
-            background_color: calendar.backgroundColor || null,
-            foreground_color: calendar.foregroundColor || null
+            description: calendar.description,
+            background_color: calendar.backgroundColor,
+            foreground_color: calendar.foregroundColor,
+            watch_channel: calendar.watchChannel,
+            channel_expiration_ms: calendar.channelExpirationMs
         }
     }
 
@@ -85,11 +87,13 @@ export default class CalendarService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             userId: calendar.user_id,
-            referenceId: encryptionService.decryptData(calendar.reference_id),
+            calendarReferenceId: encryptionService.decryptData(calendar.calendar_reference_id),
             title: calendar.title,
             description: calendar.description ,
             backgroundColor: calendar.background_color,
-            foregroundColor: calendar.foreground_color 
+            foregroundColor: calendar.foreground_color,
+            watchChannel: calendar.watch_channel,
+            channelExpirationMs: calendar.channel_expiration_ms
         }
     }
 }

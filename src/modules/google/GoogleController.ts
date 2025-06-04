@@ -7,6 +7,8 @@ import EncryptionService from "../../core/services/EncryptionService";
 import { OAuth2Client } from "google-auth-library";
 import { GoogleUser } from "./google.interface";
 import HttpService from "../../core/services/HttpService";
+import CalendarsService from "../calendars/CalendarsService";
+import { CalendarData } from "../calendars/calendars.interface";
 
 export default class GoogleController {
     private readonly block = "google.controller";
@@ -70,11 +72,100 @@ export default class GoogleController {
         }
     }
 
+    async credentializeClient(userId: string): Promise<GoogleUser> {
+    
+      const user = await this.googleService.getUser(userId)
+      
+      this.client.setCredentials({
+          refresh_token: user.refresh_token
+      })
+
+      const accessToken = await this.googleService.refreshAccessToken(this.client);
+
+      this.client.setCredentials({
+          access_token: accessToken
+      })
+      return user;
+   } 
+
+
+   //calendar //
     async handleCalendarNotifications(req: Request, res: Response): Promise<void> {
         try {
-            console.log(req.body);
+            const headers = req.headers;
+             console.log('X-Goog-Resource-State:', headers['x-goog-resource-state']);
+            console.log('X-Goog-Resource-ID:', headers['x-goog-resource-id']);
+            console.log('X-Goog-Channel-ID:', headers['x-goog-channel-id']);
+            console.log('X-Goog-Message-Number:', headers['x-goog-message-number']);
+            console.log('X-Goog-Resource-URI:', headers['x-goog-resource-uri']);
+            console.log('X-Goog-Changed:', headers['x-goog-changed']);
 
             res.status(200).send();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async syncCalendar(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.syncCalendar`
+        try {
+            const calendarId = req.params.calendarId;
+            const user = req.user;
+            
+            this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+
+            const calendarService = Container.resolve<CalendarsService>("CalendarsService");
+            const resource = await calendarService.resource(calendarId);
+            if(!resource) {
+                throw new NotFoundError(undefined, {
+                    calendarId,
+                    resource: resource || "Calnedar not found"
+                })
+            }
+
+            await this.credentializeClient(user.user_id);
+            const accessToken = this.client.credentials.access_token;
+
+            const result = await this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, accessToken!);
+            const changes = {
+                watchChannel: result.watchId,
+                channelExpirationMs: result.expiration
+            }
+            await calendarService.update(resource.calendarId!, changes as CalendarData);
+            res.status(200).json({ message: "calendar synced"})
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async unSyncCalendar(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.syncCalendar`
+        try {
+            const calendarId = req.params.calendarId;
+            const user = req.user;
+            
+            this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+
+            const calendarService = Container.resolve<CalendarsService>("CalendarsService");
+            const resource = await calendarService.resource(calendarId);
+            if(!resource) {
+                throw new NotFoundError(undefined, {
+                    calendarId,
+                    resource: resource || "Calendar not found"
+                })
+            }
+
+            if(!resource.watchChannel) {
+                throw new BadRequestError("Calendar is not synced", {
+                    resource
+                })
+            }
+
+            await this.credentializeClient(user.user_id);
+            const accessToken = this.client.credentials.access_token;
+          
+            await this.googleService.calendarService.CancelCalendarNotifications(resource.calendarReferenceId, resource.watchChannel, accessToken!);
+            res.status(200).json({ message: "calendar synced"})
         } catch (error) {
             throw error;
         }
@@ -107,21 +198,7 @@ export default class GoogleController {
         }
     }
   
-   async credentializeClient(userId: string): Promise<GoogleUser> {
-    
-      const user = await this.googleService.getUser(userId)
-      
-      this.client.setCredentials({
-          refresh_token: user.refresh_token
-      })
-
-      const accessToken = await this.googleService.refreshAccessToken(this.client);
-
-      this.client.setCredentials({
-          access_token: accessToken
-      })
-      return user;
-   } 
+   
 }
 
    

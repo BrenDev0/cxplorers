@@ -66,7 +66,6 @@ class Database {
 
     async getPool() {
         try {
-            console.log("GETTING POOL")
             if(!this.isconnected || this.pool === null) {
                 if(this.initPromise === null) {
                     console.log('Reconnecting to the database...')
