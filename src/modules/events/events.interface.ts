@@ -63,5 +63,6 @@ export interface GoogleEvent {
 }
 
 export interface IEventsRepository<Event> extends IRepository<Event> {
-  upsertMany(cols: string[], values: any[]): Promise<Event | Event[]>
+  upsertMany(cols: string[], values: any[]): Promise<Event | Event[]>;
+  deleteMany(eventReferenceIds: string[]): Promise<Event[]>;
 }

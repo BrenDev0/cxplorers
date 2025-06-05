@@ -43,4 +43,16 @@ export default class EventsRepository extends BaseRepository<Event> implements I
         return numRows === 1 ? result.rows[0] : result.rows;
     }
     
+    async deleteMany(referenceIds: string[]): Promise<Event[]> {
+        const placeholders = referenceIds.map((_, i) => `$${i + 1}`)
+        const sqlDelete = `
+            DELETE FROM events
+            WHERE event_reference_id NOT IN (${placeholders.join(", ")})
+            RETURNING *
+        `
+
+        const result = await this.pool.query(sqlDelete, referenceIds);
+
+        return result.rows;
+    }
 }

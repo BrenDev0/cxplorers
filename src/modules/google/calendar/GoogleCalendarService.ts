@@ -67,7 +67,13 @@ export default class GoogleCalendarService {
                     calendarId: calnedarId
                 }
             })
-            await eventsService.upsert(mappedEvents);
+
+            const existingEvents = events.map((event) => event.id);
+            
+            await Promise.all([
+                eventsService.upsert(mappedEvents),
+                eventsService.deleteNonExistingEvents(existingEvents)
+            ])
 
             return;
         } catch (error) {

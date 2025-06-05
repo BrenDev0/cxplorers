@@ -63,7 +63,11 @@ class GoogleCalendarService {
                 const mappedEvents = events.map((event) => {
                     return Object.assign(Object.assign({}, event), { calendarId: calnedarId });
                 });
-                yield eventsService.upsert(mappedEvents);
+                const existingEvents = events.map((event) => event.id);
+                yield Promise.all([
+                    eventsService.upsert(mappedEvents),
+                    eventsService.deleteNonExistingEvents(existingEvents)
+                ]);
                 return;
             }
             catch (error) {

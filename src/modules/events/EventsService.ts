@@ -27,7 +27,6 @@ export default class EventsService {
         const mappedEvents = events.map((event) =>  this.mapToDb(event));
         const cols = Object.keys(mappedEvents[0]);
         const values: (string | number | null)[] = mappedEvents.flatMap(event => cols.map(col => (event as any)[col] ?? null));
-        console.log(`cols:::: ${cols}, values:::: ${values}`)
         try {
             const result = await this.repository.upsertMany(cols, values);
 
@@ -73,6 +72,17 @@ export default class EventsService {
             return await this.repository.delete("event_id", eventId) as Event;
         } catch (error) {
             handleServiceError(error as Error, this.block, "delete", {eventId})
+            throw error;
+        }
+    }
+
+    async deleteNonExistingEvents(existingReferenceIds: string[]): Promise<Event[]> {
+        try {
+            const result = await this.repository.deleteMany(existingReferenceIds);
+
+            return result;
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "deleteAbsentEvents", {existingReferenceIds})
             throw error;
         }
     }

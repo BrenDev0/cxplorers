@@ -45,5 +45,17 @@ class EventsRepository extends BaseRepository_1.default {
             return numRows === 1 ? result.rows[0] : result.rows;
         });
     }
+    deleteMany(referenceIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const placeholders = referenceIds.map((_, i) => `$${i + 1}`);
+            const sqlDelete = `
+            DELETE FROM events
+            WHERE event_reference_id NOT IN (${placeholders.join(", ")})
+            RETURNING *
+        `;
+            const result = yield this.pool.query(sqlDelete, referenceIds);
+            return result.rows;
+        });
+    }
 }
 exports.default = EventsRepository;
