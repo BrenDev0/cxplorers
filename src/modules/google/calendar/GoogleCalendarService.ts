@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Container from "../../../core/dependencies/Container";
 import EventsService from "../../events/EventsService";
 import { GoogleEvent } from "../../events/events.interface";
+import AppError from "../../../core/errors/AppError";
 
 export interface notificationResult {
     watchId: string;
@@ -82,32 +83,43 @@ export default class GoogleCalendarService {
         const block = `${this.block}.requesNotifications`
         try {
             const watchId = uuidv4();
-            const response = await axios.post(
-            `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarReferenceId)}/events/watch`,
-            {
-                id: watchId,
-                type: 'web_hook',
-                address: `https://${process.env.HOST}/google/calendars/notifications`,
-                params: {
-                ttl: 86400 // Optional: time in seconds (1 day)
+            const calendar = google.calendar({ version: 'v3' });
+            
+            const response = await calendar.events.watch({
+                calendarId: calendarReferenceId,
+                auth: accessKey,
+                requestBody: {
+                    id: watchId,
+                    type: 'web_hook',
+                    address: `https://${process.env.HOST}/google/calendars/notifications`,
+                    params: {
+                        ttl: '86400' // Optional: time in seconds (1 day)
+                    }
                 }
-            },
-            {
-                headers: {
-                Authorization: `Bearer ${accessKey}`,
-                'Content-Type': 'application/json',
-                }
-            }
-            );
+            })
 
-            console.log('Watch response:', response.data);
+            if(!response || !response.data) {
+                throw new GoogleError("No response recieved from google");
+            }
+
+           
+
+            const { resourceId, expiration } = response.data;
+
+            if (!resourceId || !expiration) {
+                throw new GoogleError('Missing resourceId or expiration from Google response');
+            }
 
             return {
-                watchId, 
-                resourceId: response.data.resourceId,
-                expiration: response.data.expiration
+                watchId,
+                resourceId,
+                expiration: Number(expiration)
             };
         } catch (error) {
+            if(error instanceof AppError) {
+                throw error;
+            }
+
             throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message
@@ -117,23 +129,20 @@ export default class GoogleCalendarService {
 
     async CancelCalendarNotifications(channelResourceId: string, channelId: string, accessToken: string) {
         try {
-          await axios.post(
-            'https://www.googleapis.com/calendar/v3/channels/stop',
-            {
+            const calendar = google.calendar({ version: 'v3' });
+
+            await calendar.channels.stop({
+                auth: accessToken,
+                requestBody: {
                 id: channelId,
                 resourceId: channelResourceId,
-            },
-            {
-                headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
                 },
-            }
-            );
+            });
+            
             console.log('Channel stopped successfully');
             return;
         } catch (error) {
-           throw error;
+           throw  new GoogleError();
         }
     }
 }

@@ -46,7 +46,7 @@ describe("USERS ROUTES", () => {
         it("should return users google data", async() =>{
             const userId = "3bd37764-4cd3-4e79-85d0-50f1c0c38421"
 
-            const data = await googleService.getUser(userId);
+            const data = await googleService.clientManager.getUser(userId);
             console.log("::::::::::::", data)
 
             expect(data).toHaveProperty("token")

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoogleError = void 0;
 const AppError_1 = __importDefault(require("../../core/errors/AppError"));
 class GoogleError extends AppError_1.default {
-    constructor(message = "No pudimos leer correctamente tus archivos. Te recomendamos revisar la configuración de tu cuenta de Google en el panel de usuario.", context) {
+    constructor(message = "Google API error", context) {
         super(message, 400, true, context);
         this.name = 'InvalidIdError';
     }

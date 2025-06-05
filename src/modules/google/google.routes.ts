@@ -2,11 +2,13 @@ import { Router } from 'express';
 import Container from '../../core/dependencies/Container';
 import GoogleController from './GoogleController';
 import MiddlewareService from '../../core/middleware/MiddlewareService';
+import GoogleCalendarController from './calendar/GoogleCalendarController';
 
 export const initializeGoogleRouter = (customController?: GoogleController) => {
     const router = Router();
     const secureRouter = Router();
     const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
+    const calendarController = Container.resolve<GoogleCalendarController>("GoogleCalendarController");
     const controller = customController ?? Container.resolve<GoogleController>("GoogleController");
     
     secureRouter.use(middlewareService.auth.bind(middlewareService));
@@ -21,16 +23,10 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         */
         controller.getUrl.bind(controller)
     );
-
-
-    router.get("/callback", 
-        // #swagger.ignore = true    
-        controller.callback.bind(controller)
-    );
-
     
 
     // calendar //
+
     secureRouter.get("/calendars/sync/:calendarId", 
         /*
         #swagger.tags = ['Google'] 
@@ -38,27 +34,17 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
         #swagger.description = 'sync users calendar'
         */
-        controller.syncCalendar.bind(controller)
+        calendarController.syncCalendar.bind(controller)
     )
 
-    secureRouter.delete("/calendars/sync/:calendarId", 
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
-        #swagger.description = 'unSync users calendar'
-        */
-        controller.unSyncCalendar.bind(controller)
-    )
-
-    secureRouter.get("/calendars", 
+     secureRouter.get("/calendars", 
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
         #swagger.path = '/google/secure/calendars' 
         #swagger.description = 'get users calendars from drive'
         */
-        controller.getCalendars.bind(controller)
+        calendarController.getCalendars.bind(controller)
     )
 
     secureRouter.get("/calendars/events/:calendarId", 
@@ -68,13 +54,28 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         #swagger.path = '/google/secure/calendars/events/{calendarId}' 
         #swagger.description = 'get users calendars events'
         */
-        controller.getCalendarEvents.bind(controller)
+        calendarController.getCalendarEvents.bind(controller)
+    )
+
+    secureRouter.delete("/calendars/sync/:calendarId", 
+        /*
+        #swagger.tags = ['Google'] 
+         #swagger.security = [{ "bearerAuth": [] }]
+        #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
+        #swagger.description = 'unSync users calendar'
+        */
+        calendarController.unSyncCalendar.bind(controller)
     )
 
     // for google use //
+    router.get("/callback", 
+        // #swagger.ignore = true    
+        controller.callback.bind(controller)
+    );
+
     router.post("/calendars/notifications", 
 
-        controller.handleCalendarNotifications.bind(controller)
+        calendarController.handleCalendarNotifications.bind(controller)
     )
 
     // mounts // 

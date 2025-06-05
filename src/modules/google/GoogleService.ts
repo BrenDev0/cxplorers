@@ -9,31 +9,21 @@ import { GoogleRepository } from './GoogleRepository';
 import { GoogleUser } from './google.interface';
 import { handleServiceError } from '../../core/errors/error.service';
 import EncryptionService from '../../core/services/EncryptionService';
-import GoogleCalendarService from './services/GoogleCalendarService';
+import GoogleCalendarService from './calendar/GoogleCalendarService';
 import CalendarService from '../calendars/CalendarsService';
+import GoogleClientManager from './GoogleClientManager';
 
 export default class GoogleService {
     private block = "google.service";
-    private repository: GoogleRepository;
+    clientManager: GoogleClientManager;
     calendarService: GoogleCalendarService;
 
-    constructor(repository: GoogleRepository, calendarService: GoogleCalendarService) {
-        this.repository = repository;
+    constructor(clientManager: GoogleClientManager, calendarService: GoogleCalendarService) {
+        this.clientManager = clientManager;
         this.calendarService = calendarService;
     }
 
-    async getUser(userId: string): Promise<GoogleUser> {
-        try {
-            const data = await this.repository.getGoogleUser(userId);
-          
-            return this.mapGoogleUser(data);
-        } catch (error) {
-            console.log("ERROR:::::", error)
-            handleServiceError(error as Error, this.block, "getUser", {userId})
-            throw error;
-        }
-    }
-
+    
     getUrl(oauth2Client: OAuth2Client) {
       
         const scopes = [
@@ -103,21 +93,4 @@ export default class GoogleService {
     //     }
     // }
 
-    async refreshAccessToken(oauth2Client: OAuth2Client) {
-        try {
-            const { token } = await oauth2Client.getAccessToken();
-            
-            return token;
-        } catch (error) {
-            console.error('Error refreshing access token', error);
-            throw error;
-        }
-    }
-
-    mapGoogleUser(user: GoogleUser): GoogleUser {
-        const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
-        return {
-            refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
-        }
-    }
 }

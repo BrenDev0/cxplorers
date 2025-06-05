@@ -10,6 +10,7 @@ const initializeGoogleRouter = (customController) => {
     const router = (0, express_1.Router)();
     const secureRouter = (0, express_1.Router)();
     const middlewareService = Container_1.default.resolve("MiddlewareService");
+    const calendarController = Container_1.default.resolve("GoogleCalendarController");
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("GoogleController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // general //
@@ -21,9 +22,6 @@ const initializeGoogleRouter = (customController) => {
     #swagger.description = 'get google auth href'
     */
     controller.getUrl.bind(controller));
-    router.get("/callback", 
-    // #swagger.ignore = true    
-    controller.callback.bind(controller));
     // calendar //
     secureRouter.get("/calendars/sync/:calendarId", 
     /*
@@ -32,15 +30,7 @@ const initializeGoogleRouter = (customController) => {
     #swagger.path = '/google/secure/calendars/sync/{calendarId}'
     #swagger.description = 'sync users calendar'
     */
-    controller.syncCalendar.bind(controller));
-    secureRouter.delete("/calendars/sync/:calendarId", 
-    /*
-    #swagger.tags = ['Google']
-     #swagger.security = [{ "bearerAuth": [] }]
-    #swagger.path = '/google/secure/calendars/sync/{calendarId}'
-    #swagger.description = 'unSync users calendar'
-    */
-    controller.unSyncCalendar.bind(controller));
+    calendarController.syncCalendar.bind(controller));
     secureRouter.get("/calendars", 
     /*
     #swagger.tags = ['Google']
@@ -48,7 +38,7 @@ const initializeGoogleRouter = (customController) => {
     #swagger.path = '/google/secure/calendars'
     #swagger.description = 'get users calendars from drive'
     */
-    controller.getCalendars.bind(controller));
+    calendarController.getCalendars.bind(controller));
     secureRouter.get("/calendars/events/:calendarId", 
     /*
     #swagger.tags = ['Google']
@@ -56,9 +46,20 @@ const initializeGoogleRouter = (customController) => {
     #swagger.path = '/google/secure/calendars/events/{calendarId}'
     #swagger.description = 'get users calendars events'
     */
-    controller.getCalendarEvents.bind(controller));
+    calendarController.getCalendarEvents.bind(controller));
+    secureRouter.delete("/calendars/sync/:calendarId", 
+    /*
+    #swagger.tags = ['Google']
+     #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.path = '/google/secure/calendars/sync/{calendarId}'
+    #swagger.description = 'unSync users calendar'
+    */
+    calendarController.unSyncCalendar.bind(controller));
     // for google use //
-    router.post("/calendars/notifications", controller.handleCalendarNotifications.bind(controller));
+    router.get("/callback", 
+    // #swagger.ignore = true    
+    controller.callback.bind(controller));
+    router.post("/calendars/notifications", calendarController.handleCalendarNotifications.bind(controller));
     // mounts // 
     router.use("/secure", secureRouter);
     console.log("Google router initialized.");

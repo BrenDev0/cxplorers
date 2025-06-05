@@ -44,7 +44,7 @@ describe("USERS ROUTES", () => {
     describe("GET GOOGLE DATA", () => {
         it("should return users google data", () => __awaiter(void 0, void 0, void 0, function* () {
             const userId = "3bd37764-4cd3-4e79-85d0-50f1c0c38421";
-            const data = yield googleService.getUser(userId);
+            const data = yield googleService.clientManager.getUser(userId);
             console.log("::::::::::::", data);
             expect(data).toHaveProperty("token");
         }));

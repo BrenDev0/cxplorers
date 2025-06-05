@@ -1,38 +1,15 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = __importDefault(require("crypto"));
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-const error_service_1 = require("../../core/errors/error.service");
 class GoogleService {
-    constructor(repository, calendarService) {
+    constructor(clientManager, calendarService) {
         this.block = "google.service";
-        this.repository = repository;
+        this.clientManager = clientManager;
         this.calendarService = calendarService;
-    }
-    getUser(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const data = yield this.repository.getGoogleUser(userId);
-                return this.mapGoogleUser(data);
-            }
-            catch (error) {
-                console.log("ERROR:::::", error);
-                (0, error_service_1.handleServiceError)(error, this.block, "getUser", { userId });
-                throw error;
-            }
-        });
     }
     getUrl(oauth2Client) {
         const scopes = [
@@ -57,55 +34,6 @@ class GoogleService {
             state: state
         });
         return authorizationUrl;
-    }
-    // async searchDrive(oauth2Client: OAuth2Client, filter: string, customQuery?: string) {
-    //     const block = `${this.block}.SearchDrive`
-    //     try {
-    //         let query;
-    //     switch(filter) {
-    //         case "sheet":
-    //             query = "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false";
-    //             break;
-    //         case "folder":
-    //             query = "mimeType='application/vnd.google-apps.folder' and trashed=false";
-    //             break;
-    //         case "file":
-    //             query = customQuery; 
-    //             break;   
-    //         default: 
-    //             throw new Error("Invalid filter") ;   
-    //     }
-    //     const drive = google.drive({ version: 'v3', auth: oauth2Client });
-    //     const res = await drive.files.list({
-    //         q: query,
-    //         fields: 'files(id, name, mimeType, webContentLink)',
-    //         pageSize: 100,
-    //     });
-    //     return res.data.files || [];
-    //     } catch (error) {
-    //         throw new GoogleError(undefined, {
-    //             block: block,
-    //             originalError: (error as Error).message
-    //         });
-    //     }
-    // }
-    refreshAccessToken(oauth2Client) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { token } = yield oauth2Client.getAccessToken();
-                return token;
-            }
-            catch (error) {
-                console.error('Error refreshing access token', error);
-                throw error;
-            }
-        });
-    }
-    mapGoogleUser(user) {
-        const encryptionService = Container_1.default.resolve("EncryptionService");
-        return {
-            refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
-        };
     }
 }
 exports.default = GoogleService;
