@@ -67,11 +67,11 @@ export default class EventsService {
         }
     }
 
-    async delete(eventId: string): Promise<Event> {
+    async delete(whereCol: string, identifier: string): Promise<Event> {
         try {
-            return await this.repository.delete("event_id", eventId) as Event;
+            return await this.repository.delete(whereCol, identifier) as Event;
         } catch (error) {
-            handleServiceError(error as Error, this.block, "delete", {eventId})
+            handleServiceError(error as Error, this.block, "delete", {whereCol, identifier})
             throw error;
         }
     }

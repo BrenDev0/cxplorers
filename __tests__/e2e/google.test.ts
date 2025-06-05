@@ -61,14 +61,11 @@ describe("USERS ROUTES", () => {
     })
 
     describe("GET GOOGLE CALENDARS EVENTS", () => {
-        it("should return a list of calendars", async() => {
+        it("should return a list of events", async() => {
             const res = await request(app)
             .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
             .set("Authorization", token)
 
-            console.log("attendees::::", res.body.data[1].attendees)
-            console.log("EVENTS:::", res.body.data)
-    
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty("data")
         })
@@ -85,14 +82,14 @@ describe("USERS ROUTES", () => {
     //     })
     // })
 
-    // describe("unSync google  calendar", () => {
-    //     it("should return a list of calendars", async() => {
-    //         const res = await request(app)
-    //         .delete("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-    //         .set("Authorization", token)
+    describe("unSync google  calendar", () => {
+        it("should cancel sync", async() => {
+            const res = await request(app)
+            .delete("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+            .set("Authorization", token)
 
             
-    //         expect(res.status).toBe(200);
-    //     })
-    // })
+            expect(res.status).toBe(200);
+        })
+    })
 })

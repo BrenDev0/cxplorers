@@ -12,7 +12,7 @@ import AppError from "../../../core/errors/AppError";
 export interface notificationResult {
     watchId: string;
     resourceId: string;
-    expiration: number;
+    expiration: string;
 }
 
 export default class GoogleCalendarService {
@@ -32,29 +32,6 @@ export default class GoogleCalendarService {
         return calendars.filter((calendar) => calendar.accessRole === 'owner');
     }
 
-    async listEvents(calendarReferenceId: string, oauth2Client: OAuth2Client) {
-        const block = `${this.block}.listEvents`
-    
-        try {
-            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-
-            const res = await calendar.events.list({
-                calendarId: calendarReferenceId
-            })
-            
-            const events = res.data.items
-        
-        
-        
-            return events || [];
-        } catch (error) {
-            throw new GoogleError(undefined, {
-                block: block,
-                originalError: (error as Error).message
-            });
-        }
-    }
-
     async updateCalendar(calnedarId: string, events: GoogleEvent[]) {
         const block = `${this.block}.updateCalendar`
         try {
@@ -70,7 +47,7 @@ export default class GoogleCalendarService {
 
             await Promise.all([
                 eventsService.upsert(mappedEvents),
-                eventsService.deleteNonExistingEvents(existingEvents)
+                existingEvents.length === 0 ? eventsService.delete("calendar_id", calnedarId) : eventsService.deleteNonExistingEvents(existingEvents)
             ])
 
             return;
@@ -83,15 +60,14 @@ export default class GoogleCalendarService {
 
     }
 
-    async requestCalendarNotifications(calendarReferenceId: string, accessKey: string): Promise<notificationResult> {
+    async requestCalendarNotifications(calendarReferenceId: string, oauth2Client: OAuth2Client): Promise<notificationResult> {
         const block = `${this.block}.requesNotifications`
         try {
             const watchId = uuidv4();
-            const calendar = google.calendar({ version: 'v3' });
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
             
             const response = await calendar.events.watch({
                 calendarId: calendarReferenceId,
-                auth: accessKey,
                 requestBody: {
                     id: watchId,
                     type: 'web_hook',
@@ -113,13 +89,16 @@ export default class GoogleCalendarService {
             if (!resourceId || !expiration) {
                 throw new GoogleError('Missing resourceId or expiration from Google response');
             }
-
+            
+            const experationDate = new Date(Number(expiration));
+            console.log("experiration:::", expiration, "experationDate:::: ", experationDate);
             return {
                 watchId,
                 resourceId,
-                expiration: Number(expiration)
+                expiration: experationDate.toISOString()
             };
         } catch (error) {
+            console.log(error);
             if(error instanceof AppError) {
                 throw error;
             }
@@ -131,12 +110,11 @@ export default class GoogleCalendarService {
         }
     }
 
-    async CancelCalendarNotifications(channelResourceId: string, channelId: string, accessToken: string) {
+    async CancelCalendarNotifications(channelResourceId: string, channelId: string, oauth2Client: OAuth2Client) {
         try {
-            const calendar = google.calendar({ version: 'v3' });
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
             await calendar.channels.stop({
-                auth: accessToken,
                 requestBody: {
                 id: channelId,
                 resourceId: channelResourceId,
@@ -146,7 +124,49 @@ export default class GoogleCalendarService {
             console.log('Channel stopped successfully');
             return;
         } catch (error) {
+            console.log(error, "::::::::::::")
            throw  new GoogleError();
         }
     }
+
+    // events //
+    async listEvents(calendarReferenceId: string, oauth2Client: OAuth2Client) {
+        const block = `${this.block}.listEvents`
+    
+        try {
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+            const res = await calendar.events.list({
+                calendarId: calendarReferenceId
+            })
+            
+            const events = res.data.items
+        
+            return events || [];
+        } catch (error) {
+            throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+    }
+
+    async addEvent(calendarReferenceId: string, accessToken: string, event: any) {
+        const block = `${this.block}.addEvent`
+        try {
+            const calendar = google.calendar({ version: 'v3' });
+
+            const response = calendar.events.insert({
+                auth: accessToken,
+                calendarId: calendarReferenceId,
+                requestBody: event
+            })
+        } catch (error) {
+            throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+    }
+
 }

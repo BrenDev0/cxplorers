@@ -8,11 +8,11 @@ export interface Calendar {
   foreground_color: string | null;
   watch_channel: string | null;
   watch_channel_resource_id:string | null;
-  channel_expiration_ms: number | null
+  channel_expiration: string | null
 }
 
 export interface CalendarData {
-   calendarId?: string;
+  calendarId?: string;
   userId: string;
   calendarReferenceId: string;
   title: string;
@@ -21,5 +21,5 @@ export interface CalendarData {
   foregroundColor: string | null;
   watchChannel: string | null;
   watchChannelResourceId: string | null;
-  channelExpirationMs: number | null
+  channelExpiration: string | null
 }

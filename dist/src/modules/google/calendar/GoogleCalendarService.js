@@ -33,6 +33,93 @@ class GoogleCalendarService {
             return calendars.filter((calendar) => calendar.accessRole === 'owner');
         });
     }
+    updateCalendar(calnedarId, events) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.updateCalendar`;
+            try {
+                const eventsService = Container_1.default.resolve("EventsService");
+                const mappedEvents = events.map((event) => {
+                    return Object.assign(Object.assign({}, event), { calendarId: calnedarId });
+                });
+                const existingEvents = events.map((event) => event.id);
+                yield Promise.all([
+                    eventsService.upsert(mappedEvents),
+                    existingEvents.length === 0 ? eventsService.delete("calendar_id", calnedarId) : eventsService.deleteNonExistingEvents(existingEvents)
+                ]);
+                return;
+            }
+            catch (error) {
+                throw new google_errors_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    requestCalendarNotifications(calendarReferenceId, oauth2Client) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.requesNotifications`;
+            try {
+                const watchId = (0, uuid_1.v4)();
+                const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const response = yield calendar.events.watch({
+                    calendarId: calendarReferenceId,
+                    requestBody: {
+                        id: watchId,
+                        type: 'web_hook',
+                        address: `https://${process.env.HOST}/google/calendars/notifications`,
+                        params: {
+                            ttl: '86400' // Optional: time in seconds (1 day)
+                        }
+                    }
+                });
+                if (!response || !response.data) {
+                    throw new google_errors_1.GoogleError("No response recieved from google");
+                }
+                const { resourceId, expiration } = response.data;
+                if (!resourceId || !expiration) {
+                    throw new google_errors_1.GoogleError('Missing resourceId or expiration from Google response');
+                }
+                const experationDate = new Date(Number(expiration));
+                console.log("experiration:::", expiration, "experationDate:::: ", experationDate);
+                return {
+                    watchId,
+                    resourceId,
+                    expiration: experationDate.toISOString()
+                };
+            }
+            catch (error) {
+                console.log(error);
+                if (error instanceof AppError_1.default) {
+                    throw error;
+                }
+                throw new google_errors_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    CancelCalendarNotifications(channelResourceId, channelId, oauth2Client) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                yield calendar.channels.stop({
+                    requestBody: {
+                        id: channelId,
+                        resourceId: channelResourceId,
+                    },
+                });
+                console.log('Channel stopped successfully');
+                return;
+            }
+            catch (error) {
+                console.log(error, "::::::::::::");
+                throw new google_errors_1.GoogleError();
+            }
+        });
+    }
+    // events //
     listEvents(calendarReferenceId, oauth2Client) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.listEvents`;
@@ -52,87 +139,22 @@ class GoogleCalendarService {
             }
         });
     }
-    updateCalendar(calnedarId, events) {
+    addEvent(calendarReferenceId, accessToken, event) {
         return __awaiter(this, void 0, void 0, function* () {
-            const block = `${this.block}.updateCalendar`;
-            try {
-                const eventsService = Container_1.default.resolve("EventsService");
-                const mappedEvents = events.map((event) => {
-                    return Object.assign(Object.assign({}, event), { calendarId: calnedarId });
-                });
-                const existingEvents = events.map((event) => event.id);
-                yield Promise.all([
-                    eventsService.upsert(mappedEvents),
-                    eventsService.deleteNonExistingEvents(existingEvents)
-                ]);
-                return;
-            }
-            catch (error) {
-                throw new google_errors_1.GoogleError(undefined, {
-                    block: block,
-                    originalError: error.message
-                });
-            }
-        });
-    }
-    requestCalendarNotifications(calendarReferenceId, accessKey) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const block = `${this.block}.requesNotifications`;
-            try {
-                const watchId = (0, uuid_1.v4)();
-                const calendar = googleapis_1.google.calendar({ version: 'v3' });
-                const response = yield calendar.events.watch({
-                    calendarId: calendarReferenceId,
-                    auth: accessKey,
-                    requestBody: {
-                        id: watchId,
-                        type: 'web_hook',
-                        address: `https://${process.env.HOST}/google/calendars/notifications`,
-                        params: {
-                            ttl: '86400' // Optional: time in seconds (1 day)
-                        }
-                    }
-                });
-                if (!response || !response.data) {
-                    throw new google_errors_1.GoogleError("No response recieved from google");
-                }
-                const { resourceId, expiration } = response.data;
-                if (!resourceId || !expiration) {
-                    throw new google_errors_1.GoogleError('Missing resourceId or expiration from Google response');
-                }
-                return {
-                    watchId,
-                    resourceId,
-                    expiration: Number(expiration)
-                };
-            }
-            catch (error) {
-                if (error instanceof AppError_1.default) {
-                    throw error;
-                }
-                throw new google_errors_1.GoogleError(undefined, {
-                    block: block,
-                    originalError: error.message
-                });
-            }
-        });
-    }
-    CancelCalendarNotifications(channelResourceId, channelId, accessToken) {
-        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.addEvent`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3' });
-                yield calendar.channels.stop({
+                const response = calendar.events.insert({
                     auth: accessToken,
-                    requestBody: {
-                        id: channelId,
-                        resourceId: channelResourceId,
-                    },
+                    calendarId: calendarReferenceId,
+                    requestBody: event
                 });
-                console.log('Channel stopped successfully');
-                return;
             }
             catch (error) {
-                throw new google_errors_1.GoogleError();
+                throw new google_errors_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
             }
         });
     }

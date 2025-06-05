@@ -52,7 +52,6 @@ export default class GoogleCalendarController {
         const block = `${this.block}.syncCalendar`
         try {
             const calendarId = req.params.calendarId;
-            const user = req.user;
             
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
@@ -61,21 +60,19 @@ export default class GoogleCalendarController {
             if(!resource) {
                 throw new NotFoundError(undefined, {
                     calendarId,
-                    resource: resource || "Calnedar not found"
+                    resource: resource || "Calendar not found"
                 })
             }
 
             const client = await this.googleService.clientManager.getcredentialedClient(resource.userId);
-            const accessToken = client.credentials.access_token;
 
-            const result = await this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, accessToken!);
+            const result = await this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, client);
             const changes = {
                 watchChannel: result.watchId,
                 watchChannelResourceId: result.resourceId,
-                channelExpirationMs: result.expiration
+                channelExpiration: result.expiration
             }
-            console.log("changes::::",changes)
-
+           
             await calendarService.update(resource.calendarId!, changes as CalendarData);
             res.status(200).json({ message: "calendar synced"})
         } catch (error) {
@@ -87,7 +84,6 @@ export default class GoogleCalendarController {
         const block = `${this.block}.syncCalendar`
         try {
             const calendarId = req.params.calendarId;
-            const user = req.user;
             
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
@@ -107,18 +103,17 @@ export default class GoogleCalendarController {
             }
 
             const client = await this.googleService.clientManager.getcredentialedClient(resource.userId);
-            const accessToken = client.credentials.access_token;
-            console.log("CALENDAR IN DB::::::", resource)
           
-            await this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, accessToken!);
+            await this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, client);
             const changes =  {
                 watchChannel: null,
                 watchChannelResourceId: null,
-                channelExpirationMs: null
+                channelExpiration: null
             }
             await calendarService.update(resource.calendarId!, changes as CalendarData);
             res.status(200).json({ message: "calendar unsynced"})
         } catch (error) {
+            console.log("ERRROR uncsync:::::::::", error)
             throw error;
         }
     }
@@ -156,6 +151,8 @@ export default class GoogleCalendarController {
             throw error;
         }
     } 
+
+    
 }
 
    

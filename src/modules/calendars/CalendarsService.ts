@@ -97,7 +97,7 @@ export default class CalendarsService {
             watch_channel_resource_id: calendar.watchChannelResourceId === null
             ? null
             : encryptionService.encryptData(calendar.watchChannelResourceId),
-            channel_expiration_ms: calendar.channelExpirationMs
+            channel_expiration: calendar.channelExpiration
         }
     }
 
@@ -113,7 +113,7 @@ export default class CalendarsService {
             foregroundColor: calendar.foreground_color,
             watchChannel: calendar.watch_channel && encryptionService.decryptData(calendar.watch_channel),
             watchChannelResourceId: calendar.watch_channel_resource_id && encryptionService.decryptData(calendar.watch_channel_resource_id),
-            channelExpirationMs: calendar.channel_expiration_ms
+            channelExpiration: calendar.channel_expiration
         }
     }
 }

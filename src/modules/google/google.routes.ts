@@ -37,7 +37,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         calendarController.syncCalendar.bind(controller)
     )
 
-     secureRouter.get("/calendars", 
+    secureRouter.get("/calendars", 
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]

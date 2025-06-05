@@ -53,25 +53,22 @@ class GoogleCalendarController {
             const block = `${this.block}.syncCalendar`;
             try {
                 const calendarId = req.params.calendarId;
-                const user = req.user;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const calendarService = Container_1.default.resolve("CalendarsService");
                 const resource = yield calendarService.resource(calendarId);
                 if (!resource) {
                     throw new errors_1.NotFoundError(undefined, {
                         calendarId,
-                        resource: resource || "Calnedar not found"
+                        resource: resource || "Calendar not found"
                     });
                 }
                 const client = yield this.googleService.clientManager.getcredentialedClient(resource.userId);
-                const accessToken = client.credentials.access_token;
-                const result = yield this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, accessToken);
+                const result = yield this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, client);
                 const changes = {
                     watchChannel: result.watchId,
                     watchChannelResourceId: result.resourceId,
-                    channelExpirationMs: result.expiration
+                    channelExpiration: result.expiration
                 };
-                console.log("changes::::", changes);
                 yield calendarService.update(resource.calendarId, changes);
                 res.status(200).json({ message: "calendar synced" });
             }
@@ -85,7 +82,6 @@ class GoogleCalendarController {
             const block = `${this.block}.syncCalendar`;
             try {
                 const calendarId = req.params.calendarId;
-                const user = req.user;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const calendarService = Container_1.default.resolve("CalendarsService");
                 const resource = yield calendarService.resource(calendarId);
@@ -101,18 +97,17 @@ class GoogleCalendarController {
                     });
                 }
                 const client = yield this.googleService.clientManager.getcredentialedClient(resource.userId);
-                const accessToken = client.credentials.access_token;
-                console.log("CALENDAR IN DB::::::", resource);
-                yield this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, accessToken);
+                yield this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, client);
                 const changes = {
                     watchChannel: null,
                     watchChannelResourceId: null,
-                    channelExpirationMs: null
+                    channelExpiration: null
                 };
                 yield calendarService.update(resource.calendarId, changes);
                 res.status(200).json({ message: "calendar unsynced" });
             }
             catch (error) {
+                console.log("ERRROR uncsync:::::::::", error);
                 throw error;
             }
         });

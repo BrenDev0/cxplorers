@@ -78,13 +78,13 @@ class EventsService {
             }
         });
     }
-    delete(eventId) {
+    delete(whereCol, identifier) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield this.repository.delete("event_id", eventId);
+                return yield this.repository.delete(whereCol, identifier);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "delete", { eventId });
+                (0, error_service_1.handleServiceError)(error, this.block, "delete", { whereCol, identifier });
                 throw error;
             }
         });
