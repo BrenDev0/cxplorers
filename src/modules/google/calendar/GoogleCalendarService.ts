@@ -73,7 +73,7 @@ export default class GoogleCalendarService {
                     type: 'web_hook',
                     address: `https://${process.env.HOST}/google/calendars/notifications`,
                     params: {
-                        ttl: '86400' // Optional: time in seconds (1 day)
+                        ttl: '7776000' 
                     }
                 }
             })
@@ -82,7 +82,6 @@ export default class GoogleCalendarService {
                 throw new GoogleError("No response recieved from google");
             }
 
-           
 
             const { resourceId, expiration } = response.data;
 

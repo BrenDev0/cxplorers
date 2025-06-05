@@ -69,7 +69,7 @@ class GoogleCalendarService {
                         type: 'web_hook',
                         address: `https://${process.env.HOST}/google/calendars/notifications`,
                         params: {
-                            ttl: '86400' // Optional: time in seconds (1 day)
+                            ttl: '7776000'
                         }
                     }
                 });
