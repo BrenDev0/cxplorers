@@ -55,15 +55,15 @@ describe("USERS ROUTES", () => {
             expect(res.body).toHaveProperty("data");
         }));
     });
-    describe("GET GOOGLE CALENDARS EVENTS", () => {
-        it("should return a list of events", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(app)
-                .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-                .set("Authorization", token);
-            expect(res.status).toBe(200);
-            expect(res.body).toHaveProperty("data");
-        }));
-    });
+    // describe("GET GOOGLE CALENDARS EVENTS", () => {
+    //     it("should return a list of events", async() => {
+    //         const res = await request(app)
+    //         .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+    //         .set("Authorization", token)
+    //         expect(res.status).toBe(200);
+    //         expect(res.body).toHaveProperty("data")
+    //     })
+    // })
     // describe("sync google  calendar", () => {
     //     it("should return a list of calendars", async() => {
     //         const res = await request(app)

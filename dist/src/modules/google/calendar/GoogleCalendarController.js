@@ -24,7 +24,6 @@ class GoogleCalendarController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const headers = req.headers;
-                console.log(headers);
                 const calendarsService = Container_1.default.resolve("CalendarsService");
                 const channelId = headers['x-goog-channel-id'];
                 if (!channelId) {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/src/server.js",
-    "dev": "node ./dist/__dev__/index.js",
+    "dev": "ts-node ./__dev__/index.ts",
     "test": "jest --verbose --detectOpenHandles",
     "docs": "ts-node src/core/swagger/swagger.ts",
     "module": "ts-node ./codegen/modules/buildModule.ts"
