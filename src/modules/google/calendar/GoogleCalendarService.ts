@@ -43,7 +43,7 @@ export default class GoogleCalendarService {
                 }
             })
 
-            const existingEvents = events.map((event) => event.id);
+            const existingEvents = events.length !== 0 ? events.map((event) => event.id): [];
 
             await Promise.all([
                 eventsService.upsert(mappedEvents),
@@ -81,7 +81,6 @@ export default class GoogleCalendarService {
             if(!response || !response.data) {
                 throw new GoogleError("No response recieved from google");
             }
-
 
             const { resourceId, expiration } = response.data;
 

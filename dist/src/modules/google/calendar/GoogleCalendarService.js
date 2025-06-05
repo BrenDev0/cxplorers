@@ -41,7 +41,7 @@ class GoogleCalendarService {
                 const mappedEvents = events.map((event) => {
                     return Object.assign(Object.assign({}, event), { calendarId: calnedarId });
                 });
-                const existingEvents = events.map((event) => event.id);
+                const existingEvents = events.length !== 0 ? events.map((event) => event.id) : [];
                 yield Promise.all([
                     eventsService.upsert(mappedEvents),
                     existingEvents.length === 0 ? eventsService.delete("calendar_id", calnedarId) : eventsService.deleteNonExistingEvents(existingEvents)
