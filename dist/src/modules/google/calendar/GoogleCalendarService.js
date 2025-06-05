@@ -42,10 +42,7 @@ class GoogleCalendarService {
                     calendarId: calendarReferenceId
                 });
                 const events = res.data.items;
-                if (!events || events.length === 0) {
-                    throw new errors_1.NotFoundError("no calendars found in google drive");
-                }
-                return events;
+                return events || [];
             }
             catch (error) {
                 throw new google_errors_1.GoogleError(undefined, {

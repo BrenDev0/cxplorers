@@ -44,11 +44,9 @@ export default class GoogleCalendarService {
             
             const events = res.data.items
         
-        if (!events || events.length === 0) {
-            throw new NotFoundError("no calendars found in google drive")
-        }
-            
-            return events;
+        
+        
+            return events || [];
         } catch (error) {
             throw new GoogleError(undefined, {
                 block: block,
@@ -69,7 +67,7 @@ export default class GoogleCalendarService {
             })
 
             const existingEvents = events.map((event) => event.id);
-            
+
             await Promise.all([
                 eventsService.upsert(mappedEvents),
                 eventsService.deleteNonExistingEvents(existingEvents)
