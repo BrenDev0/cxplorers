@@ -45,7 +45,6 @@ export default class GoogleCalendarService {
                     calendarId: calendarId
                 }
             }) : []
-
             
             const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
             const existingEvents = events.length !== 0 ? events.map((event) => encryptionService.encryptData(event.id)) : [];

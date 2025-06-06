@@ -63,6 +63,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     
 
     // events //
+    
     secureRouter.post("/calendars/events/:calendarId", 
         /*
         #swagger.tags = ['Google'] 
