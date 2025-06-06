@@ -90,7 +90,7 @@ export default class EventsService {
     mapToDb(event: GoogleEvent): Event {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
-            event_reference_id: event.id,
+            event_reference_id: encryptionService.encryptData(event.id),
             calendar_id: event.calendarId,
             created_at: event.created,
             updated_at: event.updated,
@@ -108,7 +108,7 @@ export default class EventsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             eventId: event.event_id,
-            eventReferenceId: encryptionService.encryptData(event.event_reference_id),
+            eventReferenceId: encryptionService.decryptData(event.event_reference_id),
             calendarId: event.calendar_id,
             createdAt: event.created_at,
             updatedAt: event.updated_at,

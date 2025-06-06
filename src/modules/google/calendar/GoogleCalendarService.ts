@@ -164,8 +164,26 @@ export default class GoogleCalendarService {
 
             return;
         } catch (error) {
-            console.log(error)
             throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+    }
+
+    async deleteEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, eventId: string) {
+        const block = `${this.block}.deleteEvent`;
+        try {
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+            const response = calendar.events.delete({
+                calendarId: calendarReferenceId,
+                eventId: eventId
+            })
+
+            return;
+        } catch (error) {
+           throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message
             });
