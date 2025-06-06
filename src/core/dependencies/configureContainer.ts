@@ -17,6 +17,7 @@ import PasswordService from '../services/PasswordService';
 import { configureTokensDependencies } from '../../modules/tokens/tokens.dependencies';
 import { configureCalendarsDependencies } from '../../modules/calendars/calendars.dependencies';
 import { configureEventsDependencies } from '../../modules/events/events.dependencies';
+import { configureContactsDependencies } from '../../modules/contacts/contacts.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -59,6 +60,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // calendars //
     configureCalendarsDependencies(pool);
+
+    // contacts //
+    configureContactsDependencies(pool);
 
     // events // 
     configureEventsDependencies(pool);

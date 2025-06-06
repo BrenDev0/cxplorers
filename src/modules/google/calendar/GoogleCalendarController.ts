@@ -5,10 +5,8 @@ import GoogleService from "../GoogleService";
 import HttpService from "../../../core/services/HttpService";
 import CalendarsService from "../../calendars/CalendarsService";
 import { CalendarData } from "../../calendars/calendars.interface";
-import { GoogleEvent } from "../../events/events.interface";
 import EventsService from "../../events/EventsService";
 import { GoogleError } from "../google.errors";
-import { calendar } from "googleapis/build/src/apis/calendar";
 
 export default class GoogleCalendarController {
     private readonly block = "google.controller";
@@ -84,6 +82,8 @@ export default class GoogleCalendarController {
             }
            
             await this.platformCalendarService.update(resource.calendarId!, changes as CalendarData);
+            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId!);
+            
             res.status(200).json({ message: "calendar synced"})
         } catch (error) {
             throw error;
@@ -230,7 +230,7 @@ export default class GoogleCalendarController {
 
             await this.googleService.calendarService.deleteEvent(client, resource.calendarReferenceId, resource.eventReferenceId);
             await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId);
-            
+
             res.status(200).json({ message: "Event deleted"})
         } catch (error) {
             throw error;

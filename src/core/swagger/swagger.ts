@@ -67,6 +67,18 @@ const doc = {
         description: "from google default null",
         backgroundColor: "from google default null",
         forgroundColor: "from google default null"
+      },
+      createContact: {
+        firstName: "required",
+        lastName: "optional",
+        email: "optional",
+        phone: "optional"
+      },
+      updateContact: {
+        firstName: "optional",
+        lastName: "optional",
+        email: "optional",
+        phone: "optional"
       }
     }
   },
@@ -74,9 +86,10 @@ const doc = {
 
 const outputFile = './swagger.json';  
 const endpointsFiles = [
-  // users //
 
   '../../modules/calendars/calendars.routes.ts',
+  '../../modules/contacts/contacts.routes.ts',
+  '../../modules/events/events.routes.ts',
   '../../modules/google/google.routes.ts',
   '../../modules/tokens/tokens.routes.ts',
   '../../modules/users/users.routes.ts'

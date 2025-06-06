@@ -29,6 +29,7 @@ const PasswordService_1 = __importDefault(require("../services/PasswordService")
 const tokens_dependencies_1 = require("../../modules/tokens/tokens.dependencies");
 const calendars_dependencies_1 = require("../../modules/calendars/calendars.dependencies");
 const events_dependencies_1 = require("../../modules/events/events.dependencies");
+const contacts_dependencies_1 = require("../../modules/contacts/contacts.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -60,6 +61,8 @@ function configureContainer(testPool, testRedis) {
         Container_1.default.register("RedisClient", redisClient);
         // calendars //
         (0, calendars_dependencies_1.configureCalendarsDependencies)(pool);
+        // contacts //
+        (0, contacts_dependencies_1.configureContactsDependencies)(pool);
         // events // 
         (0, events_dependencies_1.configureEventsDependencies)(pool);
         // google //

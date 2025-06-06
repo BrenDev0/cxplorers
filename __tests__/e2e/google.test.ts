@@ -113,7 +113,7 @@ describe("USERS ROUTES", () => {
      describe("delete google calendar event", () => {
         it("should delete event", async() => {
             const res = await request(app)
-            .delete("/google/secure/calendars/events/5a40954c-6dd9-45fe-ae09-a53afbc9ff46")
+            .delete("/google/secure/calendars/events/a6682149-4442-4e1c-9c57-f884c03276e1")
             .set("Authorization", token)
             
             expect(res.status).toBe(200);

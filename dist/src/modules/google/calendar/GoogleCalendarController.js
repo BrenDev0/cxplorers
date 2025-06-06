@@ -75,6 +75,7 @@ class GoogleCalendarController {
                     channelExpiration: result.expiration
                 };
                 yield this.platformCalendarService.update(resource.calendarId, changes);
+                yield this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId);
                 res.status(200).json({ message: "calendar synced" });
             }
             catch (error) {
