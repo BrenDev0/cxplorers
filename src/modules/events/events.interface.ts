@@ -13,6 +13,7 @@ export interface Event {
   end_time: Date;
   end_timezone: string;
   status: string;
+  calendar_reference_id?: string;
 }
 
 export interface EventData {
@@ -28,6 +29,7 @@ export interface EventData {
   end: Date;
   endTimezone: string;
   status: string;
+   calendarReferenceId?: string;
 }
 
 export interface GoogleEvent {
@@ -66,6 +68,7 @@ export interface GoogleEvent {
 }
 
 export interface IEventsRepository<Event> extends IRepository<Event> {
+  resource(eventId: string): Promise<Event | null>
   upsertMany(cols: string[], values: any[]): Promise<Event | Event[]>;
   deleteMany(eventReferenceIds: string[]): Promise<Event[]>;
 }

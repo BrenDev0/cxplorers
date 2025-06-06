@@ -53,7 +53,7 @@ class EventsService {
     resource(eventId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne("event_id", eventId);
+                const result = yield this.repository.resource(eventId);
                 if (!result) {
                     return null;
                 }
@@ -131,7 +131,8 @@ class EventsService {
             startTimezone: event.start_timezone,
             end: event.end_time,
             endTimezone: event.end_timezone,
-            status: event.status
+            status: event.status,
+            calendarReferenceId: event.calendar_reference_id && encryptionService.decryptData(event.calendar_reference_id)
         };
     }
 }

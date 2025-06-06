@@ -33,7 +33,7 @@ class EventsRepository extends BaseRepository_1.default {
             values ${placeholders}
             ON CONFLICT (event_reference_id) DO UPDATE SET
             updated_at = EXCLUDED.updated_at,
-            title = EXCLUDED.title,
+            summary = EXCLUDED.summary,
             start_time = EXCLUDED.start_time,
             start_timezone = EXCLUDED.start_timezone,
             end_time = EXCLUDED.end_time,
@@ -43,6 +43,18 @@ class EventsRepository extends BaseRepository_1.default {
         `;
             const result = yield this.pool.query(sqlInsert, values);
             return numRows === 1 ? result.rows[0] : result.rows;
+        });
+    }
+    resource(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlRead = `
+            SELECT events.*, calendars.calendar_reference_id
+            FROM events
+            JOIN calendars ON events.calendar_id = calendars.calendar_id
+            WHERE events.event_id = $1;
+        `;
+            const result = yield this.pool.query(sqlRead, [eventId]);
+            return result.rows[0] || null;
         });
     }
     deleteMany(referenceIds) {

@@ -8,8 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../../core/errors/errors");
+const Container_1 = __importDefault(require("../../../core/dependencies/Container"));
+const google_errors_1 = require("../google.errors");
 class GoogleCalendarController {
     constructor(httpService, googleService, platformCalendarService) {
         this.block = "google.controller";
@@ -167,6 +172,35 @@ class GoogleCalendarController {
             }
             catch (error) {
                 console.log(error, "CREATE  EVENT::::::::::");
+                throw error;
+            }
+        });
+    }
+    deleteEvent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.deleteEvent`;
+            try {
+                const user = req.user;
+                const eventId = req.params.eventId;
+                this.httpService.requestValidation.validateUuid(eventId, "eventId", block);
+                const eventService = Container_1.default.resolve("EventsService");
+                const resource = yield eventService.resource(eventId);
+                if (!resource) {
+                    throw new errors_1.NotFoundError(undefined, {
+                        block: `${block}.eventExistsCheck`,
+                        rescource: resource || `No event found in db with id: ${eventId}`
+                    });
+                }
+                if (!resource.calendarReferenceId) {
+                    throw new google_errors_1.GoogleError("Calendar configuration error", {
+                        block: `${block}.calendarReferenceCheck`,
+                        rescource: resource
+                    });
+                }
+                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
+                yield this.googleService.calendarService.deleteEvent(client, resource.calendarReferenceId, resource.eventReferenceId);
+            }
+            catch (error) {
                 throw error;
             }
         });

@@ -43,7 +43,7 @@ export default class EventsService {
 
     async resource(eventId: string): Promise<EventData | null> {
         try {
-            const result = await this.repository.selectOne("event_id", eventId);
+            const result = await this.repository.resource(eventId);
             if(!result) {
                 return null
             }
@@ -118,7 +118,8 @@ export default class EventsService {
             startTimezone: event.start_timezone,
             end: event.end_time,
             endTimezone: event.end_timezone,
-            status: event.status
+            status: event.status,
+            calendarReferenceId: event.calendar_reference_id && encryptionService.decryptData(event.calendar_reference_id)
         }
     }
 }

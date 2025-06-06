@@ -26,7 +26,7 @@ export default class EventsRepository extends BaseRepository<Event> implements I
             values ${placeholders}
             ON CONFLICT (event_reference_id) DO UPDATE SET
             updated_at = EXCLUDED.updated_at,
-            title = EXCLUDED.title,
+            summary = EXCLUDED.summary,
             start_time = EXCLUDED.start_time,
             start_timezone = EXCLUDED.start_timezone,
             end_time = EXCLUDED.end_time,
@@ -41,6 +41,17 @@ export default class EventsRepository extends BaseRepository<Event> implements I
         );
 
         return numRows === 1 ? result.rows[0] : result.rows;
+    }
+
+    async resource(eventId: string): Promise<Event | null> {
+        const sqlRead =  `
+            SELECT events.*, calendars.calendar_reference_id
+            FROM events
+            JOIN calendars ON events.calendar_id = calendars.calendar_id
+            WHERE events.event_id = $1;
+        `
+        const result = await this.pool.query(sqlRead, [eventId]);
+        return result.rows[0] || null
     }
     
     async deleteMany(referenceIds: string[]): Promise<Event[]> {

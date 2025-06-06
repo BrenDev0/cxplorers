@@ -6,6 +6,8 @@ import HttpService from "../../../core/services/HttpService";
 import CalendarsService from "../../calendars/CalendarsService";
 import { CalendarData } from "../../calendars/calendars.interface";
 import { GoogleEvent } from "../../events/events.interface";
+import EventsService from "../../events/EventsService";
+import { GoogleError } from "../google.errors";
 
 export default class GoogleCalendarController {
     private readonly block = "google.controller";
@@ -189,6 +191,38 @@ export default class GoogleCalendarController {
             res.status(200).json({ message: "Event added"})
         } catch (error) {
             console.log(error, "CREATE  EVENT::::::::::")
+            throw error;
+        }
+    }
+
+    async deleteEvent(req: Request, res: Response): Promise<void> {
+        const block =  `${this.block}.deleteEvent`;
+        try {
+            const user = req.user;
+            const eventId = req.params.eventId;
+
+            this.httpService.requestValidation.validateUuid(eventId, "eventId", block);
+
+            const eventService = Container.resolve<EventsService>("EventsService");
+            const resource = await eventService.resource(eventId);
+            if(!resource) {
+                throw new NotFoundError(undefined, {
+                    block: `${block}.eventExistsCheck`,
+                    rescource: resource || `No event found in db with id: ${eventId}` 
+                });
+            }
+
+            if(!resource.calendarReferenceId) {
+                throw new GoogleError("Calendar configuration error", {
+                    block: `${block}.calendarReferenceCheck`,
+                    rescource: resource  
+                });
+            }
+
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+
+            await this.googleService.calendarService.deleteEvent(client, resource.calendarReferenceId, resource.eventReferenceId)
+        } catch (error) {
             throw error;
         }
     }
