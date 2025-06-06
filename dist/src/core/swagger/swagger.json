@@ -113,6 +113,144 @@
                 ]
             }
         },
+        "/contacts/secure/create": {
+            "post": {
+                "tags": [
+                    "Contacts"
+                ],
+                "description": "create contact",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createContact"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/contacts/secure/resource/{contactId}": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "description": "get contact by id",
+                "parameters": [
+                    {
+                        "name": "contactId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/contacts/secure/collection": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "description": "get users contacts",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/contacts/secure/{contactId}": {
+            "put": {
+                "tags": [
+                    "Contacts"
+                ],
+                "description": "update contact",
+                "parameters": [
+                    {
+                        "name": "contactId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateContact"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Contacts"
+                ],
+                "description": "deletecontact",
+                "parameters": [
+                    {
+                        "name": "contactId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/google/secure/url": {
             "get": {
                 "tags": [
@@ -147,6 +285,152 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/google/secure/calendars/sync/{calendarId}": {
+            "get": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "sync users calendar",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "unSync users calendar",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/google/secure/calendars/events/{calendarId}": {
+            "post": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "create event",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "get users calendars events",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/google/secure/calendars/events/{eventId}": {
+            "delete": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "delete an event",
+                "parameters": [
+                    {
+                        "name": "eventId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/calendars/notifications": {
+            "post": {
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
             }
         },
         "/tokens/secure/create": {
@@ -589,6 +873,48 @@
                     "forgroundColor": {
                         "type": "string",
                         "example": "from google default null"
+                    }
+                }
+            },
+            "createContact": {
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "optional"
+                    }
+                }
+            },
+            "updateContact": {
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "optional"
                     }
                 }
             }
