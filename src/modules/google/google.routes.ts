@@ -14,6 +14,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     
     // general //
+
     secureRouter.get("/url", 
         /*
         #swagger.tags = ['Google'] 
@@ -27,16 +28,6 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
 
     // calendar //
 
-    secureRouter.get("/calendars/sync/:calendarId", 
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
-        #swagger.description = 'sync users calendar'
-        */
-        calendarController.syncCalendar.bind(controller)
-    )
-
     secureRouter.get("/calendars", 
         /*
         #swagger.tags = ['Google'] 
@@ -47,14 +38,16 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         calendarController.getCalendars.bind(controller)
     )
 
-    secureRouter.get("/calendars/events/:calendarId", 
+    // sync //
+
+    secureRouter.get("/calendars/sync/:calendarId", 
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars/events/{calendarId}' 
-        #swagger.description = 'get users calendars events'
+        #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
+        #swagger.description = 'sync users calendar'
         */
-        calendarController.getCalendarEvents.bind(controller)
+        calendarController.syncCalendar.bind(calendarController)
     )
 
     secureRouter.delete("/calendars/sync/:calendarId", 
@@ -64,10 +57,36 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
         #swagger.description = 'unSync users calendar'
         */
-        calendarController.unSyncCalendar.bind(controller)
+        calendarController.unSyncCalendar.bind(calendarController)
     )
 
+    
+
+    // events //
+    secureRouter.post("/calendars/events/:calendarId", 
+        /*
+        #swagger.tags = ['Google'] 
+         #swagger.security = [{ "bearerAuth": [] }]
+        #swagger.path = '/google/secure/calendars/events/{calendarId}' 
+        #swagger.description = 'create event'
+        */
+        calendarController.createEvent.bind(calendarController)
+    )
+
+    secureRouter.get("/calendars/events/:calendarId", 
+        /*
+        #swagger.tags = ['Google'] 
+         #swagger.security = [{ "bearerAuth": [] }]
+        #swagger.path = '/google/secure/calendars/events/{calendarId}' 
+        #swagger.description = 'get users calendars events'
+        */
+        calendarController.getCalendarEvents.bind(calendarController)
+    )
+
+    
+
     // for google use //
+
     router.get("/callback", 
         // #swagger.ignore = true    
         controller.callback.bind(controller)

@@ -102,6 +102,7 @@ class GoogleCalendarService {
     }
     CancelCalendarNotifications(channelResourceId, channelId, oauth2Client) {
         return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.cancelCalendarNotifications`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
                 yield calendar.channels.stop({
@@ -114,8 +115,10 @@ class GoogleCalendarService {
                 return;
             }
             catch (error) {
-                console.log(error, "::::::::::::");
-                throw new google_errors_1.GoogleError();
+                throw new google_errors_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
             }
         });
     }
@@ -139,18 +142,19 @@ class GoogleCalendarService {
             }
         });
     }
-    addEvent(calendarReferenceId, accessToken, event) {
+    addEvent(oauth2Client, calendarReferenceId, event) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.addEvent`;
             try {
-                const calendar = googleapis_1.google.calendar({ version: 'v3' });
-                const response = calendar.events.insert({
-                    auth: accessToken,
+                const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const response = yield calendar.events.insert({
                     calendarId: calendarReferenceId,
                     requestBody: event
                 });
+                return;
             }
             catch (error) {
+                console.log(error);
                 throw new google_errors_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message

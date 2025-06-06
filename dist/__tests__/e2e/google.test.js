@@ -50,28 +50,27 @@ describe("USERS ROUTES", () => {
             const res = yield (0, supertest_1.default)(app)
                 .get("/google/secure/calendars")
                 .set("Authorization", token);
-            console.log("res:::::: ", res.body);
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty("data");
         }));
     });
-    // describe("GET GOOGLE CALENDARS EVENTS", () => {
-    //     it("should return a list of events", async() => {
-    //         const res = await request(app)
-    //         .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-    //         .set("Authorization", token)
-    //         expect(res.status).toBe(200);
-    //         expect(res.body).toHaveProperty("data")
-    //     })
-    // })
-    describe("sync google  calendar", () => {
-        it("should return a list of calendars", () => __awaiter(void 0, void 0, void 0, function* () {
+    describe("GET GOOGLE CALENDARS EVENTS", () => {
+        it("should return a list of events", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .get("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+                .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
                 .set("Authorization", token);
             expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("data");
         }));
     });
+    // describe("sync google  calendar", () => {
+    //     it("should sync calendar", async() => {
+    //         const res = await request(app)
+    //         .get("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+    //         .set("Authorization", token)
+    //         expect(res.status).toBe(200);
+    //     })
+    // })
     // describe("unSync google  calendar", () => {
     //     it("should cancel sync", async() => {
     //         const res = await request(app)
@@ -80,4 +79,19 @@ describe("USERS ROUTES", () => {
     //         expect(res.status).toBe(200);
     //     })
     // })
+    describe("create google calendar event", () => {
+        const start = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+        const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+        it("should create event", () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .post("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+                .set("Authorization", token)
+                .send({
+                start: start,
+                end: end,
+                summary: "added event from jest"
+            });
+            expect(res.status).toBe(200);
+        }));
+    });
 });

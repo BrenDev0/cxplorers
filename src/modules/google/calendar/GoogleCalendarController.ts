@@ -11,17 +11,19 @@ export default class GoogleCalendarController {
     private readonly block = "google.controller";
     private httpService: HttpService;
     private googleService: GoogleService; 
+    private platformCalendarService: CalendarsService;
    
-    constructor(httpService: HttpService , googleService: GoogleService) {
+    constructor(httpService: HttpService , googleService: GoogleService, platformCalendarService: CalendarsService) {
         this.httpService = httpService
-        this.googleService = googleService
+        this.googleService = googleService,
+        this.platformCalendarService = platformCalendarService
     }
 
     async handleCalendarNotifications(req: Request, res: Response): Promise<void> {
         try {
             const headers = req.headers;
             console.log(headers)
-            const calendarsService = Container.resolve<CalendarsService>("CalendarsService");
+          
             const channelId = headers['x-goog-channel-id'] as string;
 
             if(!channelId) {
@@ -30,7 +32,7 @@ export default class GoogleCalendarController {
             }
 
             const encryptedChannelId = this.httpService.encryptionService.encryptData(channelId) 
-            const resource = await calendarsService.findByChannel(encryptedChannelId);
+            const resource = await this.platformCalendarService.findByChannel(encryptedChannelId);
             if(!resource) {
                 res.status(404).send();
                 return;
@@ -55,8 +57,7 @@ export default class GoogleCalendarController {
             
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
-            const calendarService = Container.resolve<CalendarsService>("CalendarsService");
-            const resource = await calendarService.resource(calendarId);
+            const resource = await this.platformCalendarService.resource(calendarId);
             if(!resource) {
                 throw new NotFoundError(undefined, {
                     calendarId,
@@ -73,7 +74,7 @@ export default class GoogleCalendarController {
                 channelExpiration: result.expiration
             }
            
-            await calendarService.update(resource.calendarId!, changes as CalendarData);
+            await this.platformCalendarService.update(resource.calendarId!, changes as CalendarData);
             res.status(200).json({ message: "calendar synced"})
         } catch (error) {
             throw error;
@@ -87,8 +88,7 @@ export default class GoogleCalendarController {
             
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
-            const calendarService = Container.resolve<CalendarsService>("CalendarsService");
-            const resource = await calendarService.resource(calendarId);
+            const resource = await this.platformCalendarService.resource(calendarId);
             if(!resource) {
                 throw new NotFoundError(undefined, {
                     calendarId,
@@ -110,7 +110,7 @@ export default class GoogleCalendarController {
                 watchChannelResourceId: null,
                 channelExpiration: null
             }
-            await calendarService.update(resource.calendarId!, changes as CalendarData);
+            await this.platformCalendarService.update(resource.calendarId!, changes as CalendarData);
             res.status(200).json({ message: "calendar unsynced"})
         } catch (error) {
             console.log("ERRROR uncsync:::::::::", error)
@@ -139,8 +139,9 @@ export default class GoogleCalendarController {
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
             this.httpService.requestValidation.validateUuid(calendarId, "calenderId", block);
-            const calendarService = Container.resolve<CalendarsService>("CalendarsService");
-            const resource = await calendarService.resource(calendarId);
+       
+            const resource = await this.platformCalendarService.resource(calendarId);
+           
             if(!resource) {
                 throw new NotFoundError();
             }
@@ -152,7 +153,45 @@ export default class GoogleCalendarController {
         }
     } 
 
-    
+    async createEvent(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.createEvent`
+        try {
+            const user = req.user;
+            const calendarId = req.params.calendarId;
+            const requiredFields = ["start", "end", "summary"];
+            
+            const event = {
+                ...req.body,
+                start: {
+                    dateTime: req.body.start
+                },
+                end: {
+                    dateTime: req.body.end
+                }
+            }
+            
+            this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+            this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+            
+            const calendar = await this.platformCalendarService.resource(calendarId);
+            
+            if(!calendar) {
+                throw new NotFoundError(undefined, {
+                    block: `${block}.calendarExistsCheck`,
+                    calendar: calendar || `No calendar found in db with id: ${calendarId}` 
+                });
+            };
+
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+
+            await this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
+
+            res.status(200).json({ message: "Event added"})
+        } catch (error) {
+            console.log(error, "CREATE  EVENT::::::::::")
+            throw error;
+        }
+    }
 }
 
    

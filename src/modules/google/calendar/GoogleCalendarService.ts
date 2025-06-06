@@ -109,6 +109,7 @@ export default class GoogleCalendarService {
     }
 
     async CancelCalendarNotifications(channelResourceId: string, channelId: string, oauth2Client: OAuth2Client) {
+        const block = `${this.block}.cancelCalendarNotifications`
         try {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
@@ -122,8 +123,10 @@ export default class GoogleCalendarService {
             console.log('Channel stopped successfully');
             return;
         } catch (error) {
-            console.log(error, "::::::::::::")
-           throw  new GoogleError();
+            throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
         }
     }
 
@@ -149,17 +152,19 @@ export default class GoogleCalendarService {
         }
     }
 
-    async addEvent(calendarReferenceId: string, accessToken: string, event: any) {
+    async addEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, event: any) {
         const block = `${this.block}.addEvent`
         try {
-            const calendar = google.calendar({ version: 'v3' });
+           const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
-            const response = calendar.events.insert({
-                auth: accessToken,
+            const response = await calendar.events.insert({
                 calendarId: calendarReferenceId,
                 requestBody: event
             })
+
+            return;
         } catch (error) {
+            console.log(error)
             throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message

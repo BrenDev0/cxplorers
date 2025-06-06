@@ -6,7 +6,8 @@ export interface Event {
   calendar_id: string;
   created_at: Date;
   updated_at: Date;
-  title: string;
+  summary: string;
+  description: string | null;
   start_time: Date;
   start_timezone: string;
   end_time: Date;
@@ -20,10 +21,11 @@ export interface EventData {
   calendarId: string;
   createdAt: Date;
   updatedAt: Date;
-  title: string;
-  startTime: Date;
+  summary: string;
+  description: string | null;
+  start: Date;
   startTimezone: string;
-  endTime: Date;
+  end: Date;
   endTimezone: string;
   status: string;
 }
@@ -60,6 +62,7 @@ export interface GoogleEvent {
     useDefault: boolean 
   }
   eventType: string;
+  description: string;
 }
 
 export interface IEventsRepository<Event> extends IRepository<Event> {
