@@ -24,7 +24,6 @@ export default class GoogleCalendarController {
     async handleCalendarNotifications(req: Request, res: Response): Promise<void> {
         try {
             const headers = req.headers;
-            console.log(headers)
           
             const channelId = headers['x-goog-channel-id'] as string;
 

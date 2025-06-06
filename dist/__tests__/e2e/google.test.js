@@ -59,6 +59,7 @@ describe("USERS ROUTES", () => {
             const res = yield (0, supertest_1.default)(app)
                 .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
                 .set("Authorization", token);
+            console.log(res.body);
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty("data");
         }));

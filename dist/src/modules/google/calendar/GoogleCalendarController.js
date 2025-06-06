@@ -26,7 +26,6 @@ class GoogleCalendarController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const headers = req.headers;
-                console.log(headers);
                 const channelId = headers['x-goog-channel-id'];
                 if (!channelId) {
                     res.status(200).send();

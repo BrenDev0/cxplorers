@@ -43,7 +43,11 @@ export default class GoogleCalendarService {
                 }
             }) : []
 
+            
+
             const existingEvents = events.length !== 0 ? events.map((event) => event.id) : [];
+
+            console.log("Events::::::::", events, "mapped Events::::::::::", mappedEvents, "existingEvents:::::::::", existingEvents)
 
             await Promise.all([
                 mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),
