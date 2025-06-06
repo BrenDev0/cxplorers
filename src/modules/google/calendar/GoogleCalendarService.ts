@@ -8,6 +8,7 @@ import Container from "../../../core/dependencies/Container";
 import EventsService from "../../events/EventsService";
 import { GoogleEvent } from "../../events/events.interface";
 import AppError from "../../../core/errors/AppError";
+import EncryptionService from "../../../core/services/EncryptionService";
 
 export interface notificationResult {
     watchId: string;
@@ -44,10 +45,8 @@ export default class GoogleCalendarService {
             }) : []
 
             
-
-            const existingEvents = events.length !== 0 ? events.map((event) => event.id) : [];
-
-            console.log("Events::::::::", events, "mapped Events::::::::::", mappedEvents, "existingEvents:::::::::", existingEvents)
+            const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+            const existingEvents = events.length !== 0 ? events.map((event) => encryptionService.encryptData(event.id)) : [];
 
             await Promise.all([
                 mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),

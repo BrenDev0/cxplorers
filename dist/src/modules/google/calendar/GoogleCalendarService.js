@@ -41,8 +41,8 @@ class GoogleCalendarService {
                 const mappedEvents = events.length !== 0 ? events.map((event) => {
                     return Object.assign(Object.assign({}, event), { calendarId: calendarId });
                 }) : [];
-                const existingEvents = events.length !== 0 ? events.map((event) => event.id) : [];
-                console.log("Events::::::::", events, "mapped Events::::::::::", mappedEvents, "existingEvents:::::::::", existingEvents);
+                const encryptionService = Container_1.default.resolve("EncryptionService");
+                const existingEvents = events.length !== 0 ? events.map((event) => encryptionService.encryptData(event.id)) : [];
                 yield Promise.all([
                     mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),
                     existingEvents.length === 0 ? eventsService.delete("calendar_id", calendarId) : eventsService.deleteNonExistingEvents(existingEvents)
