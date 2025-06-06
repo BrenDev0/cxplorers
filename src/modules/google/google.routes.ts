@@ -100,7 +100,6 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     // mounts // 
     router.use("/secure", secureRouter);
     
-
     console.log("Google router initialized.");
     return router;
 }
