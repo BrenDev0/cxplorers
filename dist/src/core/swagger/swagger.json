@@ -891,17 +891,36 @@
                         "example": "optional"
                     }
                 }
-            }
-        },
-        "createEvent": {
-            "summary": "title",
-            "startTime": "isoDateString",
-            "endTime": "isoDateString",
-            "attendees": [
-                {
-                    "email": "attendees is optional"
+            },
+            "createEvent": {
+                "type": "object",
+                "properties": {
+                    "summary": {
+                        "type": "string",
+                        "example": "title"
+                    },
+                    "startTime": {
+                        "type": "string",
+                        "example": "isoDateString"
+                    },
+                    "endTime": {
+                        "type": "string",
+                        "example": "isoDateString"
+                    },
+                    "attendees": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example": "attendees is optional"
+                                }
+                            }
+                        }
+                    }
                 }
-            ]
+            }
         }
     }
 }

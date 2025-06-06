@@ -79,14 +79,15 @@ const doc = {
         lastName: "optional",
         email: "optional",
         phone: "optional"
-      }
-    },
-     createEvent:{
+      },
+      createEvent:{
       summary: "title",
       startTime: "isoDateString",
       endTime: "isoDateString",
       attendees: [{email: "attendees is optional"}]
      }
+    },
+    
   },
 };
 
