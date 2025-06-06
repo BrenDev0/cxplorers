@@ -32,22 +32,22 @@ export default class GoogleCalendarService {
         return calendars.filter((calendar) => calendar.accessRole === 'owner');
     }
 
-    async updateCalendar(calnedarId: string, events: GoogleEvent[]) {
+    async updateCalendar(calendarId: string, events: GoogleEvent[]) {
         const block = `${this.block}.updateCalendar`
         try {
             const eventsService = Container.resolve<EventsService>("EventsService");
-            const mappedEvents = events.map((event) => {
+            const mappedEvents = events.length !== 0 ? events.map((event) => {
                 return {
                     ...event,
-                    calendarId: calnedarId
+                    calendarId: calendarId
                 }
-            })
+            }) : []
 
-            const existingEvents = events.length !== 0 ? events.map((event) => event.id): [];
+            const existingEvents = events.length !== 0 ? events.map((event) => event.id) : [];
 
             await Promise.all([
-                eventsService.upsert(mappedEvents),
-                existingEvents.length === 0 ? eventsService.delete("calendar_id", calnedarId) : eventsService.deleteNonExistingEvents(existingEvents)
+                mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),
+                existingEvents.length === 0 ? eventsService.delete("calendar_id", calendarId) : eventsService.deleteNonExistingEvents(existingEvents)
             ])
 
             return;
