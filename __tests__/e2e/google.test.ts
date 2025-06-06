@@ -93,18 +93,28 @@ describe("USERS ROUTES", () => {
     //     })
     // })
 
-    describe("create google calendar event", () => {
-        const start = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
-        const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-        it("should create event", async() => {
+    // describe("create google calendar event", () => {
+    //     const start = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+    //     const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+    //     it("should create event", async() => {
+    //         const res = await request(app)
+    //         .post("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+    //         .set("Authorization", token)
+    //         .send({
+    //             start: start,
+    //             end: end,
+    //             summary: "added event from jest" 
+    //         })
+            
+    //         expect(res.status).toBe(200);
+    //     })
+    // })
+
+     describe("delete google calendar event", () => {
+        it("should delete event", async() => {
             const res = await request(app)
-            .post("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+            .delete("/google/secure/calendars/events/5a40954c-6dd9-45fe-ae09-a53afbc9ff46")
             .set("Authorization", token)
-            .send({
-                start: start,
-                end: end,
-                summary: "added event from jest" 
-            })
             
             expect(res.status).toBe(200);
         })

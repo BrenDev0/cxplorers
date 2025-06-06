@@ -9,6 +9,7 @@ import EventsService from "../../events/EventsService";
 import { GoogleEvent } from "../../events/events.interface";
 import AppError from "../../../core/errors/AppError";
 import EncryptionService from "../../../core/services/EncryptionService";
+import { CalendarData } from "../../calendars/calendars.interface";
 
 export interface notificationResult {
     watchId: string;
@@ -33,9 +34,10 @@ export default class GoogleCalendarService {
         return calendars.filter((calendar) => calendar.accessRole === 'owner');
     }
 
-    async updateCalendar(calendarId: string, events: GoogleEvent[]) {
+    async updateCalendar(oauth2Client: OAuth2Client, calendarReferenceId: string, calendarId: string) {
         const block = `${this.block}.updateCalendar`
         try {
+            const events = await this.listEvents(oauth2Client, calendarReferenceId) as GoogleEvent[]
             const eventsService = Container.resolve<EventsService>("EventsService");
             const mappedEvents = events.length !== 0 ? events.map((event) => {
                 return {
@@ -134,7 +136,7 @@ export default class GoogleCalendarService {
     }
 
     // events //
-    async listEvents(calendarReferenceId: string, oauth2Client: OAuth2Client) {
+    async listEvents(oauth2Client: OAuth2Client, calendarReferenceId: string): Promise<unknown> {
         const block = `${this.block}.listEvents`
     
         try {

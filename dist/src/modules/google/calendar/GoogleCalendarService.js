@@ -33,10 +33,11 @@ class GoogleCalendarService {
             return calendars.filter((calendar) => calendar.accessRole === 'owner');
         });
     }
-    updateCalendar(calendarId, events) {
+    updateCalendar(oauth2Client, calendarReferenceId, calendarId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateCalendar`;
             try {
+                const events = yield this.listEvents(oauth2Client, calendarReferenceId);
                 const eventsService = Container_1.default.resolve("EventsService");
                 const mappedEvents = events.length !== 0 ? events.map((event) => {
                     return Object.assign(Object.assign({}, event), { calendarId: calendarId });
@@ -124,7 +125,7 @@ class GoogleCalendarService {
         });
     }
     // events //
-    listEvents(calendarReferenceId, oauth2Client) {
+    listEvents(oauth2Client, calendarReferenceId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.listEvents`;
             try {

@@ -8,6 +8,7 @@ import { CalendarData } from "../../calendars/calendars.interface";
 import { GoogleEvent } from "../../events/events.interface";
 import EventsService from "../../events/EventsService";
 import { GoogleError } from "../google.errors";
+import { calendar } from "googleapis/build/src/apis/calendar";
 
 export default class GoogleCalendarController {
     private readonly block = "google.controller";
@@ -22,6 +23,7 @@ export default class GoogleCalendarController {
     }
 
     async handleCalendarNotifications(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.handleNotifications`;
         try {
             const headers = req.headers;
           
@@ -39,11 +41,17 @@ export default class GoogleCalendarController {
                 return;
             };
 
+            if(!resource.calendarReferenceId) {
+                throw new GoogleError("Googlecalendar configuration error", {
+                    block: `${this.block}.calendarReferenceIdCheck`,
+                    resource: resource
+                })
+            }
+
             const client = await this.googleService.clientManager.getcredentialedClient(resource.userId);
 
-            const events: unknown = await this.googleService.calendarService.listEvents(resource.calendarReferenceId, client);
 
-            await this.googleService.calendarService.updateCalendar(resource.calendarId!, events as GoogleEvent[]);
+            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId!);
 
             res.status(200).send();
         } catch (error) {
@@ -147,7 +155,7 @@ export default class GoogleCalendarController {
                 throw new NotFoundError();
             }
 
-            const data = await this.googleService.calendarService.listEvents(resource.calendarReferenceId, client);
+            const data = await this.googleService.calendarService.listEvents(client, resource.calendarReferenceId);
             res.status(200).json({ data: data })
         } catch (error) {
             throw error;
@@ -186,10 +194,10 @@ export default class GoogleCalendarController {
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
             await this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
+            await this.googleService.calendarService.updateCalendar(client, calendar.calendarReferenceId, calendar.calendarId!)
 
             res.status(200).json({ message: "Event added"})
         } catch (error) {
-            console.log(error, "CREATE  EVENT::::::::::")
             throw error;
         }
     }
@@ -220,7 +228,10 @@ export default class GoogleCalendarController {
 
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-            await this.googleService.calendarService.deleteEvent(client, resource.calendarReferenceId, resource.eventReferenceId)
+            await this.googleService.calendarService.deleteEvent(client, resource.calendarReferenceId, resource.eventReferenceId);
+            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId);
+            
+            res.status(200).json({ message: "Event deleted"})
         } catch (error) {
             throw error;
         }

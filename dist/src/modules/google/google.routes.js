@@ -57,6 +57,14 @@ const initializeGoogleRouter = (customController) => {
     #swagger.description = 'create event'
     */
     calendarController.createEvent.bind(calendarController));
+    secureRouter.delete("/calendars/events/:eventId", 
+    /*
+    #swagger.tags = ['Google']
+     #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.path = '/google/secure/calendars/events/{eventId}'
+    #swagger.description = 'delete an event'
+    */
+    calendarController.deleteEvent.bind(calendarController));
     secureRouter.get("/calendars/events/:calendarId", 
     /*
     #swagger.tags = ['Google']
