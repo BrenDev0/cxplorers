@@ -341,22 +341,12 @@
         ]
       }
     },
-    "/google/secure/calendars/events/{calendarId}": {
+    "/calendars/secure/events/:calendarId": {
       "post": {
         "tags": [
           "Google"
         ],
         "description": "create event",
-        "parameters": [
-          {
-            "name": "calendarId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "default": {
             "description": ""
@@ -366,7 +356,17 @@
           {
             "bearerAuth": []
           }
-        ]
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createEvent"
+              }
+            }
+          }
+        }
       }
     },
     "/google/secure/calendars/events/{eventId}": {
@@ -892,6 +892,16 @@
           }
         }
       }
+    },
+    "createEvent": {
+      "summary": "title",
+      "startTime": "isoDateString",
+      "endTime": "isoDateString",
+      "attendees": [
+        {
+          "email": "attendees is optional"
+        }
+      ]
     }
   }
 }

@@ -156,11 +156,11 @@ class GoogleCalendarController {
             try {
                 const user = req.user;
                 const calendarId = req.params.calendarId;
-                const requiredFields = ["start", "end", "summary"];
+                const requiredFields = ["startTime", "endTime", "summary"];
                 const event = Object.assign(Object.assign({}, req.body), { start: {
-                        dateTime: req.body.start
+                        dateTime: req.body.startTime
                     }, end: {
-                        dateTime: req.body.end
+                        dateTime: req.body.endTime
                     } });
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);

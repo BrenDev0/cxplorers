@@ -167,15 +167,15 @@ export default class GoogleCalendarController {
         try {
             const user = req.user;
             const calendarId = req.params.calendarId;
-            const requiredFields = ["start", "end", "summary"];
+            const requiredFields = ["startTime", "endTime", "summary"];
             
             const event = {
                 ...req.body,
                 start: {
-                    dateTime: req.body.start
+                    dateTime: req.body.startTime
                 },
                 end: {
-                    dateTime: req.body.end
+                    dateTime: req.body.endTime
                 }
             }
             
