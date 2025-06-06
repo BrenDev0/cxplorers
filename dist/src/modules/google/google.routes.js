@@ -69,7 +69,7 @@ const initializeGoogleRouter = (customController) => {
     router.get("/callback", 
     // #swagger.ignore = true    
     controller.callback.bind(controller));
-    router.post("/calendars/notifications", calendarController.handleCalendarNotifications.bind(controller));
+    router.post("/calendars/notifications", calendarController.handleCalendarNotifications.bind(calendarController));
     // mounts // 
     router.use("/secure", secureRouter);
     console.log("Google router initialized.");

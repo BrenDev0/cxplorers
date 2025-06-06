@@ -94,7 +94,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
 
     router.post("/calendars/notifications", 
 
-        calendarController.handleCalendarNotifications.bind(controller)
+        calendarController.handleCalendarNotifications.bind(calendarController)
     )
 
     // mounts // 
