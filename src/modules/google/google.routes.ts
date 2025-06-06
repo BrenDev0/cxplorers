@@ -83,15 +83,15 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         calendarController.deleteEvent.bind(calendarController)
     )
 
-    secureRouter.get("/calendars/events/:calendarId", 
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars/events/{calendarId}' 
-        #swagger.description = 'get users calendars events'
-        */
-        calendarController.getCalendarEvents.bind(calendarController)
-    )
+    // secureRouter.get("/calendars/events/:calendarId", 
+    //     /*
+    //     #swagger.tags = ['Google'] 
+    //      #swagger.security = [{ "bearerAuth": [] }]
+    //     #swagger.path = '/google/secure/calendars/events/{calendarId}' 
+    //     #swagger.description = 'get users calendars events'
+    //     */
+    //     calendarController.getCalendarEvents.bind(calendarController)
+    // )
 
     
 

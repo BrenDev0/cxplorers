@@ -54,6 +54,19 @@ export default class EventsService {
         }
     }
 
+    async collection(userId: string): Promise<EventData[]> {
+        try {
+            const result = await this.repository.select("user_id", userId);
+
+            const data = result.map((event) => this.mapFromDb(event));
+
+            return data;
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "resource", {userId})
+            throw error;
+        }
+    }
+
     async update(eventId: string, changes: GoogleEvent): Promise<Event> {
         const mappedChanges = this.mapToDb(changes);
         const cleanedChanges = Object.fromEntries(

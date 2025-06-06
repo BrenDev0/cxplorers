@@ -15,10 +15,19 @@ class EventsController {
         this.httpService = httpService;
         this.eventsService = eventsService;
     }
-    resourceRequest(req, res) {
+    // async resourceRequest(req: Request, res: Response): Promise<void> {
+    //   const block = `${this.block}.resourceRequest`;
+    //   try {
+    //   } catch (error) {
+    //     throw error;
+    //   }
+    // }
+    collectionRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const block = `${this.block}.resourceRequest`;
             try {
+                const user = req.user;
+                const data = yield this.eventsService.collection(user.user_id);
+                res.status(200).json({ data: data });
             }
             catch (error) {
                 throw error;

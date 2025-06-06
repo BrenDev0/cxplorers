@@ -15,14 +15,25 @@ export default class EventsController {
     this.eventsService = eventsService;
   }
 
-  async resourceRequest(req: Request, res: Response): Promise<void> {
-    const block = `${this.block}.resourceRequest`;
-    try {
+  // async resourceRequest(req: Request, res: Response): Promise<void> {
+  //   const block = `${this.block}.resourceRequest`;
+  //   try {
       
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  async collectionRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const user = req.user;
+
+      const data = await this.eventsService.collection(user.user_id);
+
+      res.status(200).json({ data: data });
     } catch (error) {
       throw error;
     }
   }
-
 
 }

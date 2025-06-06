@@ -65,6 +65,19 @@ class EventsService {
             }
         });
     }
+    collection(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select("user_id", userId);
+                const data = result.map((event) => this.mapFromDb(event));
+                return data;
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { userId });
+                throw error;
+            }
+        });
+    }
     update(eventId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
