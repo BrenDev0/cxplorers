@@ -179,7 +179,7 @@ export default class GoogleCalendarService {
         }
     }
 
-    async addEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, event: any) {
+    async addEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, event: Record<string, any>) {
         const block = `${this.block}.addEvent`
         try {
            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
@@ -192,6 +192,26 @@ export default class GoogleCalendarService {
             return;
         } catch (error) {
             throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+    }
+
+    async updateEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, eventReferenceId: string, eventUpdates: Record<string, any>) {
+        const block = `${this.block}.updateEvent`
+        try {
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+            const response = calendar.events.patch({
+                calendarId: calendarReferenceId,
+                eventId: eventReferenceId,
+                requestBody: eventUpdates
+            })
+
+            return;
+        } catch (error) {
+             throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message
             });

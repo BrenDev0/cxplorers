@@ -69,7 +69,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
         #swagger.path = '/calendars/secure/events/:calendarId' 
-        #swagger.description = 'create event'
+        #swagger.description = 'create event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters'
         #swagger.requestBody = {
             required: true,
             content: {
@@ -79,7 +79,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
             }
         }
         */
-        calendarController.createEvent.bind(calendarController)
+        calendarController.createEventRequest.bind(calendarController)
     )
 
     secureRouter.delete("/calendars/events/:eventId", 
@@ -89,7 +89,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         #swagger.path = '/google/secure/calendars/events/{eventId}' 
         #swagger.description = 'delete an event'
         */
-        calendarController.deleteEvent.bind(calendarController)
+        calendarController.deleteEventRequest.bind(calendarController)
     )
 
     // secureRouter.get("/calendars/events/:calendarId", 

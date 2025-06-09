@@ -181,6 +181,26 @@ class GoogleCalendarService {
             }
         });
     }
+    updateEvent(oauth2Client, calendarReferenceId, eventReferenceId, eventUpdates) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.updateEvent`;
+            try {
+                const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const response = calendar.events.patch({
+                    calendarId: calendarReferenceId,
+                    eventId: eventReferenceId,
+                    requestBody: eventUpdates
+                });
+                return;
+            }
+            catch (error) {
+                throw new google_errors_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
     deleteEvent(oauth2Client, calendarReferenceId, eventId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.deleteEvent`;

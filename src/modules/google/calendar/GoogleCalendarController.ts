@@ -177,8 +177,8 @@ export default class GoogleCalendarController {
         }
     } 
 
-    async createEvent(req: Request, res: Response): Promise<void> {
-        const block = `${this.block}.createEvent`
+    async createEventRequest(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.createEventRequest`
         try {
             const user = req.user;
             const calendarId = req.params.calendarId;
@@ -208,6 +208,13 @@ export default class GoogleCalendarController {
                 });
             };
 
+             if(calendar.userId !== user.user_id) {
+                throw new AuthorizationError(undefined, {
+                    calendarUserId: calendar.userId,
+                    user: user.user_id
+                })
+            }
+
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
             await this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
@@ -219,8 +226,48 @@ export default class GoogleCalendarController {
         }
     }
 
-    async deleteEvent(req: Request, res: Response): Promise<void> {
-        const block =  `${this.block}.deleteEvent`;
+    // async updateEventRequest(req: Request, res: Response): Promise<void> {
+    //     const block = `${this.block}.updateEventRequest`
+    //     try {
+    //         const user = req.user;
+    //         const eventId = req.params.eventId;
+
+    //         const eventUpdates = {
+    //             ...req.body,
+                
+    //         }
+
+    //         this.httpService.requestValidation.validateUuid(eventId, "eventId", block);
+
+    //         const eventService = Container.resolve<EventsService>("EventsService");
+    //         const resource = await eventService.resource(eventId);
+    //         if(!resource) {
+    //             throw new NotFoundError(undefined, {
+    //                 block: `${block}.eventExistsCheck`,
+    //                 rescource: resource || `No event found in db with id: ${eventId}` 
+    //             });
+    //         }
+
+    //         if(!resource.calendarReferenceId) {
+    //             throw new GoogleError("Calendar configuration error", {
+    //                 block: `${block}.calendarReferenceCheck`,
+    //                 rescource: resource  
+    //             });
+    //         }
+
+    //         const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+
+    //         await this.googleService.calendarService.updateEvent(client, resource.calendarReferenceId, resource.eventReferenceId);
+    //         await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId, user.user_id);
+
+    //         res.status(200).json({ message: "Event deleted"})
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+
+    async deleteEventRequest(req: Request, res: Response): Promise<void> {
+        const block =  `${this.block}.deleteEventRequest`;
         try {
             const user = req.user;
             const eventId = req.params.eventId;
