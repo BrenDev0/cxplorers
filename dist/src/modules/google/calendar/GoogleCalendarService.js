@@ -33,7 +33,7 @@ class GoogleCalendarService {
             return calendars.filter((calendar) => calendar.accessRole === 'owner');
         });
     }
-    updateCalendar(oauth2Client, calendarReferenceId, calendarId) {
+    updateCalendar(oauth2Client, calendarReferenceId, calendarId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateCalendar`;
             try {
@@ -44,10 +44,28 @@ class GoogleCalendarService {
                 }) : [];
                 const encryptionService = Container_1.default.resolve("EncryptionService");
                 const existingEvents = events.length !== 0 ? events.map((event) => encryptionService.encryptData(event.id)) : [];
-                yield Promise.all([
+                const [updatedEvents, deletedEvents] = yield Promise.all([
                     mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),
                     existingEvents.length === 0 ? eventsService.delete("calendar_id", calendarId) : eventsService.deleteNonExistingEvents(existingEvents)
                 ]);
+                const eventAttendees = updatedEvents
+                    ? updatedEvents.flatMap((event) => {
+                        const originalEvent = events.find((i) => i.id === encryptionService.decryptData(event.event_reference_id));
+                        return originalEvent && originalEvent.attendees.length !== 0
+                            ? originalEvent.attendees.map((attendee) => {
+                                return {
+                                    eventId: event.event_id,
+                                    email: attendee.email,
+                                    status: attendee.responseStatus,
+                                    source: "GOOGLE",
+                                    userId: userId
+                                };
+                            })
+                            : [];
+                    })
+                    : [];
+                const eventAttendeesService = Container_1.default.resolve("EventAttendeesService");
+                eventAttendees.length !== 0 && (yield eventAttendeesService.handleAttendees(eventAttendees));
                 return;
             }
             catch (error) {

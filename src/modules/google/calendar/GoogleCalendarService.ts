@@ -6,10 +6,12 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import Container from "../../../core/dependencies/Container";
 import EventsService from "../../events/EventsService";
-import { GoogleEvent } from "../../events/events.interface";
+import { Event, GoogleEvent } from "../../events/events.interface";
 import AppError from "../../../core/errors/AppError";
 import EncryptionService from "../../../core/services/EncryptionService";
 import { CalendarData } from "../../calendars/calendars.interface";
+import EventAttendeesService from "../../eventAtendees/EventAttendeesService";
+import { GoogleAttendee } from "../../eventAtendees/eventAttendees.interface";
 
 export interface notificationResult {
     watchId: string;
@@ -34,7 +36,7 @@ export default class GoogleCalendarService {
         return calendars.filter((calendar) => calendar.accessRole === 'owner');
     }
 
-    async updateCalendar(oauth2Client: OAuth2Client, calendarReferenceId: string, calendarId: string) {
+    async updateCalendar(oauth2Client: OAuth2Client, calendarReferenceId: string, calendarId: string, userId: string) {
         const block = `${this.block}.updateCalendar`
         try {
             const events = await this.listEvents(oauth2Client, calendarReferenceId) as GoogleEvent[]
@@ -49,10 +51,31 @@ export default class GoogleCalendarService {
             const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
             const existingEvents = events.length !== 0 ? events.map((event) => encryptionService.encryptData(event.id)) : [];
 
-            await Promise.all([
+            const [updatedEvents, deletedEvents] = await Promise.all([
                 mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),
                 existingEvents.length === 0 ? eventsService.delete("calendar_id", calendarId) : eventsService.deleteNonExistingEvents(existingEvents)
             ])
+
+           const eventAttendees = updatedEvents
+            ? updatedEvents.flatMap((event: Event) => {
+                const originalEvent = events.find((i) => i.id === encryptionService.decryptData(event.event_reference_id))
+
+                return originalEvent &&  originalEvent.attendees.length !== 0
+                    ? originalEvent.attendees.map((attendee) => {
+                        return {
+                            eventId: event.event_id,
+                            email: attendee.email,
+                            status: attendee.responseStatus,
+                            source: "GOOGLE",
+                            userId: userId
+                        }
+                    })
+                    : []
+                })
+            : []
+
+           const eventAttendeesService = Container.resolve<EventAttendeesService>("EventAttendeesService")
+           eventAttendees.length !== 0 && await eventAttendeesService.handleAttendees(eventAttendees as GoogleAttendee[])
 
             return;
         } catch (error) {

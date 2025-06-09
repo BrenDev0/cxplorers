@@ -65,10 +65,11 @@ export interface GoogleEvent {
   }
   eventType: string;
   description: string;
+  attendees: Record<string, string>[]
 }
 
 export interface IEventsRepository<Event> extends IRepository<Event> {
   resource(eventId: string): Promise<Event | null>
-  upsertMany(cols: string[], values: any[]): Promise<Event | Event[]>;
+  upsert(cols: string[], values: any[]): Promise<Event[]>;
   deleteMany(eventReferenceIds: string[]): Promise<Event[]>;
 }

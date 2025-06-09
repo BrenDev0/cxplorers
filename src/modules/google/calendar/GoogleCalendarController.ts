@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { BadRequestError, NotFoundError } from "../../../core/errors/errors";
+import { AuthorizationError, BadRequestError, NotFoundError } from "../../../core/errors/errors";
 import Container from "../../../core/dependencies/Container";
 import GoogleService from "../GoogleService";
 import HttpService from "../../../core/services/HttpService";
@@ -49,7 +49,7 @@ export default class GoogleCalendarController {
             const client = await this.googleService.clientManager.getcredentialedClient(resource.userId);
 
 
-            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId!);
+            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId!, resource.userId);
 
             res.status(200).send();
         } catch (error) {
@@ -60,6 +60,7 @@ export default class GoogleCalendarController {
     async syncCalendar(req: Request, res: Response): Promise<void> {
         const block = `${this.block}.syncCalendar`
         try {
+            const user = req.user;
             const calendarId = req.params.calendarId;
             
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
@@ -72,7 +73,14 @@ export default class GoogleCalendarController {
                 })
             }
 
-            const client = await this.googleService.clientManager.getcredentialedClient(resource.userId);
+            if(resource.userId !== user.user_id) {
+                throw new AuthorizationError(undefined, {
+                    calendarUserId: resource.userId,
+                    user: user.user_id
+                })
+            }
+
+            const client = await this.googleService.clientManager.getcredentialedClient(user.userId);
 
             const result = await this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, client);
             const changes = {
@@ -82,7 +90,7 @@ export default class GoogleCalendarController {
             }
            
             await this.platformCalendarService.update(resource.calendarId!, changes as CalendarData);
-            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId!);
+            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId!, user.user_id);
             
             res.status(200).json({ message: "calendar synced"})
         } catch (error) {
@@ -93,6 +101,7 @@ export default class GoogleCalendarController {
     async unSyncCalendar(req: Request, res: Response): Promise<void> {
         const block = `${this.block}.syncCalendar`
         try {
+            const user = req.user;
             const calendarId = req.params.calendarId;
             
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
@@ -111,7 +120,14 @@ export default class GoogleCalendarController {
                 })
             }
 
-            const client = await this.googleService.clientManager.getcredentialedClient(resource.userId);
+            if(resource.userId !== user.user_id) {
+                throw new AuthorizationError(undefined, {
+                    calendarUserId: resource.userId,
+                    user: user.user_id
+                })
+            }
+
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
           
             await this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, client);
             const changes =  {
@@ -122,7 +138,6 @@ export default class GoogleCalendarController {
             await this.platformCalendarService.update(resource.calendarId!, changes as CalendarData);
             res.status(200).json({ message: "calendar unsynced"})
         } catch (error) {
-            console.log("ERRROR uncsync:::::::::", error)
             throw error;
         }
     }
@@ -169,6 +184,7 @@ export default class GoogleCalendarController {
             const calendarId = req.params.calendarId;
             const requiredFields = ["startTime", "endTime", "summary"];
             
+            // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters
             const event = {
                 ...req.body,
                 start: {
@@ -176,7 +192,8 @@ export default class GoogleCalendarController {
                 },
                 end: {
                     dateTime: req.body.endTime
-                }
+                },
+                sendUpdates: "all"
             }
             
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
@@ -194,7 +211,7 @@ export default class GoogleCalendarController {
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
             await this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
-            await this.googleService.calendarService.updateCalendar(client, calendar.calendarReferenceId, calendar.calendarId!)
+            await this.googleService.calendarService.updateCalendar(client, calendar.calendarReferenceId, calendar.calendarId!, user.user_id)
 
             res.status(200).json({ message: "Event added"})
         } catch (error) {
@@ -229,7 +246,7 @@ export default class GoogleCalendarController {
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
             await this.googleService.calendarService.deleteEvent(client, resource.calendarReferenceId, resource.eventReferenceId);
-            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId);
+            await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId, user.user_id);
 
             res.status(200).json({ message: "Event deleted"})
         } catch (error) {

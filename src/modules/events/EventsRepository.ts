@@ -7,7 +7,7 @@ export default class EventsRepository extends BaseRepository<Event> implements I
         super(pool, "events")
     }
 
-    async upsertMany(cols: string[], values: any[]): Promise<Event | Event[]> {
+    async upsert(cols: string[], values: any[]): Promise<Event[]> {
         
         const numCols = cols.length;
         const numRows = values.length / numCols;
@@ -40,7 +40,7 @@ export default class EventsRepository extends BaseRepository<Event> implements I
             values
         );
 
-        return numRows === 1 ? result.rows[0] : result.rows;
+        return result.rows;
     }
 
     async resource(eventId: string): Promise<Event | null> {

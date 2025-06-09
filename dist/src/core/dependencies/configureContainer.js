@@ -30,6 +30,7 @@ const tokens_dependencies_1 = require("../../modules/tokens/tokens.dependencies"
 const calendars_dependencies_1 = require("../../modules/calendars/calendars.dependencies");
 const events_dependencies_1 = require("../../modules/events/events.dependencies");
 const contacts_dependencies_1 = require("../../modules/contacts/contacts.dependencies");
+const eventAttendees_dependencies_1 = require("../../modules/eventAtendees/eventAttendees.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -65,12 +66,14 @@ function configureContainer(testPool, testRedis) {
         (0, contacts_dependencies_1.configureContactsDependencies)(pool);
         // events // 
         (0, events_dependencies_1.configureEventsDependencies)(pool);
+        // event attendies //
+        (0, eventAttendees_dependencies_1.configureEventAtendeesDependencies)(pool);
         // google //
         (0, google_dependencies_1.configureGoogleDependencies)(pool);
-        // tokens //
-        (0, tokens_dependencies_1.configureTokensDependencies)(pool);
         // users //
         (0, users_dependencies_1.configureUsersDependencies)(pool);
+        // tokens //
+        (0, tokens_dependencies_1.configureTokensDependencies)(pool);
         // middleware --- must configure users above this block //
         const usersService = Container_1.default.resolve("UsersService");
         const middlewareService = new MiddlewareService_1.default(webtokenService, usersService, errorHandler);

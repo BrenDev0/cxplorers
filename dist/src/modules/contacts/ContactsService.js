@@ -31,6 +31,26 @@ class ContactService {
             }
         });
     }
+    upsert(contacts, conflicCol) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mappedContacts = contacts.map((contact) => this.mapToDb(contact));
+            const cols = Object.keys(mappedContacts[0]);
+            const values = mappedContacts.flatMap(contact => cols.map(col => { var _a; return (_a = contact[col]) !== null && _a !== void 0 ? _a : null; }));
+            try {
+                const result = yield this.repository.upsert(cols, values, conflicCol);
+                return result;
+            }
+            catch (error) {
+                console.log(error);
+                (0, error_service_1.handleServiceError)(error, this.block, "upsert", {
+                    cols,
+                    values,
+                    conflicCol
+                });
+                throw error;
+            }
+        });
+    }
     resource(contactId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -90,7 +110,8 @@ class ContactService {
             first_name: contact.firstName && encryptionService.encryptData(contact.firstName),
             last_name: contact.lastName && encryptionService.encryptData(contact.lastName),
             email: contact.email && encryptionService.encryptData(contact.email),
-            phone: contact.phone && encryptionService.encryptData(contact.phone)
+            phone: contact.phone && encryptionService.encryptData(contact.phone),
+            source: contact.source
         };
     }
     mapFromDb(contact) {
@@ -101,7 +122,8 @@ class ContactService {
             firstName: contact.first_name && encryptionService.decryptData(contact.first_name),
             lastName: contact.last_name && encryptionService.decryptData(contact.last_name),
             email: contact.email && encryptionService.decryptData(contact.email),
-            phone: contact.phone && encryptionService.decryptData(contact.phone)
+            phone: contact.phone && encryptionService.decryptData(contact.phone),
+            source: contact.source
         };
     }
 }

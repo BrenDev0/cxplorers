@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseRepository_1 = __importDefault(require("../../core/repository/BaseRepository"));
-class EventsRepository extends BaseRepository_1.default {
+class EventAttendeesRepositoy extends BaseRepository_1.default {
     constructor(pool) {
-        super(pool, "events");
+        super(pool, "event_attendees");
     }
     upsert(cols, values) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,13 +31,7 @@ class EventsRepository extends BaseRepository_1.default {
             INSERT INTO ${this.table}
             (${cols.join(", ")})
             values ${placeholders}
-            ON CONFLICT (event_reference_id) DO UPDATE SET
-            updated_at = EXCLUDED.updated_at,
-            summary = EXCLUDED.summary,
-            start_time = EXCLUDED.start_time,
-            start_timezone = EXCLUDED.start_timezone,
-            end_time = EXCLUDED.end_time,
-            end_timezone = EXCLUDED.end_timezone,
+            ON CONFLICT (contact_id, event_id) DO UPDATE SET
             status = EXCLUDED.status
             RETURNING *
         `;
@@ -45,29 +39,5 @@ class EventsRepository extends BaseRepository_1.default {
             return result.rows;
         });
     }
-    resource(eventId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const sqlRead = `
-            SELECT events.*, calendars.calendar_reference_id
-            FROM events
-            JOIN calendars ON events.calendar_id = calendars.calendar_id
-            WHERE events.event_id = $1;
-        `;
-            const result = yield this.pool.query(sqlRead, [eventId]);
-            return result.rows[0] || null;
-        });
-    }
-    deleteMany(referenceIds) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const placeholders = referenceIds.map((_, i) => `$${i + 1}`);
-            const sqlDelete = `
-            DELETE FROM events
-            WHERE event_reference_id NOT IN (${placeholders.join(", ")})
-            RETURNING *
-        `;
-            const result = yield this.pool.query(sqlDelete, referenceIds);
-            return result.rows;
-        });
-    }
 }
-exports.default = EventsRepository;
+exports.default = EventAttendeesRepositoy;

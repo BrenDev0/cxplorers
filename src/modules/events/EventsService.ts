@@ -22,18 +22,18 @@ export default class EventsService {
         }
     }
 
-    async upsert(events: GoogleEvent[]): Promise<Event[] | Event> {
+    async upsert(events: GoogleEvent[]): Promise<Event[]> {
         
         const mappedEvents = events.map((event) =>  this.mapToDb(event));
         const cols = Object.keys(mappedEvents[0]);
         const values: (string | number | null)[] = mappedEvents.flatMap(event => cols.map(col => (event as any)[col] ?? null));
         try {
-            const result = await this.repository.upsertMany(cols, values);
+            const result = await this.repository.upsert(cols, values);
 
             return result;
         } catch (error) {
             console.log(error);
-            handleServiceError(error as Error, this.block, "resource", {
+            handleServiceError(error as Error, this.block, "upsert", {
                 cols,
                 values
             })

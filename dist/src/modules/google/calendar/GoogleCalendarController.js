@@ -46,7 +46,7 @@ class GoogleCalendarController {
                     });
                 }
                 const client = yield this.googleService.clientManager.getcredentialedClient(resource.userId);
-                yield this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId);
+                yield this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId, resource.userId);
                 res.status(200).send();
             }
             catch (error) {
@@ -58,6 +58,7 @@ class GoogleCalendarController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.syncCalendar`;
             try {
+                const user = req.user;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const resource = yield this.platformCalendarService.resource(calendarId);
@@ -67,7 +68,13 @@ class GoogleCalendarController {
                         resource: resource || "Calendar not found"
                     });
                 }
-                const client = yield this.googleService.clientManager.getcredentialedClient(resource.userId);
+                if (resource.userId !== user.user_id) {
+                    throw new errors_1.AuthorizationError(undefined, {
+                        calendarUserId: resource.userId,
+                        user: user.user_id
+                    });
+                }
+                const client = yield this.googleService.clientManager.getcredentialedClient(user.userId);
                 const result = yield this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, client);
                 const changes = {
                     watchChannel: result.watchId,
@@ -75,7 +82,7 @@ class GoogleCalendarController {
                     channelExpiration: result.expiration
                 };
                 yield this.platformCalendarService.update(resource.calendarId, changes);
-                yield this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId);
+                yield this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId, user.user_id);
                 res.status(200).json({ message: "calendar synced" });
             }
             catch (error) {
@@ -87,6 +94,7 @@ class GoogleCalendarController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.syncCalendar`;
             try {
+                const user = req.user;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const resource = yield this.platformCalendarService.resource(calendarId);
@@ -101,7 +109,13 @@ class GoogleCalendarController {
                         resource
                     });
                 }
-                const client = yield this.googleService.clientManager.getcredentialedClient(resource.userId);
+                if (resource.userId !== user.user_id) {
+                    throw new errors_1.AuthorizationError(undefined, {
+                        calendarUserId: resource.userId,
+                        user: user.user_id
+                    });
+                }
+                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
                 yield this.googleService.calendarService.CancelCalendarNotifications(resource.watchChannelResourceId, resource.watchChannel, client);
                 const changes = {
                     watchChannel: null,
@@ -112,7 +126,6 @@ class GoogleCalendarController {
                 res.status(200).json({ message: "calendar unsynced" });
             }
             catch (error) {
-                console.log("ERRROR uncsync:::::::::", error);
                 throw error;
             }
         });
@@ -157,11 +170,12 @@ class GoogleCalendarController {
                 const user = req.user;
                 const calendarId = req.params.calendarId;
                 const requiredFields = ["startTime", "endTime", "summary"];
+                // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters
                 const event = Object.assign(Object.assign({}, req.body), { start: {
                         dateTime: req.body.startTime
                     }, end: {
                         dateTime: req.body.endTime
-                    } });
+                    }, sendUpdates: "all" });
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const calendar = yield this.platformCalendarService.resource(calendarId);
@@ -174,7 +188,7 @@ class GoogleCalendarController {
                 ;
                 const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
                 yield this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
-                yield this.googleService.calendarService.updateCalendar(client, calendar.calendarReferenceId, calendar.calendarId);
+                yield this.googleService.calendarService.updateCalendar(client, calendar.calendarReferenceId, calendar.calendarId, user.user_id);
                 res.status(200).json({ message: "Event added" });
             }
             catch (error) {
@@ -205,7 +219,7 @@ class GoogleCalendarController {
                 }
                 const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
                 yield this.googleService.calendarService.deleteEvent(client, resource.calendarReferenceId, resource.eventReferenceId);
-                yield this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId);
+                yield this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId, user.user_id);
                 res.status(200).json({ message: "Event deleted" });
             }
             catch (error) {

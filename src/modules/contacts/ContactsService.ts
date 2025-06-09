@@ -3,11 +3,12 @@ import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
+import ContactsRepository from './ContactsRepository';
 
 export default class ContactService {
-    private repository: BaseRepository<Contact>;
+    private repository: ContactsRepository;
     private block = "contacts.service"
-    constructor(repository: BaseRepository<Contact>) {
+    constructor(repository: ContactsRepository) {
         this.repository = repository
     }
 
@@ -17,6 +18,26 @@ export default class ContactService {
             return this.repository.create(mappedContact);
         } catch (error) {
             handleServiceError(error as Error, this.block, "create", mappedContact)
+            throw error;
+        }
+    }
+
+    async upsert<T>(contacts: T[], conflicCol: string): Promise<Contact[]> {
+            
+        const mappedContacts = contacts.map((contact) =>  this.mapToDb(contact as ContactData));
+        const cols = Object.keys(mappedContacts[0]);
+        const values: (string | number | null)[] = mappedContacts.flatMap(contact => cols.map(col => (contact as any)[col] ?? null));
+        try {
+            const result = await this.repository.upsert(cols, values, conflicCol);
+          
+            return result;
+        } catch (error) {
+            console.log(error);
+            handleServiceError(error as Error, this.block, "upsert", {
+                cols,
+                values,
+                conflicCol
+            })
             throw error;
         }
     }
@@ -76,7 +97,8 @@ export default class ContactService {
             first_name: contact.firstName && encryptionService.encryptData(contact.firstName),
             last_name: contact.lastName && encryptionService.encryptData(contact.lastName),
             email: contact.email && encryptionService.encryptData(contact.email),
-            phone: contact.phone && encryptionService.encryptData(contact.phone)
+            phone: contact.phone && encryptionService.encryptData(contact.phone),
+            source: contact.source
         }
     }
 
@@ -88,7 +110,8 @@ export default class ContactService {
             firstName: contact.first_name && encryptionService.decryptData(contact.first_name),
             lastName: contact.last_name && encryptionService.decryptData(contact.last_name),
             email: contact.email && encryptionService.decryptData(contact.email),
-            phone: contact.phone && encryptionService.decryptData(contact.phone)
+            phone: contact.phone && encryptionService.decryptData(contact.phone),
+            source: contact.source
         }
     }
 }

@@ -59,17 +59,17 @@ describe("USERS ROUTES", () => {
         })
     })
 
-    describe("GET GOOGLE CALENDARS EVENTS", () => {
-        it("should return a list of events", async() => {
-            const res = await request(app)
-            .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-            .set("Authorization", token)
+    // describe("GET GOOGLE CALENDARS EVENTS", () => {
+    //     it("should return a list of events", async() => {
+    //         const res = await request(app)
+    //         .get("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+    //         .set("Authorization", token)
 
-            console.log(res.body)
-            expect(res.status).toBe(200);
-            expect(res.body).toHaveProperty("data")
-        })
-    })
+    //         console.log(res.body)
+    //         expect(res.status).toBe(200);
+    //         expect(res.body).toHaveProperty("data")
+    //     })
+    // })
 
     // describe("sync google  calendar", () => {
     //     it("should sync calendar", async() => {
@@ -93,30 +93,35 @@ describe("USERS ROUTES", () => {
     //     })
     // })
 
-    // describe("create google calendar event", () => {
-    //     const start = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
-    //     const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-    //     it("should create event", async() => {
-    //         const res = await request(app)
-    //         .post("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-    //         .set("Authorization", token)
-    //         .send({
-    //             start: start,
-    //             end: end,
-    //             summary: "added event from jest" 
-    //         })
-            
-    //         expect(res.status).toBe(200);
-    //     })
-    // })
-
-     describe("delete google calendar event", () => {
-        it("should delete event", async() => {
+    describe("create google calendar event", () => {
+        const start = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+        const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+        it("should create event", async() => {
             const res = await request(app)
-            .delete("/google/secure/calendars/events/a6682149-4442-4e1c-9c57-f884c03276e1")
+            .post("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
             .set("Authorization", token)
+            .send({
+                startTime: start,
+                endTime: end,
+                summary: "added event from jest",
+                attendees: [
+                    {
+                        email: "lahey1991@gmail.com"
+                    }
+                ]
+            })
             
             expect(res.status).toBe(200);
         })
     })
+
+    // describe("delete google calendar event", () => {
+    //     it("should delete event", async() => {
+    //         const res = await request(app)
+    //         .delete("/google/secure/calendars/events/a6682149-4442-4e1c-9c57-f884c03276e1")
+    //         .set("Authorization", token)
+            
+    //         expect(res.status).toBe(200);
+    //     })
+    // })
 })

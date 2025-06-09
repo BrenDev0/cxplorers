@@ -18,6 +18,7 @@ import { configureTokensDependencies } from '../../modules/tokens/tokens.depende
 import { configureCalendarsDependencies } from '../../modules/calendars/calendars.dependencies';
 import { configureEventsDependencies } from '../../modules/events/events.dependencies';
 import { configureContactsDependencies } from '../../modules/contacts/contacts.dependencies';
+import { configureEventAtendeesDependencies } from '../../modules/eventAtendees/eventAttendees.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -66,15 +67,20 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // events // 
     configureEventsDependencies(pool);
+
+    // event attendies //
+    configureEventAtendeesDependencies(pool);
     
     // google //
     configureGoogleDependencies(pool);
 
+    // users //
+    configureUsersDependencies(pool);
+
     // tokens //
     configureTokensDependencies(pool);
 
-    // users //
-    configureUsersDependencies(pool);
+    
 
    // middleware --- must configure users above this block //
     const usersService = Container.resolve<UserService>("UsersService");
