@@ -80,7 +80,7 @@ export default class GoogleCalendarController {
                 })
             }
 
-            const client = await this.googleService.clientManager.getcredentialedClient(user.userId);
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
             const result = await this.googleService.calendarService.requestCalendarNotifications(resource.calendarReferenceId, client);
             const changes = {
@@ -184,7 +184,7 @@ export default class GoogleCalendarController {
             const calendarId = req.params.calendarId;
             const requiredFields = ["startTime", "endTime", "summary"];
             
-            // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters
+            // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert  reference for parameters
             const event = {
                 ...req.body,
                 start: {
@@ -226,45 +226,51 @@ export default class GoogleCalendarController {
         }
     }
 
-    // async updateEventRequest(req: Request, res: Response): Promise<void> {
-    //     const block = `${this.block}.updateEventRequest`
-    //     try {
-    //         const user = req.user;
-    //         const eventId = req.params.eventId;
+    async updateEventRequest(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.updateEventRequest`
+        try {
+            const user = req.user;
+            const eventId = req.params.eventId;
 
-    //         const eventUpdates = {
-    //             ...req.body,
-                
-    //         }
+            const eventUpdates = {
+                ...req.body,
+                start: {
+                    dateTime: req.body.startTime
+                },
+                end: {
+                    dateTime: req.body.endTime
+                },
+                sendUpdates: "all"
+            }
 
-    //         this.httpService.requestValidation.validateUuid(eventId, "eventId", block);
+            this.httpService.requestValidation.validateUuid(eventId, "eventId", block);
 
-    //         const eventService = Container.resolve<EventsService>("EventsService");
-    //         const resource = await eventService.resource(eventId);
-    //         if(!resource) {
-    //             throw new NotFoundError(undefined, {
-    //                 block: `${block}.eventExistsCheck`,
-    //                 rescource: resource || `No event found in db with id: ${eventId}` 
-    //             });
-    //         }
+            const eventService = Container.resolve<EventsService>("EventsService");
+            const eventResource = await eventService.resource(eventId);
+            if(!eventResource) {
+                throw new NotFoundError(undefined, {
+                    block: `${block}.eventExistsCheck`,
+                    rescource: eventResource || `No event found in db with id: ${eventId}` 
+                });
+            }
 
-    //         if(!resource.calendarReferenceId) {
-    //             throw new GoogleError("Calendar configuration error", {
-    //                 block: `${block}.calendarReferenceCheck`,
-    //                 rescource: resource  
-    //             });
-    //         }
+            if(!eventResource.calendarReferenceId) {
+                throw new GoogleError("Calendar configuration error", {
+                    block: `${block}.calendarReferenceCheck`,
+                    rescource: eventResource  
+                });
+            }
 
-    //         const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-    //         await this.googleService.calendarService.updateEvent(client, resource.calendarReferenceId, resource.eventReferenceId);
-    //         await this.googleService.calendarService.updateCalendar(client, resource.calendarReferenceId, resource.calendarId, user.user_id);
+            await this.googleService.calendarService.updateEvent(client, eventResource.calendarReferenceId, eventResource.eventReferenceId, eventUpdates);
+            await this.googleService.calendarService.updateCalendar(client, eventResource.calendarReferenceId, eventResource.calendarId, user.user_id);
 
-    //         res.status(200).json({ message: "Event deleted"})
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
+            res.status(200).json({ message: "Event deleted"})
+        } catch (error) {
+            throw error;
+        }
+    }
 
     async deleteEventRequest(req: Request, res: Response): Promise<void> {
         const block =  `${this.block}.deleteEventRequest`;

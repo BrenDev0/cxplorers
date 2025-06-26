@@ -34,4 +34,14 @@ export default class EventAttendeesRepositoy extends BaseRepository<EventAttende
 
         return result.rows;
     }
+
+    async deleteOne(contactId: string, eventId: string): Promise<EventAttendee> {
+        const sqlDelete = `
+            DELETE FROM event_attendees WHERE contact_id = $1 AND event_id = $2
+        `
+
+        const result = await this.pool.query(sqlDelete, [contactId, eventId]);
+
+        return result.rows[0]
+    }
 }

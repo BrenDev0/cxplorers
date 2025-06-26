@@ -39,5 +39,14 @@ class EventAttendeesRepositoy extends BaseRepository_1.default {
             return result.rows;
         });
     }
+    deleteOne(contactId, eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlDelete = `
+            DELETE FROM event_attendees WHERE contact_id = $1 AND event_id = $2
+        `;
+            const result = yield this.pool.query(sqlDelete, [contactId, eventId]);
+            return result.rows[0];
+        });
+    }
 }
 exports.default = EventAttendeesRepositoy;

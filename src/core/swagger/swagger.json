@@ -341,12 +341,50 @@
         ]
       }
     },
-    "/calendars/secure/events/:calendarId": {
+    "/secure/calendars/events/:calendarId": {
       "post": {
         "tags": [
           "Google"
         ],
-        "description": "create event",
+        "description": "create event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createEvent"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/secure/calendars/events/{calendarId}": {
+      "put": {
+        "tags": [
+          "Google"
+        ],
+        "description": "update event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters",
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -897,15 +935,15 @@
         "properties": {
           "summary": {
             "type": "string",
-            "example": "title"
+            "example": "title required"
           },
           "startTime": {
             "type": "string",
-            "example": "isoDateString"
+            "example": "isoDateString required"
           },
           "endTime": {
             "type": "string",
-            "example": "isoDateString"
+            "example": "isoDateString required"
           },
           "attendees": {
             "type": "array",

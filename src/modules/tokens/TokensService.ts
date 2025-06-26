@@ -11,10 +11,10 @@ export default class TokenService {
         this.repository = repository
     }
 
-    async create(token: TokenData): Promise<Token> {
+    async create(token: Omit<TokenData, "tokenId">): Promise<Token> {
         const mappedToken = this.mapToDb(token);
         try {
-            return this.repository.create(mappedToken);
+            return this.repository.create(mappedToken as Token);
         } catch (error) {
             handleServiceError(error as Error, this.block, "create", mappedToken)
             throw error;
@@ -69,7 +69,7 @@ export default class TokenService {
         }
     }
 
-    mapToDb(token: TokenData): Token {
+    mapToDb(token: Omit<TokenData, "tokenId">): Omit<Token, "token_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             token: token.token,
@@ -82,6 +82,7 @@ export default class TokenService {
     mapFromDb(token: Token): TokenData {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
+            tokenId: token.token_id,
             token: encryptionService.decryptData(token.token),
             userId: token.user_id,
             type: token.type,

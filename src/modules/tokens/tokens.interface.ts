@@ -1,5 +1,5 @@
 export interface Token {
-  token_id?: string;
+  token_id: string;
   token: string;
   user_id: string;
   type: string;
@@ -7,7 +7,7 @@ export interface Token {
 }
 
 export interface TokenData {
-  tokenId?: string;
+  tokenId: string;
   token: string;
   userId: string;
   type: string;

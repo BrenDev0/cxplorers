@@ -11,11 +11,11 @@ export default class UsersService {
         this.repository = repository
     }
 
-    async create(user: UserData): Promise<User> {
+    async create(user: Omit<UserData, "tokenId">): Promise<User> {
         const mappedUser = this.mapToDb(user);
         try {
             // from parent class ../../core/repository/BaseRepository
-            return this.repository.create(mappedUser);
+            return this.repository.create(mappedUser as User);
         } catch (error) {
             handleServiceError(error as Error, this.block, "create", mappedUser)
             throw error;
@@ -61,7 +61,7 @@ export default class UsersService {
         }
     }
 
-    mapToDb(user: UserData): User {
+    mapToDb(user: Omit<UserData, "userId">): Omit<User, "user_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
            email: user.email && encryptionService.encryptData(user.email),

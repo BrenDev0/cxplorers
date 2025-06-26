@@ -12,10 +12,10 @@ export default class ContactService {
         this.repository = repository
     }
 
-    async create(contact: ContactData): Promise<Contact> {
+    async create(contact: Omit<ContactData, "contactId">): Promise<Contact> {
         const mappedContact = this.mapToDb(contact);
         try {
-            return this.repository.create(mappedContact);
+            return this.repository.create(mappedContact as Contact);
         } catch (error) {
             handleServiceError(error as Error, this.block, "create", mappedContact)
             throw error;
@@ -90,7 +90,7 @@ export default class ContactService {
         }
     }
 
-    mapToDb(contact: ContactData): Contact {
+    mapToDb(contact: Omit<ContactData, "contactId">): Omit<Contact, "contact_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             user_id: contact.userId,

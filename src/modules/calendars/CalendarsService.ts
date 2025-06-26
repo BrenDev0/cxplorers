@@ -11,10 +11,10 @@ export default class CalendarsService {
         this.repository = repository
     }
 
-    async create(calendar: CalendarData): Promise<Calendar> {
+    async create(calendar: Omit<CalendarData, "calendarId">): Promise<Calendar> {
         const mappedCalendar = this.mapToDb(calendar);
         try {
-            return this.repository.create(mappedCalendar);
+            return this.repository.create(mappedCalendar as Calendar);
         } catch (error) {
             handleServiceError(error as Error, this.block, "create", mappedCalendar)
             throw error;
@@ -82,7 +82,7 @@ export default class CalendarsService {
         }
     }
 
-    mapToDb(calendar: CalendarData): Calendar {
+    mapToDb(calendar: Omit<CalendarData, "calendarId">): Omit<Calendar, "calendar_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             user_id: calendar.userId,

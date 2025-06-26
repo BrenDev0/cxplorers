@@ -68,7 +68,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/calendars/secure/events/:calendarId' 
+        #swagger.path = '/secure/calendars/events/:calendarId' 
         #swagger.description = 'create event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters'
         #swagger.requestBody = {
             required: true,
@@ -80,6 +80,24 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         }
         */
         calendarController.createEventRequest.bind(calendarController)
+    )
+
+    secureRouter.put("/calendars/events/:eventId", 
+        /*
+        #swagger.tags = ['Google'] 
+         #swagger.security = [{ "bearerAuth": [] }]
+        #swagger.path = '/secure/calendars/events/{calendarId}' 
+        #swagger.description = 'update event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: { $ref: "#/components/schemas/createEvent" }
+                }
+            }
+        }
+        */
+        calendarController.updateEventRequest.bind(calendarController)
     )
 
     secureRouter.delete("/calendars/events/:eventId", 

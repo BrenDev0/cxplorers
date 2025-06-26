@@ -15,7 +15,7 @@ export default class EventsService {
     async create(event: GoogleEvent): Promise<Event> {
         const mappedEvent = this.mapToDb(event);
         try {
-            return this.repository.create(mappedEvent);
+            return this.repository.create(mappedEvent as Event);
         } catch (error) {
             handleServiceError(error as Error, this.block, "create", mappedEvent)
             throw error;
@@ -100,7 +100,7 @@ export default class EventsService {
         }
     }
 
-    mapToDb(event: GoogleEvent): Event {
+    mapToDb(event: GoogleEvent): Omit<Event, "event_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             event_reference_id: encryptionService.encryptData(event.id),

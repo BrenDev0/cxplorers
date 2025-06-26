@@ -16,9 +16,11 @@ export interface GoogleAttendee {
   eventId: string;
   email: string;
   status: string;
-  source?: string
+  source?: string;
+  userId?: string
 }
 
 export interface IEventAttendeesRepository<EventAttendee> extends IRepository<EventAttendee> {
   upsert(cols: string[], values: any[]): Promise<EventAttendee[]>;
+  deleteOne(contactId: string, eventId: string): Promise<EventAttendee>
 }

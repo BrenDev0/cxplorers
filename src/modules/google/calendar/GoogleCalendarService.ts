@@ -12,6 +12,7 @@ import EncryptionService from "../../../core/services/EncryptionService";
 import { CalendarData } from "../../calendars/calendars.interface";
 import EventAttendeesService from "../../eventAtendees/EventAttendeesService";
 import { GoogleAttendee } from "../../eventAtendees/eventAttendees.interface";
+import ContactService from "../../contacts/ContactsService";
 
 export interface notificationResult {
     watchId: string;
@@ -40,7 +41,7 @@ export default class GoogleCalendarService {
         const block = `${this.block}.updateCalendar`
         try {
             const events = await this.listEvents(oauth2Client, calendarReferenceId) as GoogleEvent[]
-            const eventsService = Container.resolve<EventsService>("EventsService");
+            
             const mappedEvents = events.length !== 0 ? events.map((event) => {
                 return {
                     ...event,
@@ -51,34 +52,56 @@ export default class GoogleCalendarService {
             const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
             const existingEvents = events.length !== 0 ? events.map((event) => encryptionService.encryptData(event.id)) : [];
 
+            const eventsService = Container.resolve<EventsService>("EventsService");
             const [updatedEvents, deletedEvents] = await Promise.all([
                 mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),
                 existingEvents.length === 0 ? eventsService.delete("calendar_id", calendarId) : eventsService.deleteNonExistingEvents(existingEvents)
             ])
+            
+            const eventAttendeesService = Container.resolve<EventAttendeesService>("EventAttendeesService")
+            const eventAttendees: GoogleAttendee[] = []
 
-           const eventAttendees = updatedEvents
-            ? updatedEvents.flatMap((event: Event) => {
-                const originalEvent = events.find((i) => i.id === encryptionService.decryptData(event.event_reference_id))
+            if(updatedEvents){
+                const contactsService = Container.resolve<ContactService>("ContactsService");
+                const contacts = await contactsService.collection(userId);
+                const contactsMap = new Map(
+                    contacts.map((contact) =>  [contact.email, contact.contactId])
+                )
 
-                return originalEvent &&  originalEvent.attendees.length !== 0
-                    ? originalEvent.attendees.map((attendee) => {
-                        return {
-                            eventId: event.event_id,
-                            email: attendee.email,
-                            status: attendee.responseStatus,
-                            source: "GOOGLE",
-                            userId: userId
+                for(const eventInDb of updatedEvents) {
+                    const eventFromGoogle = events.find((i) => i.id === encryptionService.decryptData(eventInDb.event_reference_id));
+
+                    if(eventFromGoogle) {
+                        const inDbAttending = await eventAttendeesService.collection("event_id", eventInDb.event_id)
+                        const updatedAttending = eventFromGoogle.attendees.map((attendee) => contactsMap.get(attendee.email));
+                        const attendeesToDelete = inDbAttending.filter((attendee) =>  !updatedAttending.includes(attendee.contactId))
+
+                        console.log(attendeesToDelete, "TO be deleted :::::::::::::::")
+                        if(attendeesToDelete.length !== 0) {
+                            for(const attendee of attendeesToDelete) {
+                                await eventAttendeesService.deleteOne(attendee.contactId, eventInDb.event_id)
+                            }
                         }
-                    })
-                    : []
-                })
-            : []
+                  
+                        for(const attendee of eventFromGoogle.attendees) {
+                            eventAttendees.push({
+                                eventId: eventInDb.event_id,
+                                email: attendee.email,
+                                status: attendee.responseStatus,
+                                source: "GOOGLE",
+                                userId: userId
+                            })
+                        }
+                    }
 
-           const eventAttendeesService = Container.resolve<EventAttendeesService>("EventAttendeesService")
+                }
+            }
+           
            eventAttendees.length !== 0 && await eventAttendeesService.handleAttendees(eventAttendees as GoogleAttendee[])
 
             return;
         } catch (error) {
+            console.log(error, "ERROR::::::")
              throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message

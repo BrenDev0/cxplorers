@@ -55,6 +55,17 @@ export default class EventAttendeesService {
         }
     }
 
+    async collection(whereCol: string, identifier: string): Promise<EventAttendeeData[]> {
+        try {
+            const result = await this.repository.select(whereCol, identifier);
+            return result.map((attendee) => this.mapFromDb(attendee))
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "collection", { whereCol, identifier })
+            throw error;
+        }
+    }
+
+
     // async update(changes: EventAtendeeData): Promise<EventAtendee> {
     //     const mappedChanges = this.mapToDb(changes);
     //     const cleanedChanges = Object.fromEntries(
@@ -76,6 +87,26 @@ export default class EventAttendeesService {
     //         throw error;
     //     }
     // }
+
+    async deleteEventAttendees(eventId: string): Promise<EventAttendee[]> {
+        try {
+             return await this.repository.delete("event_id", eventId) as EventAttendee[];
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "delete", { eventId })
+            throw error;
+        }
+    }
+
+    async deleteOne(contactId: string, eventId: string): Promise<EventAttendee> {
+        try {
+            const result = await this.repository.deleteOne(contactId, eventId);
+
+            return result;
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "deleteOne", { eventId })
+            throw error;
+        }
+    }
 
     async handleAttendees(attendees: GoogleAttendee[]): Promise<EventAttendee[]> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");

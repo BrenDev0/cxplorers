@@ -1,7 +1,7 @@
 import { IRepository } from "../../core/repository/repository.interface";
 
 export interface Event {
-  event_id?:string;
+  event_id:string;
   event_reference_id: string;
   calendar_id: string;
   created_at: Date;
@@ -17,7 +17,7 @@ export interface Event {
 }
 
 export interface EventData {
-  eventId?:string;
+  eventId:string;
   eventReferenceId: string;
   calendarId: string;
   createdAt: Date;

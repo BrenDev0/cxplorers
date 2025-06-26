@@ -65,6 +65,18 @@ class EventAttendeesService {
             }
         });
     }
+    collection(whereCol, identifier) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select(whereCol, identifier);
+                return result.map((attendee) => this.mapFromDb(attendee));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { whereCol, identifier });
+                throw error;
+            }
+        });
+    }
     // async update(changes: EventAtendeeData): Promise<EventAtendee> {
     //     const mappedChanges = this.mapToDb(changes);
     //     const cleanedChanges = Object.fromEntries(
@@ -85,6 +97,29 @@ class EventAttendeesService {
     //         throw error;
     //     }
     // }
+    deleteEventAttendees(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield this.repository.delete("event_id", eventId);
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "delete", { eventId });
+                throw error;
+            }
+        });
+    }
+    deleteOne(contactId, eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.deleteOne(contactId, eventId);
+                return result;
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "deleteOne", { eventId });
+                throw error;
+            }
+        });
+    }
     handleAttendees(attendees) {
         return __awaiter(this, void 0, void 0, function* () {
             const encryptionService = Container_1.default.resolve("EncryptionService");

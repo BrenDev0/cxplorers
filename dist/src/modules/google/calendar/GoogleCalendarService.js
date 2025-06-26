@@ -38,37 +38,51 @@ class GoogleCalendarService {
             const block = `${this.block}.updateCalendar`;
             try {
                 const events = yield this.listEvents(oauth2Client, calendarReferenceId);
-                const eventsService = Container_1.default.resolve("EventsService");
                 const mappedEvents = events.length !== 0 ? events.map((event) => {
                     return Object.assign(Object.assign({}, event), { calendarId: calendarId });
                 }) : [];
                 const encryptionService = Container_1.default.resolve("EncryptionService");
                 const existingEvents = events.length !== 0 ? events.map((event) => encryptionService.encryptData(event.id)) : [];
+                const eventsService = Container_1.default.resolve("EventsService");
                 const [updatedEvents, deletedEvents] = yield Promise.all([
                     mappedEvents.length !== 0 && eventsService.upsert(mappedEvents),
                     existingEvents.length === 0 ? eventsService.delete("calendar_id", calendarId) : eventsService.deleteNonExistingEvents(existingEvents)
                 ]);
-                const eventAttendees = updatedEvents
-                    ? updatedEvents.flatMap((event) => {
-                        const originalEvent = events.find((i) => i.id === encryptionService.decryptData(event.event_reference_id));
-                        return originalEvent && originalEvent.attendees.length !== 0
-                            ? originalEvent.attendees.map((attendee) => {
-                                return {
-                                    eventId: event.event_id,
+                const eventAttendeesService = Container_1.default.resolve("EventAttendeesService");
+                const eventAttendees = [];
+                if (updatedEvents) {
+                    const contactsService = Container_1.default.resolve("ContactsService");
+                    const contacts = yield contactsService.collection(userId);
+                    const contactsMap = new Map(contacts.map((contact) => [contact.email, contact.contactId]));
+                    for (const eventInDb of updatedEvents) {
+                        const eventFromGoogle = events.find((i) => i.id === encryptionService.decryptData(eventInDb.event_reference_id));
+                        if (eventFromGoogle) {
+                            const inDbAttending = yield eventAttendeesService.collection("event_id", eventInDb.event_id);
+                            const updatedAttending = eventFromGoogle.attendees.map((attendee) => contactsMap.get(attendee.email));
+                            const attendeesToDelete = inDbAttending.filter((attendee) => !updatedAttending.includes(attendee.contactId));
+                            console.log(attendeesToDelete, "TO be deleted :::::::::::::::");
+                            if (attendeesToDelete.length !== 0) {
+                                for (const attendee of attendeesToDelete) {
+                                    yield eventAttendeesService.deleteOne(attendee.contactId, eventInDb.event_id);
+                                }
+                            }
+                            for (const attendee of eventFromGoogle.attendees) {
+                                eventAttendees.push({
+                                    eventId: eventInDb.event_id,
                                     email: attendee.email,
                                     status: attendee.responseStatus,
                                     source: "GOOGLE",
                                     userId: userId
-                                };
-                            })
-                            : [];
-                    })
-                    : [];
-                const eventAttendeesService = Container_1.default.resolve("EventAttendeesService");
+                                });
+                            }
+                        }
+                    }
+                }
                 eventAttendees.length !== 0 && (yield eventAttendeesService.handleAttendees(eventAttendees));
                 return;
             }
             catch (error) {
+                console.log(error, "ERROR::::::");
                 throw new google_errors_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message

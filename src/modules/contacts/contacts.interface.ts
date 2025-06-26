@@ -1,7 +1,7 @@
 import { IRepository } from "../../core/repository/repository.interface";
 
 export interface Contact {
-  contact_id?: string;
+  contact_id: string;
   user_id: string;
   first_name: string;
   last_name: string;
@@ -11,7 +11,7 @@ export interface Contact {
 }
 
 export interface ContactData {
-  contactId?: string;
+  contactId: string;
   userId: string;
   firstName: string;
   lastName: string;

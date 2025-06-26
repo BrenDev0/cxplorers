@@ -1,7 +1,7 @@
 import { IRepository } from "../../core/repository/repository.interface";
 
 export interface User {
-  user_id?: string;
+  user_id: string;
   email: string;
   password: string;
   name: string;
@@ -10,7 +10,7 @@ export interface User {
 }
 
 export interface UserData {
-  userId?: string;
+  userId: string;
   email: string;
   name: string;
   phone: string;

@@ -199,7 +199,8 @@ class UsersController {
                 const token = yield this.emailService.handleRequest(email, "RECOVERY", this.httpService.webtokenService);
                 res.status(200).json({
                     message: "Recovery email sent",
-                    token: token
+                    token: token,
+                    userId: emailExists.user_id
                 });
             }
             catch (error) {

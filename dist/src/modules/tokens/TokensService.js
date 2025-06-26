@@ -95,6 +95,7 @@ class TokenService {
     mapFromDb(token) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            tokenId: token.token_id,
             token: encryptionService.decryptData(token.token),
             userId: token.user_id,
             type: token.type,
