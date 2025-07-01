@@ -66,6 +66,18 @@ class PipelinesController {
             }
         });
     }
+    collectionRequest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = req.user;
+                const data = yield this.pipelinesService.collection(user.user_id);
+                res.status(200).json({ data });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     updateRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateRequest`;

@@ -75,6 +75,17 @@ export default class PipelinesController {
     }
   }
 
+  async collectionRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const user = req.user;
+      const data = await this.pipelinesService.collection(user.user_id);
+
+      res.status(200).json({ data })
+    } catch (error) {
+      throw error
+    }
+  }
+
   async updateRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.updateRequest`;
     try { 

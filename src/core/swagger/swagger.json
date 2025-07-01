@@ -639,6 +639,24 @@
         ]
       }
     },
+    "/pipelines/secure/collection": {
+      "get": {
+        "tags": [
+          "Pipelines"
+        ],
+        "description": "get pipelines by user id in token",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/pipelines/secure/{piplineId}": {
       "put": {
         "tags": [

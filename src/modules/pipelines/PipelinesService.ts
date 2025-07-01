@@ -34,6 +34,17 @@ export default class PipelinesService {
         }
     }
 
+    async collection(userId: string): Promise<PipelineData[]> {
+        try {
+            const result = await this.repository.select("user_id", userId);
+            
+            return result.map((pipeline) => this.mapFromDb(pipeline))
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "resource", {userId})
+            throw error;
+        }
+    }
+
     async update(pipelineId: string, changes: PipelineData): Promise<Pipeline> {
         const mappedChanges = this.mapToDb(changes);
         const cleanedChanges = Object.fromEntries(

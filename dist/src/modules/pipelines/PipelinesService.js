@@ -46,6 +46,18 @@ class PipelinesService {
             }
         });
     }
+    collection(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select("user_id", userId);
+                return result.map((pipeline) => this.mapFromDb(pipeline));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { userId });
+                throw error;
+            }
+        });
+    }
     update(pipelineId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
