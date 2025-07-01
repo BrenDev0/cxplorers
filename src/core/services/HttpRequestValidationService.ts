@@ -1,4 +1,5 @@
-import { BadRequestError, InvalidIdError } from "../errors/errors";
+import Container from "../dependencies/Container";
+import { AuthorizationError, BadRequestError, InvalidIdError, NotFoundError } from "../errors/errors";
 import { isUUID } from "validator";
 
 export default class HttpRequestValidationService {
@@ -56,4 +57,33 @@ export default class HttpRequestValidationService {
         
         return filteredBody as T;
     }
+
+    async validateResource<T>(
+        resourceId: string,
+        serviceKey: string,
+        notFoundMessage = "Resource not found",
+        block: string
+    ): Promise<T> {
+         const service = Container.resolve<any>(serviceKey) as {
+            resource: (id: string) => Promise<T | null>;
+        };
+        const resource = await service.resource(resourceId)
+
+        if (!resource) {
+            throw new NotFoundError(notFoundMessage, {
+                block
+            });
+        }
+
+        return resource as T
+    }
+
+    validateActionAuthorization(userId: string, resourceUserId: string, block: string) {
+        if(userId !== resourceUserId) {
+        throw new AuthorizationError(undefined, {
+            block
+        })
+      }
+    }
+
 }

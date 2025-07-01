@@ -45,20 +45,8 @@ export default class CalendarsController {
       const calendarId = req.params.calendarId;
       this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
-      const resource = await this.calendarsService.resource(calendarId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          calendarId,
-          resource: resource || "Calendar not found"
-        });
-      };
-
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          calendarUserId: resource.userId,
-          requestUserId: user.userId
-        })
-      }
+      const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarssService", "Calendar not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       res.status(200).json({ data: resource })
     } catch (error) {
@@ -71,7 +59,7 @@ export default class CalendarsController {
       const user = req.user;
 
       const data = await this.calendarsService.collection(user.user_id);
-      console.log("DATA:::::::::::", data)
+  
       res.status(200).json({ data: data });
     } catch (error) {
       throw error;
@@ -118,20 +106,8 @@ export default class CalendarsController {
       const calendarId = req.params.calendarId;
       this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
-      const resource = await this.calendarsService.resource(calendarId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          calendarId,
-          resource: resource || "Calendar not found"
-        });
-      };
-
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          calendarUserId: resource.userId,
-          requestUserId: user.userId
-        })
-      }
+     const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarssService", "Calendar not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       await this.calendarsService.delete(calendarId);
       res.status(200).json({ message: "Calendar deleted"})

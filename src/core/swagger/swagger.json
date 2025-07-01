@@ -445,6 +445,128 @@
         }
       }
     },
+    "/pipelines/secure/create": {
+      "post": {
+        "tags": [
+          "Pipelines"
+        ],
+        "description": "create pipeline, stages field is optional",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createPipeline"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pipelines/secure/resource/{pipelineId}": {
+      "get": {
+        "tags": [
+          "Pipelines"
+        ],
+        "description": "get pipeline by id",
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/pipelines/secure/{piplineId}": {
+      "put": {
+        "tags": [
+          "Pipelines"
+        ],
+        "description": "Update pipelines",
+        "parameters": [
+          {
+            "name": "piplineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updatePipeline"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pipelines/secure/{pipelineId}": {
+      "delete": {
+        "tags": [
+          "Pipelines"
+        ],
+        "description": "delete pipeline by id",
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/tokens/secure/create": {
       "post": {
         "tags": [
@@ -953,6 +1075,27 @@
                 "email": {
                   "type": "string",
                   "example": "attendees is optional"
+                }
+              }
+            }
+          }
+        }
+      },
+      "createPipeline": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "required"
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "stage 2"
                 }
               }
             }

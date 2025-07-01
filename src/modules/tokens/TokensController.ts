@@ -51,17 +51,12 @@ export default class TokensController {
   async resourceRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.resourceRequest`;
     try {
+      const user = req.user;
       const tokenId = req.params.tokenId;
       this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
 
-      const resource = await this.tokensService.resource(tokenId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.resourceCheck`,
-          id: tokenId,
-          resource: resource || "no token found in db"
-        })
-      }
+      const resource = await this.httpService.requestValidation.validateResource<TokenData>(tokenId, "TokensService", "Token not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       res.status(200).json({ data: resource})
     } catch (error) {
@@ -76,19 +71,9 @@ export default class TokensController {
       const tokenId = req.params.tokenId;
       this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
 
-     const resource = await this.tokensService.resource(tokenId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+     const resource = await this.httpService.requestValidation.validateResource<TokenData>(tokenId, "TokensService", "Token not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
-      if(resource.userId != user.user_id) {
-        throw new AuthorizationError(undefined, {
-          tokenUserId: resource.userId,
-          userId: user.user_id
-        })
-      }
       const allowedChanges = ["token", "type", "service"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<TokenData>(allowedChanges, req.body, block);
@@ -108,19 +93,8 @@ export default class TokensController {
       const tokenId = req.params.tokenId;
       this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
 
-     const resource = await this.tokensService.resource(tokenId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
-
-      if(resource.userId != user.user_id) {
-        throw new AuthorizationError(undefined, {
-          tokenUserId: resource.userId,
-          userId: user.user_id
-        })
-      }
+     const resource = await this.httpService.requestValidation.validateResource<TokenData>(tokenId, "TokensService", "Token not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       await this.tokensService.delete(tokenId);
       res.status(200).json({ message: "Token deleted"})

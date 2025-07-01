@@ -8,7 +8,7 @@ export class AuthenticationError extends AppError {
 }
 
 export class AuthorizationError extends AppError {
-  constructor(message = 'You are not authorized to perform this action', context?: Record<string, unknown>) {
+  constructor(message = 'User not authorized to perform this action', context?: Record<string, unknown>) {
     super(message, 403, true, context);
     this.name = 'AuthorizationError';
   }

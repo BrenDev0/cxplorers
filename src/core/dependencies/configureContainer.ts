@@ -19,6 +19,8 @@ import { configureCalendarsDependencies } from '../../modules/calendars/calendar
 import { configureEventsDependencies } from '../../modules/events/events.dependencies';
 import { configureContactsDependencies } from '../../modules/contacts/contacts.dependencies';
 import { configureEventAtendeesDependencies } from '../../modules/eventAtendees/eventAttendees.dependencies';
+import { configurePipelinesDependencies } from '../../modules/pipelines/pipelines.dependencies';
+import { configureStagesDependencies } from '../../modules/stages/stages.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -74,11 +76,19 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     // google //
     configureGoogleDependencies(pool);
 
+    // pipelines //
+    configurePipelinesDependencies(pool);
+
+    // stages // 
+    configureStagesDependencies(pool);
+    
+    // tokens //
+    configureTokensDependencies(pool);
+    
     // users //
     configureUsersDependencies(pool);
 
-    // tokens //
-    configureTokensDependencies(pool);
+    
 
     
 

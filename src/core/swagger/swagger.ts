@@ -85,6 +85,10 @@ const doc = {
       startTime: "isoDateString required",
       endTime: "isoDateString required",
       attendees: [{email: "attendees is optional"}]
+     },
+     createPipeline: {
+      name: "required",
+      stages: [{name: "stage 1"}, {name: "stage 2"}]
      }
     },
     
@@ -98,6 +102,8 @@ const endpointsFiles = [
   '../../modules/contacts/contacts.routes.ts',
   '../../modules/events/events.routes.ts',
   '../../modules/google/google.routes.ts',
+  '../../modules/pipelines/pipelines.routes.ts',
+  '../../modules/stages/stages.routes.ts',
   '../../modules/tokens/tokens.routes.ts',
   '../../modules/users/users.routes.ts'
   

@@ -44,21 +44,9 @@ export default class ContactsController {
       const contactId = req.params.contactId;
 
       this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
-      const resource = await this.contactsService.resource(contactId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}contactExistsCheck`,
-          resource: resource || `No contact found in db with id: ${contactId}`
-        });
-      }
 
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          block: `${block}.userCheck`,
-          contactUserId: resource.userId,
-          user: user.user_id
-        })
-      }
+      const resource = await this.httpService.requestValidation.validateResource<ContactData>(contactId, "ContactsService", "Contact not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       res.status(200).json({ data: resource });
     } catch (error) {
@@ -86,21 +74,8 @@ export default class ContactsController {
 
       this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
 
-      const resource = await this.contactsService.resource(contactId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.contactExistsCheck`,
-          resource: resource || `No contact found in db with id: ${contactId}`
-        });
-      }
-
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          block: `${block}.userCheck`,
-          contactUserId: resource.userId,
-          user: user.user_id
-        })
-      }
+      const resource = await this.httpService.requestValidation.validateResource<ContactData>(contactId, "ContactsService", "Contact not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       const allowedChanges = ["firstName", "lastName", "email", "phone"];
 
@@ -121,21 +96,9 @@ export default class ContactsController {
       const contactId = req.params.contactId;
 
       this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
-      const resource = await this.contactsService.resource(contactId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}contactExistsCheck`,
-          resource: resource || `No contact found in db with id: ${contactId}`
-        });
-      }
-
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          block: `${block}.userCheck`,
-          contactUserId: resource.userId,
-          user: user.user_id
-        })
-      }
+      
+      const resource = await this.httpService.requestValidation.validateResource<ContactData>(contactId, "ContactsService", "Contact not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       await this.contactsService.delete(contactId);
       
