@@ -567,6 +567,62 @@
         ]
       }
     },
+    "/stages/secure/collection/{pipelineId}": {
+      "get": {
+        "tags": [
+          "Stages"
+        ],
+        "description": "get stages by pipelineId",
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/stages/secure/{stageId}": {
+      "delete": {
+        "tags": [
+          "Stages"
+        ],
+        "description": "delete stage by id",
+        "parameters": [
+          {
+            "name": "stageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/tokens/secure/create": {
       "post": {
         "tags": [
@@ -1095,7 +1151,7 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "stage 2"
+                  "example": "stage 1"
                 }
               }
             }

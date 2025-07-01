@@ -9,43 +9,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("../../core/errors/errors");
 class StagesController {
     constructor(httpService, stagesService) {
         this.block = "stages.controller";
         this.httpService = httpService;
         this.stagesService = stagesService;
     }
-    createRequest(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const block = `${this.block}.createRequest`;
-            try {
-                const user = req.user;
-                const pipelineId = req.params.pipelineId;
-                this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
-                const pipelineResource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
-                const requiredFields = ["stages"];
-                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const { stages } = req.body;
-                if (!Array.isArray(stages)) {
-                    throw new errors_1.BadRequestError("Invalid data format", {
-                        block: block,
-                        detail: "Property 'Stages' must be of type array",
-                        typeInReq: typeof stages
-                    });
-                }
-                const mappedStages = stages.map((stage) => {
-                    return Object.assign(Object.assign({}, stage), { pipelineId: pipelineId });
-                });
-                yield this.stagesService.createMany(mappedStages);
-                res.status(200).json({ message: "stages added." });
-            }
-            catch (error) {
-                throw error;
-            }
-        });
-    }
+    // async createRequest(req: Request, res: Response): Promise<void> {
+    //   const block = `${this.block}.createRequest`;
+    //   try {
+    //     const user = req.user;
+    //     const pipelineId = req.params.pipelineId;
+    //     this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
+    //     const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelinesService", "Pipeline not found", block)
+    //     this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+    //     const requiredFields = ["stages"];
+    //     this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+    //     const { stages } = req.body;
+    //     if(!Array.isArray(stages)) {
+    //       throw new BadRequestError("Invalid data format", {
+    //         block: block,
+    //         detail: "Property 'Stages' must be of type array",
+    //         typeInReq: typeof stages
+    //       })
+    //     }
+    //     const mappedStages = stages.map((stage) => {
+    //       return {
+    //         ...stage,
+    //         pipelineId: pipelineId
+    //       }
+    //     })
+    //     await this.stagesService.createMany(mappedStages);
+    //     res.status(200).json({ message: "stages added." });
+    //   } catch (error) {
+    //     throw error;
+    //   }
+    // }
     // async resourceRequest(req: Request, res: Response): Promise<void> {
     //   const block = `${this.block}.resourceRequest`;
     //   try {
@@ -71,26 +70,23 @@ class StagesController {
             }
         });
     }
-    updateRequest(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const block = `${this.block}.updateRequest`;
-            try {
-                const user = req.user;
-                const stageId = req.params.stageId;
-                this.httpService.requestValidation.validateUuid(stageId, "stageId", block);
-                const stageResource = yield this.httpService.requestValidation.validateResource(stageId, "StagesService", "Stage not found", block);
-                const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
-                const allowedChanges = ["name"];
-                const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
-                yield this.stagesService.update(stageId, filteredChanges);
-                res.status(200).json({ message: "Stage updated" });
-            }
-            catch (error) {
-                throw error;
-            }
-        });
-    }
+    // async updateRequest(req: Request, res: Response): Promise<void> {
+    //   const block = `${this.block}.updateRequest`;
+    //   try { 
+    //     const user = req.user;
+    //     const stageId = req.params.stageId;
+    //     this.httpService.requestValidation.validateUuid(stageId, "stageId", block);
+    //     const stageResource = await this.httpService.requestValidation.validateResource<StageData>(stageId, "StagesService", "Stage not found", block);
+    //     const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
+    //     this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+    //     const allowedChanges = ["name"];
+    //     const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<StageData>(allowedChanges, req.body, block);
+    //     await this.stagesService.update(stageId, filteredChanges);
+    //     res.status(200).json({ message: "Stage updated" });
+    //   } catch (error) {
+    //     throw error;
+    //   }
+    // }
     deleteRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.deleteRequest`;

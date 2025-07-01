@@ -11,25 +11,27 @@ export const initializeStagesRouter = (customController?: StagesController) => {
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
-     /*
+    // protected Routes //
+    secureRouter.get("/collection/:pipelineId", 
+        /*
         #swagger.tags = ['Stages']
-        #swagger.path =  '/stages/secure'
+        #swagger.path =  '/stages/secure/collection/{pipelineId}'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Update stages'
-        #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: { $ref: "#/components/schemas/updateStages" }
-                }
-            }
-        }
+        #swagger.description = 'get stages by pipelineId'
         */
 
-    // protected Routes //
+        controller.collectionRequest.bind(controller)
+    )
 
-
-  
+    secureRouter.delete("/:stageId", 
+        /*
+        #swagger.tags = ['Stages']
+        #swagger.path =  '/stages/secure/{stageId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'delete stage by id'
+        */
+        controller.deleteRequest.bind(controller)
+    )
 
     // mounts //
 

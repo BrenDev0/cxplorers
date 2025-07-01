@@ -88,7 +88,7 @@ const doc = {
      },
      createPipeline: {
       name: "required",
-      stages: [{name: "stage 1"}, {name: "stage 2"}]
+      stages: [{name: "stage 1"}]
      }
     },
     
