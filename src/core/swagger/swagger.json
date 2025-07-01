@@ -341,12 +341,22 @@
         ]
       }
     },
-    "/secure/calendars/events/:calendarId": {
+    "/secure/calendars/events/{calendarId}": {
       "post": {
         "tags": [
           "Google"
         ],
         "description": "create event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters",
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -367,9 +377,7 @@
             }
           }
         }
-      }
-    },
-    "/secure/calendars/events/{calendarId}": {
+      },
       "put": {
         "tags": [
           "Google"
