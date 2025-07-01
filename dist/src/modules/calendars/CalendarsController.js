@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("../../core/errors/errors");
 class CalendarsController {
     constructor(httpService, calendarsService) {
         this.block = "calendars.controller";
@@ -42,20 +41,8 @@ class CalendarsController {
                 const user = req.user;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
-                const resource = yield this.calendarsService.resource(calendarId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        calendarId,
-                        resource: resource || "Calendar not found"
-                    });
-                }
-                ;
-                if (resource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        calendarUserId: resource.userId,
-                        requestUserId: user.userId
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarssService", "Calendar not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -68,7 +55,6 @@ class CalendarsController {
             try {
                 const user = req.user;
                 const data = yield this.calendarsService.collection(user.user_id);
-                console.log("DATA:::::::::::", data);
                 res.status(200).json({ data: data });
             }
             catch (error) {
@@ -110,20 +96,8 @@ class CalendarsController {
                 const user = req.user;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
-                const resource = yield this.calendarsService.resource(calendarId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        calendarId,
-                        resource: resource || "Calendar not found"
-                    });
-                }
-                ;
-                if (resource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        calendarUserId: resource.userId,
-                        requestUserId: user.userId
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarssService", "Calendar not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 yield this.calendarsService.delete(calendarId);
                 res.status(200).json({ message: "Calendar deleted" });
             }

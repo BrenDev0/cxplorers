@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("../../core/errors/errors");
 class TokensController {
     constructor(httpService, tokensService) {
         this.block = "tokens.controller";
@@ -44,16 +43,11 @@ class TokensController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.resourceRequest`;
             try {
+                const user = req.user;
                 const tokenId = req.params.tokenId;
                 this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
-                const resource = yield this.tokensService.resource(tokenId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.resourceCheck`,
-                        id: tokenId,
-                        resource: resource || "no token found in db"
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(tokenId, "TokensService", "Token not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -68,18 +62,8 @@ class TokensController {
                 const user = req.user;
                 const tokenId = req.params.tokenId;
                 this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
-                const resource = yield this.tokensService.resource(tokenId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
-                if (resource.userId != user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        tokenUserId: resource.userId,
-                        userId: user.user_id
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(tokenId, "TokensService", "Token not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 const allowedChanges = ["token", "type", "service"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.tokensService.update(tokenId, filteredChanges);
@@ -97,18 +81,8 @@ class TokensController {
                 const user = req.user;
                 const tokenId = req.params.tokenId;
                 this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
-                const resource = yield this.tokensService.resource(tokenId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
-                if (resource.userId != user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        tokenUserId: resource.userId,
-                        userId: user.user_id
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(tokenId, "TokensService", "Token not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 yield this.tokensService.delete(tokenId);
                 res.status(200).json({ message: "Token deleted" });
             }

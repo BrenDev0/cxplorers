@@ -13,7 +13,7 @@ class AuthenticationError extends AppError_1.default {
 }
 exports.AuthenticationError = AuthenticationError;
 class AuthorizationError extends AppError_1.default {
-    constructor(message = 'You are not authorized to perform this action', context) {
+    constructor(message = 'User not authorized to perform this action', context) {
         super(message, 403, true, context);
         this.name = 'AuthorizationError';
     }
