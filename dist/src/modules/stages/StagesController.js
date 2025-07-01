@@ -60,7 +60,7 @@ class StagesController {
                 const user = req.user;
                 const pipelineId = req.params.pipelineId;
                 this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
-                const pipelineResource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelineService", "Pipeline not found", block);
+                const pipelineResource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelinesService", "Pipeline not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
                 const data = yield this.stagesService.collection(pipelineId);
                 res.status(200).json({ data: data });

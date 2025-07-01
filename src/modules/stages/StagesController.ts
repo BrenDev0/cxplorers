@@ -73,7 +73,7 @@ export default class StagesController {
       const pipelineId = req.params.pipelineId;
       this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
 
-      const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelineService", "Pipeline not found", block)
+      const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelinesService", "Pipeline not found", block)
 
       this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block)
 
