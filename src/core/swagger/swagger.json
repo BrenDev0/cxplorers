@@ -445,6 +445,144 @@
         }
       }
     },
+    "/opportunities/secure/create": {
+      "post": {
+        "tags": [
+          "Opportunities"
+        ],
+        "description": "Create opportunity",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createOpportunity"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/opportunities/secure/resource/{opportunityId}": {
+      "get": {
+        "tags": [
+          "Opportunities"
+        ],
+        "description": "get opportunity by id",
+        "parameters": [
+          {
+            "name": "opportunityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/opportunities/secure/collection/{stageId}": {
+      "get": {
+        "tags": [
+          "Opportunities"
+        ],
+        "description": "get opportunities by stage id",
+        "parameters": [
+          {
+            "name": "stageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/opportunities/secure/{opportunityId}": {
+      "put": {
+        "tags": [
+          "Opportunities"
+        ],
+        "description": "update opportunity by id",
+        "parameters": [
+          {
+            "name": "opportunityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Opportunities"
+        ],
+        "description": "delete opportunity by id",
+        "parameters": [
+          {
+            "name": "opportunityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/pipelines/secure/create": {
       "post": {
         "tags": [
@@ -1158,6 +1296,16 @@
           }
         }
       }
+    },
+    "createOpportunity": {
+      "stageId": "required",
+      "contactId": "required",
+      "opportunityValue": "optional",
+      "notes": "optional"
+    },
+    "updateOpportunity": {
+      "opportunityValue": "optional",
+      "notes": "optional"
     }
   }
 }

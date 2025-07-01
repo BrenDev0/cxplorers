@@ -91,7 +91,16 @@ const doc = {
       stages: [{name: "stage 1"}]
      }
     },
-    
+    createOpportunity: {
+      stageId: "required",
+      contactId: "required",
+      opportunityValue: "optional",
+      notes: "optional"
+    },
+    updateOpportunity: {
+      opportunityValue: "optional",
+      notes: "optional"
+    }
   },
 };
 
@@ -102,6 +111,7 @@ const endpointsFiles = [
   '../../modules/contacts/contacts.routes.ts',
   '../../modules/events/events.routes.ts',
   '../../modules/google/google.routes.ts',
+  '../../modules/opportunities/opportunities.routes.ts',
   '../../modules/pipelines/pipelines.routes.ts',
   '../../modules/stages/stages.routes.ts',
   '../../modules/tokens/tokens.routes.ts',

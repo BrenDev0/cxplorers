@@ -33,6 +33,7 @@ const contacts_dependencies_1 = require("../../modules/contacts/contacts.depende
 const eventAttendees_dependencies_1 = require("../../modules/eventAtendees/eventAttendees.dependencies");
 const pipelines_dependencies_1 = require("../../modules/pipelines/pipelines.dependencies");
 const stages_dependencies_1 = require("../../modules/stages/stages.dependencies");
+const opportunities_dependencies_1 = require("../../modules/opportunities/opportunities.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -72,6 +73,8 @@ function configureContainer(testPool, testRedis) {
         (0, eventAttendees_dependencies_1.configureEventAtendeesDependencies)(pool);
         // google //
         (0, google_dependencies_1.configureGoogleDependencies)(pool);
+        // opportunities //
+        (0, opportunities_dependencies_1.configureOpportunitiesDependencies)(pool);
         // pipelines //
         (0, pipelines_dependencies_1.configurePipelinesDependencies)(pool);
         // stages // 

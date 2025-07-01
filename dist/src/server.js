@@ -23,6 +23,7 @@ const tokens_routes_1 = require("./modules/tokens/tokens.routes");
 const calendars_routes_1 = require("./modules/calendars/calendars.routes");
 const pipelines_routes_1 = require("./modules/pipelines/pipelines.routes");
 const stages_routes_1 = require("./modules/stages/stages.routes");
+const opportunities_routes_1 = require("./modules/opportunities/opportunities.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
@@ -30,6 +31,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     // routers //
     const calendarsRouter = (0, calendars_routes_1.initializeCalendarsRouter)();
     const googleRouter = (0, google_routes_1.initializeGoogleRouter)();
+    const opportunitiesRouter = (0, opportunities_routes_1.initializeOpportunitiesRouter)();
     const piplinesRouter = (0, pipelines_routes_1.initializePipelinesRouter)();
     const stagesRouter = (0, stages_routes_1.initializeStagesRouter)();
     const tokensRouter = (0, tokens_routes_1.initializeTokensRouter)();
@@ -39,6 +41,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
     app.use("/calendars", calendarsRouter);
     app.use("/google", googleRouter);
+    app.use("/opportunities", opportunitiesRouter);
     app.use("/pipelines", piplinesRouter);
     app.use("/stages", stagesRouter);
     app.use("/tokens", tokensRouter);

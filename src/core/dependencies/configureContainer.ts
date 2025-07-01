@@ -21,6 +21,7 @@ import { configureContactsDependencies } from '../../modules/contacts/contacts.d
 import { configureEventAtendeesDependencies } from '../../modules/eventAtendees/eventAttendees.dependencies';
 import { configurePipelinesDependencies } from '../../modules/pipelines/pipelines.dependencies';
 import { configureStagesDependencies } from '../../modules/stages/stages.dependencies';
+import { configureOpportunitiesDependencies } from '../../modules/opportunities/opportunities.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -75,6 +76,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     
     // google //
     configureGoogleDependencies(pool);
+
+    // opportunities //
+    configureOpportunitiesDependencies(pool);
 
     // pipelines //
     configurePipelinesDependencies(pool);

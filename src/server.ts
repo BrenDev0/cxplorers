@@ -11,6 +11,7 @@ import { initializeTokensRouter } from './modules/tokens/tokens.routes';
 import { initializeCalendarsRouter } from './modules/calendars/calendars.routes';
 import { initializePipelinesRouter } from './modules/pipelines/pipelines.routes';
 import { initializeStagesRouter } from './modules/stages/stages.routes';
+import { initializeOpportunitiesRouter } from './modules/opportunities/opportunities.routes';
 
 
 const server = async() => {
@@ -22,6 +23,7 @@ const server = async() => {
     // routers //
     const calendarsRouter = initializeCalendarsRouter();
     const googleRouter = initializeGoogleRouter();
+    const opportunitiesRouter = initializeOpportunitiesRouter();
     const piplinesRouter = initializePipelinesRouter();
     const stagesRouter = initializeStagesRouter();
     const tokensRouter = initializeTokensRouter();
@@ -35,6 +37,7 @@ const server = async() => {
 
     app.use("/calendars",   calendarsRouter);
     app.use("/google", googleRouter);
+    app.use("/opportunities", opportunitiesRouter);
     app.use("/pipelines", piplinesRouter);
     app.use("/stages", stagesRouter);
     app.use("/tokens", tokensRouter);
