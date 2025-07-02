@@ -670,7 +670,7 @@
         "tags": [
           "Pipelines"
         ],
-        "description": "Update pipelines",
+        "description": "Update pipelines stages optional in request",
         "parameters": [
           {
             "name": "piplineId",

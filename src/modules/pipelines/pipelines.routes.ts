@@ -55,7 +55,7 @@ export const initializePipelinesRouter = (customController?: PipelinesController
         #swagger.tags = ['Pipelines']
         #swagger.path =  '/pipelines/secure/{piplineId}'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Update pipelines'
+        #swagger.description = 'Update pipelines stages optional in request'
         #swagger.requestBody = {
             required: true,
             content: {
