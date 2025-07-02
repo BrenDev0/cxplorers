@@ -7,7 +7,7 @@ export default class StagesRepository extends BaseRepository<Stage> implements I
         super(pool, "stages")
     }
 
-   async createMany(cols: string[], values: Omit<Stage, "stage_id">[]): Promise<Stage[]> {
+    async upsert(cols: string[], values: Omit<Stage, "stage_id">[]): Promise<Stage[]> {
         const numCols = cols.length;
         const numRows = values.length / numCols;
 
@@ -22,7 +22,10 @@ export default class StagesRepository extends BaseRepository<Stage> implements I
             INSERT INTO ${this.table}
             (${cols.join(", ")})
             values ${placeholders}
-            RETURNING *;
+            ON CONFLICT (stage_id) DO UPDATE SET
+            name = EXCLUDED.name,
+            position = EXCLUDED.position
+            RETURNING *
         `;
 
         const result = await this.pool.query(sqlInsert, values);

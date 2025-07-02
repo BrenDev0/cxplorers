@@ -31,17 +31,17 @@ class StagesService {
             }
         });
     }
-    createMany(stages) {
+    upsert(stages) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedStages = stages.map((stage) => this.mapToDb(stage));
             const cols = Object.keys(mappedStages[0]);
             const values = mappedStages.flatMap(stage => cols.map(col => stage[col]));
             try {
-                const result = yield this.repository.createMany(cols, values);
+                const result = yield this.repository.upsert(cols, values);
                 return result;
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "createMany", { cols, values });
+                (0, error_service_1.handleServiceError)(error, this.block, "upsert", { cols, values });
                 throw error;
             }
         });
@@ -100,8 +100,10 @@ class StagesService {
     mapToDb(stage) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            stage_id: stage.stageId,
             pipeline_id: stage.pipelineId,
-            name: stage.name
+            name: stage.name,
+            position: stage.position && Number(stage.position)
         };
     }
     mapFromDb(stage) {
@@ -109,7 +111,8 @@ class StagesService {
         return {
             stageId: stage.stage_id,
             pipelineId: stage.pipeline_id,
-            name: stage.name
+            name: stage.name,
+            position: Number(stage.position)
         };
     }
 }

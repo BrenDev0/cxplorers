@@ -51,7 +51,7 @@ export default class PipelinesController {
           }
         })
 
-        await stagesService.createMany(mappedStages);
+        await stagesService.upsert(mappedStages);
       }
 
       res.status(200).json({ message: "pipeline added." });
@@ -96,11 +96,41 @@ export default class PipelinesController {
      const resource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelinesService", "Pipeline not found", block);
       this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
-      const allowedChanges = ["name"];
+      const allowedChanges = ["name", "stages"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<PipelineData>(allowedChanges, req.body, block);
+      
+      if(req.body.stages) {
+        const { stages } = req.body;
 
-      await this.pipelinesService.update(pipelineId, filteredChanges);
+        if(!Array.isArray(stages)) {
+          throw new BadRequestError("Invalid data format", {
+            block: block,
+            detail: "Property 'Stages' must be of type array",
+            typeInReq: typeof stages
+          })
+        };
+
+        const stagesService = Container.resolve<StagesService>("StagesService");
+        const stagesData = [];
+        for(const stage of stages) {
+          if(!stage.stageId) {
+            throw new BadRequestError("Stage id required for update", {
+              block: `${block}.upsertStages`
+            })
+          }
+
+          stagesData.push({
+            ...stage,
+            pipelineId: pipelineId
+          })
+        }
+        await stagesService.upsert(stagesData);
+      }
+
+      if(filteredChanges.name) {
+        await this.pipelinesService.update(pipelineId, filteredChanges)
+      }
 
       res.status(200).json({ message: "pipeline updated" });
     } catch (error) {

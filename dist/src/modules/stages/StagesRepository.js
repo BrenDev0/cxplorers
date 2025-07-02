@@ -17,7 +17,7 @@ class StagesRepository extends BaseRepository_1.default {
     constructor(pool) {
         super(pool, "stages");
     }
-    createMany(cols, values) {
+    upsert(cols, values) {
         return __awaiter(this, void 0, void 0, function* () {
             const numCols = cols.length;
             const numRows = values.length / numCols;
@@ -30,7 +30,10 @@ class StagesRepository extends BaseRepository_1.default {
             INSERT INTO ${this.table}
             (${cols.join(", ")})
             values ${placeholders}
-            RETURNING *;
+            ON CONFLICT (stage_id) DO UPDATE SET
+            name = EXCLUDED.name,
+            position = EXCLUDED.position
+            RETURNING *
         `;
             const result = yield this.pool.query(sqlInsert, values);
             return result.rows;

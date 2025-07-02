@@ -91,19 +91,28 @@ const doc = {
             },
             createPipeline: {
                 name: "required",
-                stages: [{ name: "stage 1" }]
+                stages: [{ name: "stage 1", position: 1 }]
+            },
+            updatePipeline: {
+                name: "optional",
+                stages: [{
+                        name: "required",
+                        stageId: "required",
+                        pipelineId: "required",
+                        position: "required"
+                    }]
+            },
+            createOpportunity: {
+                stageId: "required",
+                contactId: "required",
+                opportunityValue: "optional",
+                notes: "optional"
+            },
+            updateOpportunity: {
+                opportunityValue: "optional",
+                notes: "optional"
             }
         },
-        createOpportunity: {
-            stageId: "required",
-            contactId: "required",
-            opportunityValue: "optional",
-            notes: "optional"
-        },
-        updateOpportunity: {
-            opportunityValue: "optional",
-            notes: "optional"
-        }
     },
 };
 const outputFile = './swagger.json';

@@ -1316,22 +1316,83 @@
                                 "name": {
                                     "type": "string",
                                     "example": "stage 1"
+                                },
+                                "position": {
+                                    "type": "number",
+                                    "example": 1
                                 }
                             }
                         }
                     }
                 }
+            },
+            "updatePipeline": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "stages": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "required"
+                                },
+                                "stageId": {
+                                    "type": "string",
+                                    "example": "required"
+                                },
+                                "pipelineId": {
+                                    "type": "string",
+                                    "example": "required"
+                                },
+                                "position": {
+                                    "type": "string",
+                                    "example": "required"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "createOpportunity": {
+                "type": "object",
+                "properties": {
+                    "stageId": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "contactId": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "opportunityValue": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "optional"
+                    }
+                }
+            },
+            "updateOpportunity": {
+                "type": "object",
+                "properties": {
+                    "opportunityValue": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "optional"
+                    }
+                }
             }
-        },
-        "createOpportunity": {
-            "stageId": "required",
-            "contactId": "required",
-            "opportunityValue": "optional",
-            "notes": "optional"
-        },
-        "updateOpportunity": {
-            "opportunityValue": "optional",
-            "notes": "optional"
         }
     }
 }

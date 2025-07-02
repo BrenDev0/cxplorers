@@ -62,6 +62,7 @@ class PipelinesService {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
             const cleanedChanges = Object.fromEntries(Object.entries(mappedChanges).filter(([_, value]) => value !== undefined));
+            console.log("mappedChanges::::", mappedChanges, " cleanedChanges:::::", cleanedChanges);
             try {
                 return yield this.repository.update("pipeline_id", pipelineId, cleanedChanges);
             }

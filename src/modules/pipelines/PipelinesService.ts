@@ -50,6 +50,7 @@ export default class PipelinesService {
         const cleanedChanges = Object.fromEntries(
             Object.entries(mappedChanges).filter(([_, value]) => value !== undefined)
         );
+        console.log("mappedChanges::::", mappedChanges, " cleanedChanges:::::", cleanedChanges)
         try {
             return await this.repository.update("pipeline_id", pipelineId, cleanedChanges);
         } catch (error) {

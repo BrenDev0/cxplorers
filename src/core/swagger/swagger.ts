@@ -88,10 +88,19 @@ const doc = {
      },
      createPipeline: {
       name: "required",
-      stages: [{name: "stage 1"}]
-     }
-    },
-    createOpportunity: {
+      stages: [{name: "stage 1", position: 1}]
+     },
+
+     updatePipeline: {
+      name: "optional",
+      stages: [{
+        name: "required",
+        stageId: "required",
+        pipelineId: "required",
+        position: "required"
+      }]
+     },
+     createOpportunity: {
       stageId: "required",
       contactId: "required",
       opportunityValue: "optional",
@@ -101,6 +110,8 @@ const doc = {
       opportunityValue: "optional",
       notes: "optional"
     }
+    },
+    
   },
 };
 

@@ -42,7 +42,7 @@ class PipelinesController {
                     const mappedStages = stages.map((stage) => {
                         return Object.assign(Object.assign({}, stage), { pipelineId: newPipeline.pipeline_id });
                     });
-                    yield stagesService.createMany(mappedStages);
+                    yield stagesService.upsert(mappedStages);
                 }
                 res.status(200).json({ message: "pipeline added." });
             }
@@ -87,9 +87,33 @@ class PipelinesController {
                 this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelinesService", "Pipeline not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
-                const allowedChanges = ["name"];
+                const allowedChanges = ["name", "stages"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
-                yield this.pipelinesService.update(pipelineId, filteredChanges);
+                if (req.body.stages) {
+                    const { stages } = req.body;
+                    if (!Array.isArray(stages)) {
+                        throw new errors_1.BadRequestError("Invalid data format", {
+                            block: block,
+                            detail: "Property 'Stages' must be of type array",
+                            typeInReq: typeof stages
+                        });
+                    }
+                    ;
+                    const stagesService = Container_1.default.resolve("StagesService");
+                    const stagesData = [];
+                    for (const stage of stages) {
+                        if (!stage.stageId) {
+                            throw new errors_1.BadRequestError("Stage id required for update", {
+                                block: `${block}.upsertStages`
+                            });
+                        }
+                        stagesData.push(Object.assign(Object.assign({}, stage), { pipelineId: pipelineId }));
+                    }
+                    yield stagesService.upsert(stagesData);
+                }
+                if (filteredChanges.name) {
+                    yield this.pipelinesService.update(pipelineId, filteredChanges);
+                }
                 res.status(200).json({ message: "pipeline updated" });
             }
             catch (error) {

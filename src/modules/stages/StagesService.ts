@@ -11,7 +11,7 @@ export default class StagesService {
         this.repository = repository
     }
 
-    async create(stage: Omit<StageData, "stageId">): Promise<Stage> {
+    async create(stage: StageData): Promise<Stage> {
         const mappedStage = this.mapToDb(stage);
         try {
             return this.repository.create(mappedStage as Stage);
@@ -21,16 +21,16 @@ export default class StagesService {
         }
     }
 
-    async createMany(stages: Omit<StageData, "stageId">[]): Promise<Stage[]> {
+    async upsert(stages: StageData[]): Promise<Stage[]> {
         const mappedStages = stages.map((stage) => this.mapToDb(stage));
         const cols = Object.keys(mappedStages[0]);
         const values = mappedStages.flatMap(stage => cols.map(col => (stage as any)[col]))
         try {
-            const result = await this.repository.createMany(cols, values);
+            const result = await this.repository.upsert(cols, values);
 
             return result;
         } catch (error) {
-            handleServiceError(error as Error, this.block, "createMany", {cols, values})
+            handleServiceError(error as Error, this.block, "upsert", {cols, values})
             throw error;
         }
     }
@@ -82,11 +82,13 @@ export default class StagesService {
         }
     }
 
-    mapToDb(stage: Omit<StageData, "stageId">): Omit<Stage, "stage_id"> {
+    mapToDb(stage: StageData): Stage {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
+            stage_id: stage.stageId,
            pipeline_id: stage.pipelineId,
-           name: stage.name
+           name: stage.name,
+           position: stage.position && Number(stage.position)
         }
     }
 
@@ -95,7 +97,8 @@ export default class StagesService {
         return {
             stageId: stage.stage_id,
             pipelineId: stage.pipeline_id,
-            name: stage.name
+            name: stage.name,
+            position: Number(stage.position)
         }
     }
 }
