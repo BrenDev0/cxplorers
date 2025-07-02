@@ -131,8 +131,9 @@ describe('PUT/pipelines/secure/:pipelineId', () => {
       .send({ 
         stages: [
           {
+            pipelineId: "11cff2f9-96fa-4439-8c18-959e2f46976a",
             stageId: "3cf755a9-d471-4331-b6fc-60a25412b934",
-            name: "Updated stage name678",
+            name: "Updated stage name6789",
             position: 3
           }
         ]

@@ -102,12 +102,9 @@ class PipelinesController {
                     const stagesService = Container_1.default.resolve("StagesService");
                     const stagesData = [];
                     for (const stage of stages) {
-                        if (!stage.stageId) {
-                            throw new errors_1.BadRequestError("Stage id required for update", {
-                                block: `${block}.upsertStages`
-                            });
-                        }
-                        stagesData.push(Object.assign(Object.assign({}, stage), { pipelineId: pipelineId }));
+                        const requiredStageFields = ["name", "pipelineId", "position", "stageId"];
+                        this.httpService.requestValidation.validateRequestBody(requiredStageFields, stage, block);
+                        stagesData.push(stage);
                     }
                     yield stagesService.upsert(stagesData);
                 }
