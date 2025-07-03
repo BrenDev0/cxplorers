@@ -1557,6 +1557,51 @@
             "example": "optional"
           }
         }
+      },
+      "updateBusiness": {
+        "type": "object",
+        "properties": {
+          "businessLogo": {
+            "type": "string",
+            "example": "optional"
+          },
+          "businessName": {
+            "type": "string",
+            "example": "optional"
+          },
+          "legalName": {
+            "type": "string",
+            "example": "optional"
+          },
+          "businessEmail": {
+            "type": "string",
+            "example": "optional"
+          },
+          "businessPhone": {
+            "type": "string",
+            "example": "optional"
+          },
+          "brandedDomain": {
+            "type": "string",
+            "example": "optional"
+          },
+          "businessWebsite": {
+            "type": "string",
+            "example": "optional"
+          },
+          "businessNiche": {
+            "type": "string",
+            "example": "optional"
+          },
+          "platformLanguage": {
+            "type": "string",
+            "example": "optional"
+          },
+          "communicationLanguage": {
+            "type": "string",
+            "example": "optional"
+          }
+        }
       }
     }
   }

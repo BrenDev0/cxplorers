@@ -123,6 +123,18 @@ const doc = {
                 businessNiche: "optional",
                 platformLanguage: "optional",
                 communicationLanguage: "optional",
+            },
+            updateBusiness: {
+                businessLogo: "optional",
+                businessName: "optional",
+                legalName: "optional",
+                businessEmail: "optional",
+                businessPhone: "optional",
+                brandedDomain: "optional",
+                businessWebsite: "optional",
+                businessNiche: "optional",
+                platformLanguage: "optional",
+                communicationLanguage: "optional",
             }
         },
     },
