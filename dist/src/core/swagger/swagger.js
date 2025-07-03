@@ -111,12 +111,25 @@ const doc = {
             updateOpportunity: {
                 opportunityValue: "optional",
                 notes: "optional"
+            },
+            createBusiness: {
+                businessLogo: "optional",
+                businessName: "optional",
+                legalName: "required",
+                businessEmail: "required",
+                businessPhone: "optional",
+                brandedDomain: "optional",
+                businessWebsite: "optional",
+                businessNiche: "optional",
+                platformLanguage: "optional",
+                communicationLanguage: "optional",
             }
         },
     },
 };
 const outputFile = './swagger.json';
 const endpointsFiles = [
+    '../../modules/businesses/businesses.routes.ts',
     '../../modules/calendars/calendars.routes.ts',
     '../../modules/contacts/contacts.routes.ts',
     '../../modules/calendars/events/events.routes.ts',

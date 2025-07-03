@@ -34,6 +34,8 @@ const eventAttendees_dependencies_1 = require("../../modules/calendars/eventAten
 const pipelines_dependencies_1 = require("../../modules/opportunities/pipelines/pipelines.dependencies");
 const stages_dependencies_1 = require("../../modules/opportunities/stages/stages.dependencies");
 const opportunities_dependencies_1 = require("../../modules/opportunities/opportunities.dependencies");
+const businesses_dependencies_1 = require("../../modules/businesses/businesses.dependencies");
+const businessUsers_dependencies_1 = require("../../modules/businesses/businessUsers/businessUsers.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -63,21 +65,20 @@ function configureContainer(testPool, testRedis) {
         const connectionUrl = testRedis !== null && testRedis !== void 0 ? testRedis : (process.env.REDIS_URL || "");
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
         Container_1.default.register("RedisClient", redisClient);
+        // businesses//
+        (0, businesses_dependencies_1.configureBusinessesDependencies)(pool);
+        (0, businessUsers_dependencies_1.configureBusinessUsersDependencies)(pool);
         // calendars //
         (0, calendars_dependencies_1.configureCalendarsDependencies)(pool);
+        (0, events_dependencies_1.configureEventsDependencies)(pool);
+        (0, eventAttendees_dependencies_1.configureEventAtendeesDependencies)(pool);
         // contacts //
         (0, contacts_dependencies_1.configureContactsDependencies)(pool);
-        // events // 
-        (0, events_dependencies_1.configureEventsDependencies)(pool);
-        // event attendies //
-        (0, eventAttendees_dependencies_1.configureEventAtendeesDependencies)(pool);
         // google //
         (0, google_dependencies_1.configureGoogleDependencies)(pool);
         // opportunities //
         (0, opportunities_dependencies_1.configureOpportunitiesDependencies)(pool);
-        // pipelines //
         (0, pipelines_dependencies_1.configurePipelinesDependencies)(pool);
-        // stages // 
         (0, stages_dependencies_1.configureStagesDependencies)(pool);
         // tokens //
         (0, tokens_dependencies_1.configureTokensDependencies)(pool);

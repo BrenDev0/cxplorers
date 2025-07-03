@@ -11,6 +11,126 @@
         }
     ],
     "paths": {
+        "/businesses/secure/create": {
+            "post": {
+                "tags": [
+                    "Businesses"
+                ],
+                "description": "Create business",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createBusiness"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/businesses/secure/resource/{businessId}": {
+            "get": {
+                "tags": [
+                    "Businesses"
+                ],
+                "description": "Get business by id",
+                "parameters": [
+                    {
+                        "name": "businessId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/businesses/secure/{businessId}": {
+            "put": {
+                "tags": [
+                    "Businesses"
+                ],
+                "description": "Update business",
+                "parameters": [
+                    {
+                        "name": "businessId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateBusiness"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Businesses"
+                ],
+                "description": "Delete business",
+                "parameters": [
+                    {
+                        "name": "businessId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/calendars/secure/create": {
             "post": {
                 "tags": [
@@ -1388,6 +1508,51 @@
                         "example": "optional"
                     },
                     "notes": {
+                        "type": "string",
+                        "example": "optional"
+                    }
+                }
+            },
+            "createBusiness": {
+                "type": "object",
+                "properties": {
+                    "businessLogo": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "businessName": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "legalName": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "businessEmail": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "businessPhone": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "brandedDomain": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "businessWebsite": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "businessNiche": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "platformLanguage": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "communicationLanguage": {
                         "type": "string",
                         "example": "optional"
                     }

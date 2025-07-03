@@ -22,6 +22,8 @@ import { configureEventAtendeesDependencies } from '../../modules/calendars/even
 import { configurePipelinesDependencies } from '../../modules/opportunities/pipelines/pipelines.dependencies';
 import { configureStagesDependencies } from '../../modules/opportunities/stages/stages.dependencies';
 import { configureOpportunitiesDependencies } from '../../modules/opportunities/opportunities.dependencies';
+import { configureBusinessesDependencies } from '../../modules/businesses/businesses.dependencies';
+import { configureBusinessUsersDependencies } from '../../modules/businesses/businessUsers/businessUsers.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -62,28 +64,25 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     Container.register<RedisClientType>("RedisClient", redisClient);
  
 
+    // businesses//
+    configureBusinessesDependencies(pool);
+    configureBusinessUsersDependencies(pool);
+
     // calendars //
     configureCalendarsDependencies(pool);
+    configureEventsDependencies(pool);
+    configureEventAtendeesDependencies(pool);
+
 
     // contacts //
     configureContactsDependencies(pool);
-
-    // events // 
-    configureEventsDependencies(pool);
-
-    // event attendies //
-    configureEventAtendeesDependencies(pool);
     
     // google //
     configureGoogleDependencies(pool);
 
     // opportunities //
     configureOpportunitiesDependencies(pool);
-
-    // pipelines //
     configurePipelinesDependencies(pool);
-
-    // stages // 
     configureStagesDependencies(pool);
     
     // tokens //

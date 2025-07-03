@@ -12,6 +12,7 @@ import { initializeCalendarsRouter } from './modules/calendars/calendars.routes'
 import { initializePipelinesRouter } from './modules/opportunities/pipelines/pipelines.routes';
 import { initializeStagesRouter } from './modules/opportunities/stages/stages.routes';
 import { initializeOpportunitiesRouter } from './modules/opportunities/opportunities.routes';
+import { initializeBusinessesRouter } from './modules/businesses/businesses.routes';
 
 
 const server = async() => {
@@ -21,6 +22,7 @@ const server = async() => {
     const middlewareService: MiddlewareService =  Container.resolve("MiddlewareService");
 
     // routers //
+    const businessesRouter = initializeBusinessesRouter();
     const calendarsRouter = initializeCalendarsRouter();
     const googleRouter = initializeGoogleRouter();
     const opportunitiesRouter = initializeOpportunitiesRouter();
@@ -35,6 +37,7 @@ const server = async() => {
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
+    app.use("/businesses", businessesRouter);
     app.use("/calendars",   calendarsRouter);
     app.use("/google", googleRouter);
     app.use("/opportunities", opportunitiesRouter);
