@@ -502,7 +502,7 @@
                 "tags": [
                     "Google"
                 ],
-                "description": "update event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters",
+                "description": "update event, for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters",
                 "parameters": [
                     {
                         "name": "calendarId",
