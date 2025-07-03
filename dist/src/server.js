@@ -21,8 +21,8 @@ const google_routes_1 = require("./modules/google/google.routes");
 const users_routes_1 = require("./modules/users/users.routes");
 const tokens_routes_1 = require("./modules/tokens/tokens.routes");
 const calendars_routes_1 = require("./modules/calendars/calendars.routes");
-const pipelines_routes_1 = require("./modules/pipelines/pipelines.routes");
-const stages_routes_1 = require("./modules/stages/stages.routes");
+const pipelines_routes_1 = require("./modules/opportunities/pipelines/pipelines.routes");
+const stages_routes_1 = require("./modules/opportunities/stages/stages.routes");
 const opportunities_routes_1 = require("./modules/opportunities/opportunities.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();

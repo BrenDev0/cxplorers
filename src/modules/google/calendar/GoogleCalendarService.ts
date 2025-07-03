@@ -5,13 +5,13 @@ import { GoogleError } from "../google.errors";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import Container from "../../../core/dependencies/Container";
-import EventsService from "../../events/EventsService";
-import { Event, GoogleEvent } from "../../events/events.interface";
+import EventsService from "../../calendars/events/EventsService";
+import { Event, GoogleEvent } from "../../calendars/events/events.interface";
 import AppError from "../../../core/errors/AppError";
 import EncryptionService from "../../../core/services/EncryptionService";
 import { CalendarData } from "../../calendars/calendars.interface";
-import EventAttendeesService from "../../eventAtendees/EventAttendeesService";
-import { GoogleAttendee } from "../../eventAtendees/eventAttendees.interface";
+import EventAttendeesService from "../../calendars/eventAtendees/EventAttendeesService";
+import { GoogleAttendee } from "../../calendars/eventAtendees/eventAttendees.interface";
 import ContactService from "../../contacts/ContactsService";
 
 export interface notificationResult {

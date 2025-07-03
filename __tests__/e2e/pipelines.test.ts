@@ -8,7 +8,7 @@ import { configureContainer } from '../../src/core/dependencies/configureContain
 import MiddlewareService from '../../src/core/middleware/MiddlewareService';
 import request from 'supertest'
 import { RedisClientType } from 'redis';
-import { initializePipelinesRouter } from '../../src/modules/pipelines/pipelines.routes';
+import { initializePipelinesRouter } from '../../src/modules/opportunities/pipelines/pipelines.routes';
 import { pipeline } from 'stream';
 
 

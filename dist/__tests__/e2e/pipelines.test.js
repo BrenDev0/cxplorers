@@ -19,7 +19,7 @@ const createApp_1 = __importDefault(require("../../src/createApp"));
 const Container_1 = __importDefault(require("../../src/core/dependencies/Container"));
 const configureContainer_1 = require("../../src/core/dependencies/configureContainer");
 const supertest_1 = __importDefault(require("supertest"));
-const pipelines_routes_1 = require("../../src/modules/pipelines/pipelines.routes");
+const pipelines_routes_1 = require("../../src/modules/opportunities/pipelines/pipelines.routes");
 describe("USERS ROUTES", () => {
     let pool;
     let app;

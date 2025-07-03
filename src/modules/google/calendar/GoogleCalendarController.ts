@@ -5,7 +5,7 @@ import GoogleService from "../GoogleService";
 import HttpService from "../../../core/services/HttpService";
 import CalendarsService from "../../calendars/CalendarsService";
 import { CalendarData } from "../../calendars/calendars.interface";
-import EventsService from "../../events/EventsService";
+import EventsService from "../../calendars/events/EventsService";
 import { GoogleError } from "../google.errors";
 
 export default class GoogleCalendarController {

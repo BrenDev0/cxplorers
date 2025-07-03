@@ -119,11 +119,11 @@ const outputFile = './swagger.json';
 const endpointsFiles = [
     '../../modules/calendars/calendars.routes.ts',
     '../../modules/contacts/contacts.routes.ts',
-    '../../modules/events/events.routes.ts',
+    '../../modules/calendars/events/events.routes.ts',
     '../../modules/google/google.routes.ts',
     '../../modules/opportunities/opportunities.routes.ts',
-    '../../modules/pipelines/pipelines.routes.ts',
-    '../../modules/stages/stages.routes.ts',
+    '../../modules/opportunities/pipelines/pipelines.routes.ts',
+    '../../modules/opportunities/stages/stages.routes.ts',
     '../../modules/tokens/tokens.routes.ts',
     '../../modules/users/users.routes.ts'
 ];

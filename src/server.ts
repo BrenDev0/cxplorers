@@ -9,8 +9,8 @@ import { initializeGoogleRouter } from './modules/google/google.routes';
 import { initializeUsersRouter } from './modules/users/users.routes';
 import { initializeTokensRouter } from './modules/tokens/tokens.routes';
 import { initializeCalendarsRouter } from './modules/calendars/calendars.routes';
-import { initializePipelinesRouter } from './modules/pipelines/pipelines.routes';
-import { initializeStagesRouter } from './modules/stages/stages.routes';
+import { initializePipelinesRouter } from './modules/opportunities/pipelines/pipelines.routes';
+import { initializeStagesRouter } from './modules/opportunities/stages/stages.routes';
 import { initializeOpportunitiesRouter } from './modules/opportunities/opportunities.routes';
 
 

@@ -16,11 +16,11 @@ import HttpRequestValidationService from '../services/HttpRequestValidationServi
 import PasswordService from '../services/PasswordService';
 import { configureTokensDependencies } from '../../modules/tokens/tokens.dependencies';
 import { configureCalendarsDependencies } from '../../modules/calendars/calendars.dependencies';
-import { configureEventsDependencies } from '../../modules/events/events.dependencies';
+import { configureEventsDependencies } from '../../modules/calendars/events/events.dependencies';
 import { configureContactsDependencies } from '../../modules/contacts/contacts.dependencies';
-import { configureEventAtendeesDependencies } from '../../modules/eventAtendees/eventAttendees.dependencies';
-import { configurePipelinesDependencies } from '../../modules/pipelines/pipelines.dependencies';
-import { configureStagesDependencies } from '../../modules/stages/stages.dependencies';
+import { configureEventAtendeesDependencies } from '../../modules/calendars/eventAtendees/eventAttendees.dependencies';
+import { configurePipelinesDependencies } from '../../modules/opportunities/pipelines/pipelines.dependencies';
+import { configureStagesDependencies } from '../../modules/opportunities/stages/stages.dependencies';
 import { configureOpportunitiesDependencies } from '../../modules/opportunities/opportunities.dependencies';
 
 

@@ -28,11 +28,11 @@ const HttpRequestValidationService_1 = __importDefault(require("../services/Http
 const PasswordService_1 = __importDefault(require("../services/PasswordService"));
 const tokens_dependencies_1 = require("../../modules/tokens/tokens.dependencies");
 const calendars_dependencies_1 = require("../../modules/calendars/calendars.dependencies");
-const events_dependencies_1 = require("../../modules/events/events.dependencies");
+const events_dependencies_1 = require("../../modules/calendars/events/events.dependencies");
 const contacts_dependencies_1 = require("../../modules/contacts/contacts.dependencies");
-const eventAttendees_dependencies_1 = require("../../modules/eventAtendees/eventAttendees.dependencies");
-const pipelines_dependencies_1 = require("../../modules/pipelines/pipelines.dependencies");
-const stages_dependencies_1 = require("../../modules/stages/stages.dependencies");
+const eventAttendees_dependencies_1 = require("../../modules/calendars/eventAtendees/eventAttendees.dependencies");
+const pipelines_dependencies_1 = require("../../modules/opportunities/pipelines/pipelines.dependencies");
+const stages_dependencies_1 = require("../../modules/opportunities/stages/stages.dependencies");
 const opportunities_dependencies_1 = require("../../modules/opportunities/opportunities.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {

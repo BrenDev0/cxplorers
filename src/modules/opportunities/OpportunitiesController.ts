@@ -3,8 +3,8 @@ import HttpService from "../../core/services/HttpService"
 import { BadRequestError, NotFoundError } from "../../core/errors/errors";
 import OpportuniesService from "./OpportunitiesService";
 import { OpportunityData } from "./opportunities.interface";
-import { StageData } from "../stages/stages.interface";
-import { PipelineData } from "../pipelines/pipelines.interface";
+import { StageData } from "./stages/stages.interface";
+import { PipelineData } from "./pipelines/pipelines.interface";
 import { ContactData } from "../contacts/contacts.interface";
 
 export default class OpportunitiesController { 
