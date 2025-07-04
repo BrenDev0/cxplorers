@@ -32,7 +32,7 @@ class BusinessesController {
                 const businessUserData = {
                     userId: user.user_id,
                     businessId: newBusiness.business_id,
-                    accountType: "OWNER"
+                    accountType: "owner"
                 };
                 yield businessUsersService.create(businessUserData);
                 res.status(200).json({ message: "Business added." });

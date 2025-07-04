@@ -33,7 +33,7 @@ export default class BusinessesController {
       const businessUserData: Omit<BusinessUserData, "businessUserId"> =  {
         userId: user.user_id,
         businessId: newBusiness.business_id,
-        accountType: "OWNER"
+        accountType: "owner"
       }
       await businessUsersService.create(businessUserData)
 

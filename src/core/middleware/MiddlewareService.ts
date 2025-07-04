@@ -178,7 +178,7 @@ export default class MiddlewareService {
     }
 
     verifyRoles(allowed: string[]) {
-        return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        return (req: Request, res: Response, next: NextFunction): void => {
             try {
                 const role = req.role;
 
@@ -194,6 +194,38 @@ export default class MiddlewareService {
             }
         };
     }
+
+    verifyPermissions(module: string, actions: string[]) {
+        return (req: Request, res: Response, next: NextFunction): void => {
+            try {
+                const permissions = req.permissions as PermissionData[];
+
+                if (!permissions || !Array.isArray(permissions)) {
+                    throw new AuthorizationError("Permissions not found or invalid", {
+                        module,
+                        actions
+                    });
+                }
+
+                const hasPermission = permissions.some(
+                    (perm) =>
+                        perm.moduleName === module && actions.includes(perm.action)
+                );
+
+                if (!hasPermission) {
+                    throw new AuthorizationError("Forbidden: Missing required permissionS", {
+                        required: { module, actions },
+                        permissions
+                    });
+                }
+
+                return next();
+            } catch (error) {
+                return next(error);
+            }
+        };
+    }
+
 
     async handleErrors(error: unknown, req: Request, res: Response, next: NextFunction): Promise<void> {
         const defaultErrorMessage = "Unable to process request at this time"

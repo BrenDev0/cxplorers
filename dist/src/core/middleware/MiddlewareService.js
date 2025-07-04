@@ -158,7 +158,7 @@ class MiddlewareService {
         });
     }
     verifyRoles(allowed) {
-        return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        return (req, res, next) => {
             try {
                 const role = req.role;
                 if (!role || !allowed.includes(role)) {
@@ -171,7 +171,31 @@ class MiddlewareService {
             catch (error) {
                 return next(error);
             }
-        });
+        };
+    }
+    verifyPermissions(module, actions) {
+        return (req, res, next) => {
+            try {
+                const permissions = req.permissions;
+                if (!permissions || !Array.isArray(permissions)) {
+                    throw new errors_1.AuthorizationError("Permissions not found or invalid", {
+                        module,
+                        actions
+                    });
+                }
+                const hasPermission = permissions.some((perm) => perm.moduleName === module && actions.includes(perm.action));
+                if (!hasPermission) {
+                    throw new errors_1.AuthorizationError("Forbidden: Missing required permissionS", {
+                        required: { module, actions },
+                        permissions
+                    });
+                }
+                return next();
+            }
+            catch (error) {
+                return next(error);
+            }
+        };
     }
     handleErrors(error, req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -12,7 +12,7 @@ export const initializeContactsRouter = (customController?: ContactsController) 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
      // protected Routes //
-    secureRouter.post("/create", 
+    secureRouter.post("/create", middlewareService.verifyPermissions("contacts", ["write"]),
         /*
         #swagger.tags = ['Contacts']
         #swagger.path =  '/contacts/secure/create'
@@ -31,6 +31,7 @@ export const initializeContactsRouter = (customController?: ContactsController) 
     )
 
     secureRouter.get("/resource/:contactId",
+         middlewareService.verifyPermissions("contacts", ["read", "write"]),
         /*
         #swagger.tags = ['Contacts']
         #swagger.path =  '/contacts/secure/resource/{contactId}'
@@ -41,6 +42,7 @@ export const initializeContactsRouter = (customController?: ContactsController) 
     )
      
     secureRouter.get("/collection",
+         middlewareService.verifyPermissions("contacts", ["read", "write"]),
         /*
         #swagger.tags = ['Contacts']
         #swagger.path =  '/contacts/secure/collection'
@@ -50,7 +52,8 @@ export const initializeContactsRouter = (customController?: ContactsController) 
         controller.collectionRequest.bind(controller)
     )
 
-    secureRouter.put("/:contactId", 
+    secureRouter.put("/:contactId",
+         middlewareService.verifyPermissions("contacts", ["write"]),
         /*
         #swagger.tags = ['Contacts']
         #swagger.path =  '/contacts/secure/{contactId}'
@@ -69,7 +72,8 @@ export const initializeContactsRouter = (customController?: ContactsController) 
     )
 
 
-    secureRouter.delete("/:contactId", 
+    secureRouter.delete("/:contactId",
+         middlewareService.verifyPermissions("contacts", ["write"]),
         /*
             #swagger.tags = ['Contacts']
             #swagger.path =  '/contacts/secure/{contactId}'

@@ -13,7 +13,7 @@ const initializeContactsRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("ContactsController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/create", 
+    secureRouter.post("/create", middlewareService.verifyPermissions("contacts", ["write"]), 
     /*
     #swagger.tags = ['Contacts']
     #swagger.path =  '/contacts/secure/create'
@@ -29,7 +29,7 @@ const initializeContactsRouter = (customController) => {
     }
     */
     controller.createRequest.bind(controller));
-    secureRouter.get("/resource/:contactId", 
+    secureRouter.get("/resource/:contactId", middlewareService.verifyPermissions("contacts", ["read", "write"]), 
     /*
     #swagger.tags = ['Contacts']
     #swagger.path =  '/contacts/secure/resource/{contactId}'
@@ -37,7 +37,7 @@ const initializeContactsRouter = (customController) => {
     #swagger.description = 'get contact by id'
     */
     controller.resourceRequest.bind(controller));
-    secureRouter.get("/collection", 
+    secureRouter.get("/collection", middlewareService.verifyPermissions("contacts", ["read", "write"]), 
     /*
     #swagger.tags = ['Contacts']
     #swagger.path =  '/contacts/secure/collection'
@@ -45,7 +45,7 @@ const initializeContactsRouter = (customController) => {
     #swagger.description = 'get users contacts'
     */
     controller.collectionRequest.bind(controller));
-    secureRouter.put("/:contactId", 
+    secureRouter.put("/:contactId", middlewareService.verifyPermissions("contacts", ["write"]), 
     /*
     #swagger.tags = ['Contacts']
     #swagger.path =  '/contacts/secure/{contactId}'
@@ -61,7 +61,7 @@ const initializeContactsRouter = (customController) => {
     }
     */
     controller.updateRequest.bind(controller));
-    secureRouter.delete("/:contactId", 
+    secureRouter.delete("/:contactId", middlewareService.verifyPermissions("contacts", ["write"]), 
     /*
         #swagger.tags = ['Contacts']
         #swagger.path =  '/contacts/secure/{contactId}'
