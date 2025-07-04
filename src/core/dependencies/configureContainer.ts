@@ -97,7 +97,7 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
    // middleware --- must configure users above this block //
     const usersService = Container.resolve<UserService>("UsersService");
-    const middlewareService = new MiddlewareService(webtokenService, usersService, errorHandler);
+    const middlewareService = new MiddlewareService(httpService, usersService, errorHandler);
     Container.register<MiddlewareService>("MiddlewareService", middlewareService);   
      
     return;

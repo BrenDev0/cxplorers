@@ -12,7 +12,7 @@ export const initializeBusinessUsersRouter = (customController?: BusinessUsersCo
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
      /*
-        #swagger.tags = ['BusinessUsers']
+        #swagger.tags = ['Staff']
         #swagger.path =  '/businessUsers/secure'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'Update businessUsers'

@@ -58,6 +58,25 @@ class BusinessesController {
             }
         });
     }
+    collectionRequest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = req.user;
+                const businessUsersService = Container_1.default.resolve("BusinessUsersService");
+                const usersBusinesses = yield businessUsersService.ownersCollection(user.user_id);
+                if (usersBusinesses.length === 0) {
+                    res.status(200).json({ data: [] });
+                    return;
+                }
+                const ids = usersBusinesses.map((business) => business.businessId);
+                const data = yield this.businessesService.collection(ids);
+                res.status(200).json({ data: data });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     updateRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateRequest`;
@@ -107,7 +126,7 @@ class BusinessesController {
     verifyPermissions(userId, businessId, allowedRoles) {
         return __awaiter(this, void 0, void 0, function* () {
             const businessUsersService = Container_1.default.resolve("BusinessUsersService");
-            const businessUser = yield businessUsersService.resource(userId, businessId);
+            const businessUser = yield businessUsersService.selectByIds(userId, businessId);
             if (!businessUser || !allowedRoles.includes(businessUser.accountType)) {
                 throw new errors_1.AuthorizationError();
             }

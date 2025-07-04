@@ -27,6 +27,16 @@ class BusinessUsersRepository extends BaseRepository_1.default {
             return result.rows[0] || null;
         });
     }
+    ownersCollection(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlRead = `
+            SELECT * FROM ${this.table}
+            WHERE user_id = $1 AND account_type = 'OWNER'
+        `;
+            const result = yield this.pool.query(sqlRead, [userId]);
+            return result.rows;
+        });
+    }
     updateByIds(userId, businessId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const clauses = Object.keys(changes).map((key, i) => `${key} = $${i + 1}`);

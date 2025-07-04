@@ -8,7 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = require("../../core/errors/errors");
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class ContactsController {
     constructor(httpService, contactsService) {
         this.block = "contacts.controller";
@@ -20,10 +25,9 @@ class ContactsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["firstName"];
+                const requiredFields = ["firstName", "businessId"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const contactData = Object.assign(Object.assign({}, req.body), { userId: user.user_id });
-                yield this.contactsService.create(contactData);
+                yield this.contactsService.create(req.body);
                 res.status(200).json({ message: "Contact added" });
             }
             catch (error) {
@@ -39,7 +43,12 @@ class ContactsController {
                 const contactId = req.params.contactId;
                 this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(contactId, "ContactsService", "Contact not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                const businessUsersService = Container_1.default.resolve("BusinessUsersService");
+                const businesses = yield businessUsersService.collection("user_id", user.user_id);
+                const ids = businesses.map((business) => business.businessId);
+                if (!ids.includes(resource.businessId)) {
+                    throw new errors_1.AuthorizationError();
+                }
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -67,7 +76,6 @@ class ContactsController {
                 const contactId = req.params.contactId;
                 this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(contactId, "ContactsService", "Contact not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 const allowedChanges = ["firstName", "lastName", "email", "phone"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.contactsService.update(contactId, filteredChanges);
@@ -86,7 +94,6 @@ class ContactsController {
                 const contactId = req.params.contactId;
                 this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(contactId, "ContactsService", "Contact not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 yield this.contactsService.delete(contactId);
                 res.status(200).json({ message: "Contact deleted" });
             }

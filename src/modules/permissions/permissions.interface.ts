@@ -2,14 +2,14 @@ import { IRepository } from "../../core/repository/repository.interface";
 
 export interface Permission {
   permission_id?: string;
-  user_id: string;
+  business_user_id: string;
   module_name: string;
   action: string
 }
 
 export interface PermissionData {
   permissionId?: string;
-  userId: string;
+  businessUserId: string;
   moduleName: string;
   action: string
 }

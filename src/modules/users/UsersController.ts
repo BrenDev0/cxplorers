@@ -162,6 +162,9 @@ export default class UsersController {
   async login(req: Request, res: Response): Promise<void> {
     const block  = `${this.block}.login`
     try {
+        const businessId = req.params.businessId;
+        this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
+
         const { email, password } = req.body;
         const requiredFields =  ["email", "password"];
 
@@ -188,7 +191,8 @@ export default class UsersController {
         };
 
         const token = this.httpService.webtokenService.generateToken({
-            userId: userExists.user_id!
+            userId: userExists.user_id,
+            businessId: businessId
         }, "7d")
 
         res.status(200).json({ 

@@ -18,6 +18,16 @@ export default class BusinessUsersRepository extends BaseRepository<BusinessUser
         return result.rows[0] ||  null;
     }
 
+    async ownersCollection(userId: string): Promise<BusinessUser[]> {
+        const sqlRead = `
+            SELECT * FROM ${this.table}
+            WHERE user_id = $1 AND account_type = 'OWNER'
+        `;
+
+        const result = await this.pool.query(sqlRead, [userId]);
+        return result.rows
+    }
+
     async updateByIds(userId: string, businessId: string, changes: Record<string, string>): Promise<BusinessUser> {
         const clauses = Object.keys(changes).map((key, i) => `${key} = $${i + 1}` );
         let values = Object.values(changes);

@@ -12,73 +12,85 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const error_service_1 = require("../../core/errors/error.service");
-const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-class PermissionsService {
+const error_service_1 = require("../../../core/errors/error.service");
+const Container_1 = __importDefault(require("../../../core/dependencies/Container"));
+class BusinessUsersService {
     constructor(repository) {
-        this.block = "permissions.service";
+        this.block = "businessUsers.service";
         this.repository = repository;
     }
-    create(permission) {
+    create(businessUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            const mappedPermission = this.mapToDb(permission);
+            const mappedBusinessUser = this.mapToDb(businessUser);
             try {
-                return this.repository.create(mappedPermission);
+                return this.repository.create(mappedBusinessUser);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "create", mappedPermission);
+                (0, error_service_1.handleServiceError)(error, this.block, "create", mappedBusinessUser);
                 throw error;
             }
         });
     }
-    upsert(permissions) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const mappedPermissions = permissions.map((permission) => this.mapToDb(permission));
-            const cols = Object.keys(mappedPermissions[0]);
-            const values = mappedPermissions.flatMap(permission => cols.map(col => permission[col]));
-            try {
-                const result = yield this.repository.upsert(cols, values);
-                return result;
-            }
-            catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "upsert", permissions);
-                throw error;
-            }
-        });
-    }
-    resource(permissionId) {
+    resource(businessUserId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne("permission_id", permissionId);
+                const result = yield this.repository.selectOne("business_user_id", businessUserId);
                 if (!result) {
                     return null;
                 }
                 return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { permissionId });
+                (0, error_service_1.handleServiceError)(error, this.block, "select by ids", { businessUserId });
                 throw error;
             }
         });
     }
-    collection(businessUserId) {
+    selectByIds(userId, businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.select("business_user_id", businessUserId);
-                return result.map((permission) => this.mapFromDb(permission));
+                const result = yield this.repository.resource(userId, businessId);
+                if (!result) {
+                    return null;
+                }
+                return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { businessUserId });
+                (0, error_service_1.handleServiceError)(error, this.block, "select by ids", { userId, businessId });
                 throw error;
             }
         });
     }
-    update(permissionId, changes) {
+    collection(col, identifier) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select(col, identifier);
+                return result.map((businessUser) => this.mapFromDb(businessUser));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { col, identifier });
+                throw error;
+            }
+        });
+    }
+    ownersCollection(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.ownersCollection(userId);
+                return result.map((businessUser) => this.mapFromDb(businessUser));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", {});
+                throw error;
+            }
+        });
+    }
+    update(userId, businessUserId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
             const cleanedChanges = Object.fromEntries(Object.entries(mappedChanges).filter(([_, value]) => value !== undefined));
             try {
-                return yield this.repository.update("permission_id", permissionId, cleanedChanges);
+                return yield this.repository.updateByIds(userId, businessUserId, cleanedChanges);
             }
             catch (error) {
                 (0, error_service_1.handleServiceError)(error, this.block, "update", cleanedChanges);
@@ -86,34 +98,33 @@ class PermissionsService {
             }
         });
     }
-    delete(permissionId) {
+    delete(userId, businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield this.repository.delete("permission_id", permissionId);
+                return yield this.repository.deleteByIds(userId, businessId);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "delete", { permissionId });
+                (0, error_service_1.handleServiceError)(error, this.block, "delete", { userId, businessId });
                 throw error;
             }
         });
     }
-    mapToDb(permission) {
+    mapToDb(businessUser) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            permission_id: permission.permissionId,
-            business_user_id: permission.businessUserId,
-            module_name: permission.moduleName,
-            action: permission.action
+            business_id: businessUser.businessId,
+            user_id: businessUser.userId,
+            account_type: businessUser.accountType
         };
     }
-    mapFromDb(permission) {
+    mapFromDb(businessUser) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            permissionId: permission.permission_id,
-            businessUserId: permission.business_user_id,
-            moduleName: permission.module_name,
-            action: permission.action
+            businessUserId: businessUser.business_user_id,
+            businessId: businessUser.business_id,
+            userId: businessUser.user_id,
+            accountType: businessUser.account_type
         };
     }
 }
-exports.default = PermissionsService;
+exports.default = BusinessUsersService;

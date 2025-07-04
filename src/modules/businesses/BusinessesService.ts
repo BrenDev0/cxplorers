@@ -3,11 +3,12 @@ import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
+import BusinessesRepository from './BusinessesRepository';
 
 export default class BusinessesService {
-    private repository: BaseRepository<Business>;
+    private repository: BusinessesRepository;
     private block = "businesses.service"
-    constructor(repository: BaseRepository<Business>) {
+    constructor(repository: BusinessesRepository) {
         this.repository = repository
     }
 
@@ -30,6 +31,17 @@ export default class BusinessesService {
             return this.mapFromDb(result)
         } catch (error) {
             handleServiceError(error as Error, this.block, "resource", {businessId})
+            throw error;
+        }
+    }
+
+    async collection(businessIds: string[]): Promise<BusinessData[]> {
+        try {
+            const result = await this.repository.collectionByIds(businessIds);
+
+            return result.map((business) => this.mapFromDb(business));
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "collection", {businessIds})
             throw error;
         }
     }

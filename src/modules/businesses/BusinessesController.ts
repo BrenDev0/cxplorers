@@ -4,7 +4,7 @@ import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/e
 import BusinessesService from "./BusinessesService";
 import { Business, BusinessData } from "./businesses.interface";
 import Container from "../../core/dependencies/Container";
-import BusinessUserService from "./businessUsers/BusinessUsersService";
+import BusinessUserService from "./businessUsers/BusienssUsersService";
 import { BusinessUserData } from "./businessUsers/businessUsers.interface";
 
 export default class BusinessesController { 
@@ -30,7 +30,7 @@ export default class BusinessesController {
       
       const businessUsersService = Container.resolve<BusinessUserService>("BusinessUsersService");
 
-      const businessUserData: BusinessUserData =  {
+      const businessUserData: Omit<BusinessUserData, "businessUserId"> =  {
         userId: user.user_id,
         businessId: newBusiness.business_id,
         accountType: "OWNER"
@@ -58,6 +58,26 @@ export default class BusinessesController {
       res.status(200).json({ data: businessResource })
     } catch (error) {
       throw error;
+    }
+  }
+
+  async collectionRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const user = req.user;
+
+      const businessUsersService = Container.resolve<BusinessUserService>("BusinessUsersService");
+      const usersBusinesses = await businessUsersService.ownersCollection(user.user_id);
+      if(usersBusinesses.length === 0) {
+        res.status(200).json({ data: []});
+        return;
+      }
+
+      const ids = usersBusinesses.map((business) => business.businessId);
+      const data = await this.businessesService.collection(ids);
+
+      res.status(200).json({ data: data })
+    } catch (error) {
+      throw error
     }
   }
 
@@ -116,7 +136,7 @@ export default class BusinessesController {
 
   private async verifyPermissions(userId: string, businessId: string, allowedRoles: string[]): Promise<void> {
     const businessUsersService = Container.resolve<BusinessUserService>("BusinessUsersService");
-    const businessUser = await businessUsersService.resource(userId, businessId);
+    const businessUser = await businessUsersService.selectByIds(userId, businessId);
 
     if(!businessUser || !allowedRoles.includes(businessUser.accountType)) {
       throw new AuthorizationError();

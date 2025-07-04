@@ -16,10 +16,10 @@ const AppError_1 = __importDefault(require("../errors/AppError"));
 const errors_1 = require("../../core/errors/errors");
 const errors_2 = require("../errors/errors");
 const crypto_1 = __importDefault(require("crypto"));
-const validator_1 = require("validator");
+const Container_1 = __importDefault(require("../dependencies/Container"));
 class MiddlewareService {
-    constructor(webtokenService, usersService, errorHanlder) {
-        this.webtokenService = webtokenService;
+    constructor(httpService, usersService, errorHanlder) {
+        this.httpService = httpService;
         this.usersService = usersService;
         this.errorHandler = errorHanlder;
     }
@@ -33,7 +33,7 @@ class MiddlewareService {
                         headers: req.headers
                     });
                 }
-                const decodedToken = this.webtokenService.decodeToken(token);
+                const decodedToken = this.httpService.webtokenService.decodeToken(token);
                 if (!decodedToken) {
                     throw new errors_1.AuthenticationError("Invalid or expired token", {
                         token: decodedToken
@@ -47,12 +47,15 @@ class MiddlewareService {
                     });
                 }
                 ;
-                if (!(0, validator_1.isUUID)(decodedToken.userId)) {
+                this.httpService.requestValidation.validateUuid(decodedToken.userId, "userId", "middleware.auth.user");
+                if (!decodedToken.businessId) {
                     throw new errors_1.AuthorizationError("Forbidden", {
-                        reason: "Invalid id",
-                        userId: decodedToken.userId
+                        reason: "No businessId in token",
+                        token: decodedToken.userId
                     });
                 }
+                ;
+                this.httpService.requestValidation.validateUuid(decodedToken.businessId, "businessId", "middleware.auth.business");
                 const user = yield this.usersService.resource("user_id", decodedToken.userId);
                 if (!user) {
                     throw new errors_1.AuthorizationError("Forbidden", {
@@ -60,7 +63,16 @@ class MiddlewareService {
                         user: user
                     });
                 }
+                const businessUser = yield this.getBusinessUser(user.user_id, decodedToken.businessId);
+                if (!businessUser) {
+                    throw new errors_1.AuthorizationError("Forbidden", {
+                        reason: "No business user found"
+                    });
+                }
+                const permissions = yield this.getUserPermissions(businessUser.businessUserId);
                 req.user = user;
+                req.permissions = permissions;
+                req.role = businessUser.accountType;
                 next();
             }
             catch (error) {
@@ -80,7 +92,7 @@ class MiddlewareService {
                         body: req.body
                     });
                 }
-                const decodedToken = this.webtokenService.decodeToken(token);
+                const decodedToken = this.httpService.webtokenService.decodeToken(token);
                 if (!decodedToken) {
                     throw new errors_1.AuthenticationError("Invalid or expired token", {
                         token: decodedToken
@@ -146,6 +158,22 @@ class MiddlewareService {
             next();
         });
     }
+    verifyRoles(allowed) {
+        return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const role = req.role;
+                if (!role || !allowed.includes(role)) {
+                    throw new errors_1.AuthorizationError(undefined, {
+                        block: "middleware.verifyRoles",
+                    });
+                }
+                return next();
+            }
+            catch (error) {
+                return next(error);
+            }
+        });
+    }
     handleErrors(error, req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const defaultErrorMessage = "Unable to process request at this time";
@@ -171,5 +199,24 @@ class MiddlewareService {
         });
     }
     ;
+    getBusinessUser(userId, businessId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const businessUsersService = Container_1.default.resolve("BusinessUsersService");
+                const businessUser = yield businessUsersService.selectByIds(userId, businessId);
+                return businessUser;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getUserPermissions(businessUserId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const permissionsService = Container_1.default.resolve("PermissionsService");
+            const permissions = yield permissionsService.collection(businessUserId);
+            return permissions;
+        });
+    }
 }
 exports.default = MiddlewareService;

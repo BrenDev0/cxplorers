@@ -3,6 +3,8 @@ import HttpService from "../../core/services/HttpService"
 import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/errors/errors";
 import ContactsService from "./ContactsService";
 import { ContactData } from "./contacts.interface";
+import Container from "../../core/dependencies/Container";
+import BusinessUsersService from "../businesses/businessUsers/BusienssUsersService";
 
 export default class ContactsController { 
   private httpService: HttpService;
@@ -19,17 +21,11 @@ export default class ContactsController {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
-      const requiredFields = ["firstName"];
+      const requiredFields = ["firstName", "businessId"];
 
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
-
-      const contactData = {
-        ...req.body,
-        userId: user.user_id
-      };
-
-      await this.contactsService.create(contactData);
+      await this.contactsService.create(req.body);
 
       res.status(200).json({ message: "Contact added" });
     } catch (error) {
@@ -46,7 +42,14 @@ export default class ContactsController {
       this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
 
       const resource = await this.httpService.requestValidation.validateResource<ContactData>(contactId, "ContactsService", "Contact not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+      
+      const businessUsersService = Container.resolve<BusinessUsersService>("BusinessUsersService");
+      const businesses = await businessUsersService.collection("user_id", user.user_id)
+      const ids = businesses.map((business) => business.businessId);
+
+      if(!ids.includes(resource.businessId)) {
+        throw new AuthorizationError();
+      }
 
       res.status(200).json({ data: resource });
     } catch (error) {
@@ -75,7 +78,7 @@ export default class ContactsController {
       this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
 
       const resource = await this.httpService.requestValidation.validateResource<ContactData>(contactId, "ContactsService", "Contact not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+     
 
       const allowedChanges = ["firstName", "lastName", "email", "phone"];
 
@@ -98,7 +101,6 @@ export default class ContactsController {
       this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
       
       const resource = await this.httpService.requestValidation.validateResource<ContactData>(contactId, "ContactsService", "Contact not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
       await this.contactsService.delete(contactId);
       

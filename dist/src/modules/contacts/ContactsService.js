@@ -106,7 +106,7 @@ class ContactService {
     mapToDb(contact) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            user_id: contact.userId,
+            business_id: contact.businessId,
             first_name: contact.firstName && encryptionService.encryptData(contact.firstName),
             last_name: contact.lastName && encryptionService.encryptData(contact.lastName),
             email: contact.email && encryptionService.encryptData(contact.email),
@@ -118,7 +118,7 @@ class ContactService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             contactId: contact.contact_id,
-            userId: contact.user_id,
+            businessId: contact.business_id,
             firstName: contact.first_name && encryptionService.decryptData(contact.first_name),
             lastName: contact.last_name && encryptionService.decryptData(contact.last_name),
             email: contact.email && encryptionService.decryptData(contact.email),

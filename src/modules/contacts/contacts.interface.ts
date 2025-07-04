@@ -2,7 +2,7 @@ import { IRepository } from "../../core/repository/repository.interface";
 
 export interface Contact {
   contact_id: string;
-  user_id: string;
+  business_id: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -12,7 +12,7 @@ export interface Contact {
 
 export interface ContactData {
   contactId: string;
-  userId: string;
+  businessId: string;
   firstName: string;
   lastName: string;
   email: string;

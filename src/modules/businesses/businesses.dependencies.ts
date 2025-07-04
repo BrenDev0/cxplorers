@@ -5,9 +5,10 @@ import BusinessesService from "./BusinessesService";
 import BusinessesController from "./BusinessesController";
 import Container from "../../core/dependencies/Container";
 import HttpService from "../../core/services/HttpService";
+import BusinessesRepository from "./BusinessesRepository";
 
 export function configureBusinessesDependencies(pool: Pool): void {
-    const repository = new BaseRepository<Business>(pool, "businesses");
+    const repository = new BusinessesRepository(pool);
     const service = new BusinessesService(repository);
     const httpService = Container.resolve<HttpService>("HttpService");
     const controller = new BusinessesController(httpService, service);

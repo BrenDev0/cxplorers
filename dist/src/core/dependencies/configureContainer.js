@@ -86,7 +86,7 @@ function configureContainer(testPool, testRedis) {
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // middleware --- must configure users above this block //
         const usersService = Container_1.default.resolve("UsersService");
-        const middlewareService = new MiddlewareService_1.default(webtokenService, usersService, errorHandler);
+        const middlewareService = new MiddlewareService_1.default(httpService, usersService, errorHandler);
         Container_1.default.register("MiddlewareService", middlewareService);
         return;
     });

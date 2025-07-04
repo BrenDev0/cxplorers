@@ -36,7 +36,7 @@ export default class OpportunitiesController {
       
       const pipelineResource =  await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
       this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, contactResource.userId, block);
+      // this.httpService.requestValidation.validateActionAuthorization(user.user_id, contactResource.userId, block);
 
       await this.opportuniesService.create(req.body);
 

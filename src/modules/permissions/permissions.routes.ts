@@ -10,24 +10,24 @@ export const initializePermissionsRouter = (customController?: PermissionsContro
     const controller = customController ?? Container.resolve<PermissionsController>("PermissionsController");
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
-
-     /*
+    // protected Routes //
+    secureRouter.post("/create", middlewareService.verifyRoles(["OWNER", "ADMIN"]),
+        /*
         #swagger.tags = ['Permissions']
-        #swagger.path =  '/permissions/secure'
+        #swagger.path =  '/permissions/secure/create'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Update permissions'
+        #swagger.description = 'create permissions'
         #swagger.requestBody = {
             required: true,
             content: {
                 "application/json": {
-                    schema: { $ref: "#/components/schemas/updatePermissions" }
+                    schema: { $ref: "#/components/schemas/createPermission" }
                 }
             }
         }
         */
-
-    // protected Routes //
-
+        controller.createRequest.bind(controller)
+    )
 
   
 

@@ -31,7 +31,7 @@ class OpportunitiesController {
                 ]);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, contactResource.userId, block);
+                // this.httpService.requestValidation.validateActionAuthorization(user.user_id, contactResource.userId, block);
                 yield this.opportuniesService.create(req.body);
                 res.status(200).json({ message: "Opportunity added." });
             }

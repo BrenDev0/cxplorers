@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import AppError from '../errors/AppError';
-import { AuthenticationError, AuthorizationError } from "../../core/errors/errors";
+import { AuthenticationError, AuthorizationError, NotFoundError } from "../../core/errors/errors";
 import { ENVVariableError } from "../errors/errors";
 import UsersService from "../../modules/users/UsersService";
 import ErrorHandler from "../errors/ErrorHandler";
@@ -8,14 +8,20 @@ import crypto from 'crypto';
 import { isUUID } from "validator";
 
 import WebTokenService from "../services/WebtokenService";
+import Container from "../dependencies/Container";
+import BusinessUsersService from "../../modules/businesses/businessUsers/BusienssUsersService";
+import { BusinessUserData } from "../../modules/businesses/businessUsers/businessUsers.interface";
+import { PermissionData } from "../../modules/permissions/permissions.interface";
+import PermissionsService from "../../modules/permissions/PermissionsService";
+import HttpService from "../services/HttpService";
 
 export default class MiddlewareService {
+    private httpService: HttpService;
     private usersService: UsersService;
     private errorHandler: ErrorHandler;
-    private webtokenService: WebTokenService;
 
-    constructor(webtokenService: WebTokenService, usersService: UsersService, errorHanlder: ErrorHandler) {
-        this.webtokenService = webtokenService
+    constructor(httpService: HttpService, usersService: UsersService, errorHanlder: ErrorHandler) {
+        this.httpService = httpService;
         this.usersService = usersService;
         this.errorHandler = errorHanlder;
     }
@@ -30,7 +36,7 @@ export default class MiddlewareService {
                 });
             }
     
-            const decodedToken = this.webtokenService.decodeToken(token);
+            const decodedToken = this.httpService.webtokenService.decodeToken(token);
             
             if(!decodedToken) {
                 throw new AuthenticationError("Invalid or expired token", {
@@ -45,24 +51,37 @@ export default class MiddlewareService {
                 }); 
             };
 
-            if(!isUUID(decodedToken.userId)) {
+            this.httpService.requestValidation.validateUuid(decodedToken.userId, "userId", "middleware.auth.user")
+            
+            if(!decodedToken.businessId) {
                 throw new AuthorizationError("Forbidden", {
-                    reason: "Invalid id",
-                    userId: decodedToken.userId
-                })
-            }
+                    reason: "No businessId in token",
+                    token: decodedToken.userId
+                }); 
+            };
+
+            this.httpService.requestValidation.validateUuid(decodedToken.businessId, "businessId", "middleware.auth.business")
             
             const user = await this.usersService.resource("user_id", decodedToken.userId);
-
             if(!user) {
-                
                 throw new AuthorizationError("Forbidden", {
                     reason: "No user found",
                     user: user
                 })
             }
+
+            const businessUser = await this.getBusinessUser(user.user_id, decodedToken.businessId);
+            if(!businessUser) {
+                throw new AuthorizationError("Forbidden", {
+                    reason: "No business user found"
+                })
+            }
+
+            const permissions = await this.getUserPermissions(businessUser.businessUserId)
            
             req.user = user;
+            req.permissions = permissions;
+            req.role = businessUser.accountType
             next();
         } catch (error) {
             next(error); 
@@ -81,7 +100,7 @@ export default class MiddlewareService {
                 });
             }
     
-            const decodedToken = this.webtokenService.decodeToken(token);
+            const decodedToken = this.httpService.webtokenService.decodeToken(token);
             
             if(!decodedToken) {
                 throw new AuthenticationError("Invalid or expired token", {
@@ -110,7 +129,7 @@ export default class MiddlewareService {
         }
     }
 
-     async verifyHMAC(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async verifyHMAC(req: Request, res: Response, next: NextFunction): Promise<void> {
         if(!process.env.HMAC_SECRET) {
             throw new ENVVariableError("Missing HMAC_SECRET variable");
         }
@@ -159,6 +178,24 @@ export default class MiddlewareService {
 
     }
 
+    verifyRoles(allowed: string[]) {
+        return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+            try {
+                const role = req.role;
+
+                if (!role || !allowed.includes(role)) {
+                    throw new AuthorizationError(undefined, {
+                        block: "middleware.verifyRoles",
+                    });
+                }
+
+                return next();
+            } catch (error) {
+                return next(error);
+            }
+        };
+    }
+
     async handleErrors(error: unknown, req: Request, res: Response, next: NextFunction): Promise<void> {
         const defaultErrorMessage = "Unable to process request at this time"
         try {
@@ -186,6 +223,24 @@ export default class MiddlewareService {
             return
         }
     };
+
+    private async getBusinessUser(userId: string, businessId: string): Promise<BusinessUserData | null> {
+        try {
+            const businessUsersService = Container.resolve<BusinessUsersService>("BusinessUsersService");
+            const businessUser = await businessUsersService.selectByIds(userId, businessId);
+
+            return businessUser;
+        } catch (error) {
+            throw error
+        }
+    }
+
+    private async getUserPermissions(businessUserId: string): Promise<PermissionData[]> {
+        const permissionsService = Container.resolve<PermissionsService>("PermissionsService");
+        const permissions = await permissionsService.collection(businessUserId);
+
+        return permissions;
+    }
 }
 
 

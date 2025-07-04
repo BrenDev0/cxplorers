@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import HttpService from "../../../core/services/HttpService"
 import { BadRequestError, NotFoundError } from "../../../core/errors/errors";
-import BusinessUsersService from "./BusinessUsersService";
+import BusinessUsersService from "./BusienssUsersService";
 import { BusinessUserData } from "./businessUsers.interface";
 
 export default class BusinessUsersController { 

@@ -1,5 +1,6 @@
 export interface Calendar {
   calendar_id: string;
+  business_id: string;
   user_id: string;
   calendar_reference_id: string;
   title: string;
@@ -13,6 +14,7 @@ export interface Calendar {
 
 export interface CalendarData {
   calendarId: string;
+  businessId: string;
   userId: string;
   calendarReferenceId: string;
   title: string;

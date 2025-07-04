@@ -12,21 +12,23 @@ const initializePermissionsRouter = (customController) => {
     const middlewareService = Container_1.default.resolve("MiddlewareService");
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("PermissionsController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
-    /*
-       #swagger.tags = ['Permissions']
-       #swagger.path =  '/permissions/secure'
-       #swagger.security = [{ "bearerAuth": [] }]
-       #swagger.description = 'Update permissions'
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               "application/json": {
-                   schema: { $ref: "#/components/schemas/updatePermissions" }
-               }
-           }
-       }
-       */
     // protected Routes //
+    secureRouter.post("/create", middlewareService.verifyRoles(["OWNER", "ADMIN"]), 
+    /*
+    #swagger.tags = ['Permissions']
+    #swagger.path =  '/permissions/secure/create'
+    #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.description = 'create permissions'
+    #swagger.requestBody = {
+        required: true,
+        content: {
+            "application/json": {
+                schema: { $ref: "#/components/schemas/createPermission" }
+            }
+        }
+    }
+    */
+    controller.createRequest.bind(controller));
     // mounts //
     router.use("/secure", secureRouter);
     console.log("Permissions router initialized.");

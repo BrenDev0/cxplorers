@@ -40,6 +40,16 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         controller.resourceRequest.bind(controller)
     )
 
+    secureRouter.get("/collection",
+         /*
+        #swagger.tags = ['Businesses']
+        #swagger.path =  '/businesses/secure/collection'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Get businesses by user'
+        */
+        controller.collectionRequest.bind(controller)
+    )
+
     secureRouter.put("/:businessId",
         /*
         #swagger.tags = ['Businesses']

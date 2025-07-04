@@ -22,6 +22,6 @@ export interface UserGoogleData {
   refresh_token: string;
 }
 
-export interface IUserRepository<User> extends IRepository<User> {
+export interface IUserRepository extends IRepository<User> {
   getGoogleData(userId: string): Promise<UserGoogleData>
 }

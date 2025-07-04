@@ -48,6 +48,17 @@ export default class PermissionsService {
         }
     }
 
+    async collection(businessUserId: string): Promise<PermissionData[]> {
+        try {
+            const result = await this.repository.select("business_user_id", businessUserId);
+           
+            return result.map((permission) => this.mapFromDb(permission))
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "resource", {businessUserId})
+            throw error;
+        }
+    }
+
     async update(permissionId: string, changes: PermissionData): Promise<Permission> {
         const mappedChanges = this.mapToDb(changes);
         const cleanedChanges = Object.fromEntries(
@@ -74,7 +85,7 @@ export default class PermissionsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             permission_id: permission.permissionId,
-            user_id: permission.userId,
+            business_user_id: permission.businessUserId,
             module_name: permission.moduleName,
             action: permission.action
         }
@@ -84,7 +95,7 @@ export default class PermissionsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             permissionId: permission.permission_id,
-            userId: permission.user_id,
+            businessUserId: permission.business_user_id,
             moduleName: permission.module_name,
             action: permission.action
         }

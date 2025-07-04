@@ -1,3 +1,5 @@
+import { IRepository } from "../../core/repository/repository.interface";
+
 export interface Business {
   business_id: string;
   business_logo: string;
@@ -25,3 +27,7 @@ export interface BusinessData {
   platformLanguage: string;
   communicationLanguage: string;
 }
+
+export interface IBusinessesRepository extends IRepository<Business> {
+  collectionByIds(businessIds: string[]): Promise<Business[]>;
+} 
