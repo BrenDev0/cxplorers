@@ -11,23 +11,25 @@ export const initializeBusinessUsersRouter = (customController?: BusinessUsersCo
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
-     /*
-        #swagger.tags = ['Staff']
-        #swagger.path =  '/businessUsers/secure'
+    // protected Routes //
+    secureRouter.post("/create", middlewareService.verifyRoles(["OWNER", "ADMIN"]),
+        /*
+        #swagger.tags = ['Business Users']
+        #swagger.path =  '/business-users/secure/create'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Update businessUsers'
+        #swagger.description = 'Create businessUser'
         #swagger.requestBody = {
             required: true,
             content: {
                 "application/json": {
-                    schema: { $ref: "#/components/schemas/updateBusinessUsers" }
+                    schema: { $ref: "#/components/schemas/createBusinessUser" }
                 }
             }
         }
         */
 
-    // protected Routes //
-
+        controller.createRequest.bind(controller)
+    )
 
   
 

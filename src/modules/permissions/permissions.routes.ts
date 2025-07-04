@@ -10,6 +10,7 @@ export const initializePermissionsRouter = (customController?: PermissionsContro
     const controller = customController ?? Container.resolve<PermissionsController>("PermissionsController");
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
+    
     // protected Routes //
     secureRouter.post("/create", middlewareService.verifyRoles(["OWNER", "ADMIN"]),
         /*

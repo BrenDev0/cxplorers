@@ -144,6 +144,7 @@ const doc = {
 const outputFile = './swagger.json';  
 const endpointsFiles = [
   '../../modules/businesses/businesses.routes.ts',
+  '../../modules/businesses/businessUsers/businessUsers.routes.ts',
   '../../modules/calendars/calendars.routes.ts',
   '../../modules/contacts/contacts.routes.ts',
   '../../modules/calendars/events/events.routes.ts',
@@ -151,6 +152,7 @@ const endpointsFiles = [
   '../../modules/opportunities/opportunities.routes.ts',
   '../../modules/opportunities/pipelines/pipelines.routes.ts',
   '../../modules/opportunities/stages/stages.routes.ts',
+  '../../modules/permissions/permissions.routes.ts',
   '../../modules/tokens/tokens.routes.ts',
   '../../modules/users/users.routes.ts'
 ];    

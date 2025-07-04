@@ -67,6 +67,24 @@
         ]
       }
     },
+    "/businesses/secure/collection": {
+      "get": {
+        "tags": [
+          "Businesses"
+        ],
+        "description": "Get businesses by user",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/businesses/secure/{businessId}": {
       "put": {
         "tags": [
@@ -129,6 +147,34 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/business-users/secure/create": {
+      "post": {
+        "tags": [
+          "Business Users"
+        ],
+        "description": "Create businessUser",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createBusinessUser"
+              }
+            }
+          }
+        }
       }
     },
     "/calendars/secure/create": {
@@ -905,6 +951,34 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/permissions/secure/create": {
+      "post": {
+        "tags": [
+          "Permissions"
+        ],
+        "description": "create permissions",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createPermission"
+              }
+            }
+          }
+        }
       }
     },
     "/tokens/secure/create": {

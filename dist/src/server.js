@@ -25,12 +25,14 @@ const pipelines_routes_1 = require("./modules/opportunities/pipelines/pipelines.
 const stages_routes_1 = require("./modules/opportunities/stages/stages.routes");
 const opportunities_routes_1 = require("./modules/opportunities/opportunities.routes");
 const businesses_routes_1 = require("./modules/businesses/businesses.routes");
+const businessUsers_routes_1 = require("./modules/businesses/businessUsers/businessUsers.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
     const middlewareService = Container_1.default.resolve("MiddlewareService");
     // routers //
     const businessesRouter = (0, businesses_routes_1.initializeBusinessesRouter)();
+    const businessUsersRouter = (0, businessUsers_routes_1.initializeBusinessUsersRouter)();
     const calendarsRouter = (0, calendars_routes_1.initializeCalendarsRouter)();
     const googleRouter = (0, google_routes_1.initializeGoogleRouter)();
     const opportunitiesRouter = (0, opportunities_routes_1.initializeOpportunitiesRouter)();
@@ -42,6 +44,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
     app.use("/businesses", businessesRouter);
+    app.use("/business-users", businessUsersRouter);
     app.use("/calendars", calendarsRouter);
     app.use("/google", googleRouter);
     app.use("/opportunities", opportunitiesRouter);

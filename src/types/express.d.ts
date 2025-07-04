@@ -9,6 +9,7 @@ declare global {
       user: User,
       permissions: PermissionData[]
       role: string;
+      businessId: string;
     }
   }
 }

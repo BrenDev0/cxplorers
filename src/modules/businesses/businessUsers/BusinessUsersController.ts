@@ -3,6 +3,8 @@ import HttpService from "../../../core/services/HttpService"
 import { BadRequestError, NotFoundError } from "../../../core/errors/errors";
 import BusinessUsersService from "./BusienssUsersService";
 import { BusinessUserData } from "./businessUsers.interface";
+import Container from "../../../core/dependencies/Container";
+import UsersService from "../../users/UsersService";
 
 export default class BusinessUsersController { 
   private httpService: HttpService;
@@ -14,6 +16,31 @@ export default class BusinessUsersController {
     this.httpService = httpService;
     this.businessUsersService = businessUsersService;
   }
+
+  async createRequest(req: Request, res: Response): Promise<void> {
+      const block = `${this.block}.createRequest`;
+      try {
+        const user = req.user;
+        const businessId = req.businessId;
+
+        const requiredFields = ["email", "password", "name", "phone", "accountType"];
+        this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+
+        const usersService = Container.resolve<UsersService>("UsersService");
+        const newUser = await usersService.create(req.body);
+        
+        const { accountType } = req.body;
+        await this.businessUsersService.create({
+          accountType,
+          businessId,
+          userId: newUser.user_id
+        })
+
+        res.status(200).json({ message: "User added to business." });
+      } catch (error) {
+        throw error;
+      }
+    }
 
  
   // async resourceRequest(req: Request, res: Response): Promise<void> {

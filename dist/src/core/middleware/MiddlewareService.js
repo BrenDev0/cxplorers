@@ -48,14 +48,6 @@ class MiddlewareService {
                 }
                 ;
                 this.httpService.requestValidation.validateUuid(decodedToken.userId, "userId", "middleware.auth.user");
-                if (!decodedToken.businessId) {
-                    throw new errors_1.AuthorizationError("Forbidden", {
-                        reason: "No businessId in token",
-                        token: decodedToken.userId
-                    });
-                }
-                ;
-                this.httpService.requestValidation.validateUuid(decodedToken.businessId, "businessId", "middleware.auth.business");
                 const user = yield this.usersService.resource("user_id", decodedToken.userId);
                 if (!user) {
                     throw new errors_1.AuthorizationError("Forbidden", {
@@ -63,16 +55,23 @@ class MiddlewareService {
                         user: user
                     });
                 }
-                const businessUser = yield this.getBusinessUser(user.user_id, decodedToken.businessId);
-                if (!businessUser) {
-                    throw new errors_1.AuthorizationError("Forbidden", {
-                        reason: "No business user found"
-                    });
+                if (decodedToken.businessId) {
+                    this.httpService.requestValidation.validateUuid(decodedToken.businessId, "businessId", "middleware.auth.business");
+                    const businessUser = yield this.getBusinessUser(user.user_id, decodedToken.businessId);
+                    if (!businessUser) {
+                        throw new errors_1.AuthorizationError("Forbidden", {
+                            reason: "No business user found"
+                        });
+                    }
+                    const permissions = yield this.getUserPermissions(businessUser.businessUserId);
+                    req.user = user;
+                    req.businessId = decodedToken.businessId;
+                    req.permissions = permissions;
+                    req.role = businessUser.accountType;
+                    return next();
                 }
-                const permissions = yield this.getUserPermissions(businessUser.businessUserId);
+                ;
                 req.user = user;
-                req.permissions = permissions;
-                req.role = businessUser.accountType;
                 next();
             }
             catch (error) {

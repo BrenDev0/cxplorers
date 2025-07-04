@@ -13,6 +13,7 @@ import { initializePipelinesRouter } from './modules/opportunities/pipelines/pip
 import { initializeStagesRouter } from './modules/opportunities/stages/stages.routes';
 import { initializeOpportunitiesRouter } from './modules/opportunities/opportunities.routes';
 import { initializeBusinessesRouter } from './modules/businesses/businesses.routes';
+import { initializeBusinessUsersRouter } from './modules/businesses/businessUsers/businessUsers.routes';
 
 
 const server = async() => {
@@ -23,6 +24,7 @@ const server = async() => {
 
     // routers //
     const businessesRouter = initializeBusinessesRouter();
+    const businessUsersRouter = initializeBusinessUsersRouter();
     const calendarsRouter = initializeCalendarsRouter();
     const googleRouter = initializeGoogleRouter();
     const opportunitiesRouter = initializeOpportunitiesRouter();
@@ -38,6 +40,7 @@ const server = async() => {
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
     app.use("/businesses", businessesRouter);
+    app.use("/business-users", businessUsersRouter);
     app.use("/calendars",   calendarsRouter);
     app.use("/google", googleRouter);
     app.use("/opportunities", opportunitiesRouter);
