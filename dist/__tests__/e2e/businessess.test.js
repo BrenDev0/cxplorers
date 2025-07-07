@@ -26,6 +26,7 @@ describe("USERS ROUTES", () => {
     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJpYXQiOjE3NTE5MTAyMDQsImV4cCI6MTc4MzQ0NjIwNH0.pYJu3dA6Lc1EN5LBdMt0gcPJX_cAqJ0_AMLsoy0BZjo";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q";
     const nonAdminToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5Njk2MDIsImV4cCI6MTc4MDUwNTYwMn0.JiTqY9FHBaSofTdUnrxmGOLODvNLKvmsqpmOzFA5mSU";
+    const businessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTE1MzcwLCJleHAiOjE3NTI1MjAxNzB9.ONgXdCRX5BhGS3Sh9H6M9W8QRaJNj-Ea3Ki2BUVOIKA";
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         pool = new pg_1.Pool({
             connectionString: process.env.DB_URL,
@@ -69,20 +70,14 @@ describe("USERS ROUTES", () => {
             expect(res.body.message).toContain('All fields required');
         }));
     });
-    describe('GET /secure/businesses/:businessId', () => {
+    describe('GET /businesses/secure/resource', () => {
         it('should return 200 and business data for valid ID and permissions', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .get(`/secure/businesses/resource`)
-                .set('Authorization', "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiZTVlYmRjNjAtNDRiOS00YjFiLThlMzYtMDYwZTY2YTFkMWM1IiwiaWF0IjoxNzUxOTEzNDEzLCJleHAiOjE3NTE5MTQzMTN9.htqDRHS3NQ2XwFbSdqqRdst0rbqqnlpw7AX_kV7QyYM");
+                .get(`/businesses/secure/resource`)
+                .set('Authorization', businessToken);
+            console.log(res.body, "RESPONSE::::::::::::");
             expect(res.status).toBe(200);
-            expect(res.body.data).toHaveProperty('business_id');
-        }));
-        it('should return 400 for invalid UUID', () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(app)
-                .get('/secure/businesses/resource/abc')
-                .set('Authorization', token);
-            expect(res.status).toBe(400);
-            expect(res.body.message).toContain('Invalid UUID format');
+            expect(res.body.data).toHaveProperty('businessId');
         }));
     });
 });

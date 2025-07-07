@@ -18,7 +18,7 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/create'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Create business'
+        #swagger.description = 'Create business, will recieve a new token'
         #swagger.requestBody = {
             required: true,
             content: {
@@ -54,7 +54,7 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
     )
 
     secureRouter.put("/",
-         middlewareService.verifyRoles(["owner", "admin"]),
+         middlewareService.verifyRoles(["owner"]),
         /*
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/{businessId}'
@@ -73,6 +73,7 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
     )
 
     secureRouter.delete("/:businessId", 
+        middlewareService.verifyRoles(["owner"]),
         /*
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/{businessId}'

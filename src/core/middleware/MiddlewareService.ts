@@ -35,8 +35,12 @@ export default class MiddlewareService {
                     headers: req.headers
                 });
             }
+
+            console.log(token, "TOKEN:::::::::")
     
             const decodedToken = this.httpService.webtokenService.decodeToken(token);
+
+
             
             if(!decodedToken) {
                 throw new AuthenticationError("Invalid or expired token", {

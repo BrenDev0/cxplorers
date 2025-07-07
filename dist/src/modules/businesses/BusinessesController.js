@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("../../core/errors/errors");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class BusinessesController {
     constructor(httpService, businessesService) {
@@ -38,7 +37,7 @@ class BusinessesController {
                 const token = this.httpService.webtokenService.generateToken({
                     userId: user.user_id,
                     businessId: newBusiness.business_id
-                });
+                }, "7d");
                 res.status(200).json({ message: "Business added.", token });
             }
             catch (error) {
@@ -51,10 +50,9 @@ class BusinessesController {
             const block = `${this.block}.resourceRequest`;
             try {
                 const user = req.user;
-                const businessId = req.params.businessId;
+                const businessId = req.businessId;
                 this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
                 const businessResource = yield this.httpService.requestValidation.validateResource(businessId, "BusinessesService", "Business not found", block);
-                yield this.verifyPermissions(user.user_id, businessId, ["OWNER", "ADMIN"]);
                 res.status(200).json({ data: businessResource });
             }
             catch (error) {
@@ -89,7 +87,6 @@ class BusinessesController {
                 const businessId = req.businessId;
                 this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
                 yield this.httpService.requestValidation.validateResource(businessId, "BusinessesService", "Business not found", block);
-                yield this.verifyPermissions(user.user_id, businessId, ["OWNER"]);
                 const allowedChanges = [
                     "businessLogo",
                     "businessName",
@@ -119,20 +116,10 @@ class BusinessesController {
                 const businessId = req.params.businessId;
                 this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
                 yield this.httpService.requestValidation.validateResource(businessId, "BusinessesService", "Business not found", block);
-                yield this.verifyPermissions(user.userId, businessId, ["OWNER"]);
                 yield this.businessesService.delete(businessId);
             }
             catch (error) {
                 throw error;
-            }
-        });
-    }
-    verifyPermissions(userId, businessId, allowedRoles) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const businessUsersService = Container_1.default.resolve("BusinessUsersService");
-            const businessUser = yield businessUsersService.selectByIds(userId, businessId);
-            if (!businessUser || !allowedRoles.includes(businessUser.role)) {
-                throw new errors_1.AuthorizationError();
             }
         });
     }

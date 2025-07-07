@@ -16,7 +16,7 @@
                 "tags": [
                     "Businesses"
                 ],
-                "description": "Create business",
+                "description": "Create business, will recieve a new token",
                 "responses": {
                     "default": {
                         "description": ""
@@ -1677,6 +1677,20 @@
                     }
                 }
             }
+        },
+        "createBusinessUser": {
+            "email": "required",
+            "password": "required",
+            "phone": "required",
+            "role": "required"
+        },
+        "createPermissions": {
+            "permissions": [
+                {
+                    "moduleName": "calendar || contacts",
+                    "action": "write || read"
+                }
+            ]
         }
     }
 }

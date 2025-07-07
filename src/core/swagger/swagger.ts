@@ -137,7 +137,21 @@ const doc = {
       communicationLanguage: "optional",
     }
     },
-    
+    createBusinessUser: {
+      email: "required",
+      password: "required",
+      phone: "required",
+      role: "required"
+    },
+
+    createPermissions: {
+      permissions: [
+        {
+          moduleName: "calendar || contacts",
+          action: "write || read"
+        }
+      ]
+    }
   },
 };
 

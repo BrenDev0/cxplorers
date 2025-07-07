@@ -40,7 +40,7 @@ export default class BusinessesController {
       const token = this.httpService.webtokenService.generateToken({
         userId: user.user_id,
         businessId: newBusiness.business_id
-      })
+      }, "7d")
 
       res.status(200).json({ message: "Business added.", token });
     } catch (error) {
@@ -53,12 +53,10 @@ export default class BusinessesController {
     try {
       const user = req.user;
 
-      const businessId = req.params.businessId;
+      const businessId = req.businessId;
       this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
 
       const businessResource = await this.httpService.requestValidation.validateResource<BusinessData>(businessId, "BusinessesService", "Business not found", block);
-      
-      await this.verifyPermissions(user.user_id, businessId, ["OWNER", "ADMIN"]);
 
       res.status(200).json({ data: businessResource })
     } catch (error) {
@@ -95,7 +93,6 @@ export default class BusinessesController {
       this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
 
       await this.httpService.requestValidation.validateResource<BusinessData>(businessId, "BusinessesService", "Business not found", block);
-      await this.verifyPermissions(user.user_id, businessId, ["OWNER"])
 
       const allowedChanges = [
         "businessLogo",
@@ -130,21 +127,10 @@ export default class BusinessesController {
 
       await this.httpService.requestValidation.validateResource<BusinessData>(businessId, "BusinessesService", "Business not found", block);
 
-      await this.verifyPermissions(user.userId, businessId, ["OWNER"]);
-
       await this.businessesService.delete(businessId)
 
     } catch (error) {
       throw error;
     }
-  }
-
-  private async verifyPermissions(userId: string, businessId: string, allowedRoles: string[]): Promise<void> {
-    const businessUsersService = Container.resolve<BusinessUserService>("BusinessUsersService");
-    const businessUser = await businessUsersService.selectByIds(userId, businessId);
-
-    if(!businessUser || !allowedRoles.includes(businessUser.role)) {
-      throw new AuthorizationError();
-      }
   }
 }
