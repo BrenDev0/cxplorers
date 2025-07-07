@@ -21,8 +21,6 @@ class PermissionsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const userPermissions = req.permissions;
-                const role = req.role;
                 const businessUserId = req.params.businessUserId;
                 this.httpService.requestValidation.validateUuid(businessUserId, "businessUserId", block);
                 yield this.httpService.requestValidation.validateResource(businessUserId, "BusinessUsersService", "Business user not found", block);
@@ -33,9 +31,15 @@ class PermissionsController {
                     throw new errors_1.BadRequestError("Permissions must be of type array");
                 }
                 const permissionsData = [];
+                const allowedActions = ["write", "read"];
                 const requiredPermissionsFields = ["moduleName", "action"];
                 for (const permission of permissions) {
                     this.httpService.requestValidation.validateRequestBody(requiredPermissionsFields, permission, block);
+                    if (!allowedActions.includes(permission.action)) {
+                        throw new errors_1.BadRequestError("Invalid action type", {
+                            action: permission.action
+                        });
+                    }
                     permissionsData.push(Object.assign(Object.assign({}, permission), { businessUserId }));
                 }
                 yield this.permissionsService.upsert(permissionsData);

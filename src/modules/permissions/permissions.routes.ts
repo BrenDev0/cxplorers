@@ -12,10 +12,10 @@ export const initializePermissionsRouter = (customController?: PermissionsContro
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     
     // protected Routes //
-    secureRouter.post("/create", middlewareService.verifyRoles(["OWNER", "ADMIN"]),
+    secureRouter.post("/create/:businessUserId", middlewareService.verifyRoles(["OWNER", "ADMIN"]),
         /*
         #swagger.tags = ['Permissions']
-        #swagger.path =  '/permissions/secure/create'
+        #swagger.path =  '/permissions/secure/create/{businessUserId}'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'create permissions'
         #swagger.requestBody = {
