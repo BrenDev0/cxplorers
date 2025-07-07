@@ -45,7 +45,7 @@ export const initializePipelinesRouter = (customController?: PipelinesController
         #swagger.tags = ['Pipelines']
         #swagger.path =  '/pipelines/secure/collection'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'get pipelines by user id in token'
+        #swagger.description = 'get pipelines by business id in token'
         */
         controller.collectionRequest.bind(controller)
     )

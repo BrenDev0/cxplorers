@@ -88,7 +88,15 @@ const doc = {
      },
      createPipeline: {
       name: "required",
-      stages: [{name: "stage 1", position: 1}]
+      inPieChart: true,
+      inFunnelChart: true,
+      stages: [{
+        name: "required",
+        pipelineId: "required",
+        position: 1,
+        inPieChart: true,
+        inFunnelChart: true
+      }]
      },
 
      updatePipeline: {
@@ -99,7 +107,7 @@ const doc = {
         name: "required",
         stageId: "required",
         pipelineId: "required",
-        position: "required",
+        position: 1,
         inPieChart: true,
         inFunnelChart: true
       }]

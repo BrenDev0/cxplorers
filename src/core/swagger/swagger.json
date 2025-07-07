@@ -1540,6 +1540,14 @@
             "type": "string",
             "example": "required"
           },
+          "inPieChart": {
+            "type": "boolean",
+            "example": true
+          },
+          "inFunnelChart": {
+            "type": "boolean",
+            "example": true
+          },
           "stages": {
             "type": "array",
             "items": {
@@ -1547,11 +1555,23 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "stage 1"
+                  "example": "required"
+                },
+                "pipelineId": {
+                  "type": "string",
+                  "example": "required"
                 },
                 "position": {
                   "type": "number",
                   "example": 1
+                },
+                "inPieChart": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "inFunnelChart": {
+                  "type": "boolean",
+                  "example": true
                 }
               }
             }
@@ -1591,8 +1611,8 @@
                   "example": "required"
                 },
                 "position": {
-                  "type": "string",
-                  "example": "required"
+                  "type": "number",
+                  "example": 1
                 },
                 "inPieChart": {
                   "type": "boolean",
