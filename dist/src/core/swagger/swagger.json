@@ -1565,6 +1565,14 @@
                         "type": "string",
                         "example": "optional"
                     },
+                    "inPieChart": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "inFunnelChart": {
+                        "type": "boolean",
+                        "example": true
+                    },
                     "stages": {
                         "type": "array",
                         "items": {
@@ -1585,6 +1593,14 @@
                                 "position": {
                                     "type": "string",
                                     "example": "required"
+                                },
+                                "inPieChart": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "inFunnelChart": {
+                                    "type": "boolean",
+                                    "example": true
                                 }
                             }
                         }

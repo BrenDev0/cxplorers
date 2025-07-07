@@ -33,7 +33,6 @@ class MiddlewareService {
                         headers: req.headers
                     });
                 }
-                console.log(token, "TOKEN:::::::::");
                 const decodedToken = this.httpService.webtokenService.decodeToken(token);
                 if (!decodedToken) {
                     throw new errors_1.AuthenticationError("Invalid or expired token", {
@@ -194,6 +193,9 @@ class MiddlewareService {
     verifyPermissions(module, actions) {
         return (req, res, next) => {
             try {
+                if (req.user.is_admin && req.role === "owner") {
+                    return next();
+                }
                 const permissions = req.permissions;
                 if (!permissions || !Array.isArray(permissions)) {
                     throw new errors_1.AuthorizationError("Permissions not found or invalid", {

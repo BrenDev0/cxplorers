@@ -93,11 +93,15 @@ const doc = {
 
      updatePipeline: {
       name: "optional",
+      inPieChart: true,
+      inFunnelChart: true,
       stages: [{
         name: "required",
         stageId: "required",
         pipelineId: "required",
-        position: "required"
+        position: "required",
+        inPieChart: true,
+        inFunnelChart: true
       }]
      },
      createOpportunity: {

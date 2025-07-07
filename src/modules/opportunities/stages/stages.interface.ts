@@ -5,6 +5,8 @@ export interface Stage {
   pipeline_id: string;
   name: string;
   position: number;
+  in_pie_chart: boolean;
+  in_funnel_chart: boolean;
 }
 
 export interface StageData {
@@ -12,6 +14,8 @@ export interface StageData {
   pipelineId: string;
   name: string;
   position: number;
+  inPieChart: boolean;
+  inFunnelChart: boolean;
 }
 
 export interface IStagesRepository extends IRepository<Stage> {

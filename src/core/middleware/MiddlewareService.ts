@@ -35,8 +35,6 @@ export default class MiddlewareService {
                     headers: req.headers
                 });
             }
-
-            console.log(token, "TOKEN:::::::::")
     
             const decodedToken = this.httpService.webtokenService.decodeToken(token);
 
@@ -221,6 +219,11 @@ export default class MiddlewareService {
     verifyPermissions(module: string, actions: string[]) {
         return (req: Request, res: Response, next: NextFunction): void => {
             try {
+
+                if(req.user.is_admin && req.role === "owner"){
+                    return  next()
+                }
+                
                 const permissions = req.permissions as PermissionData[];
 
                 if (!permissions || !Array.isArray(permissions)) {

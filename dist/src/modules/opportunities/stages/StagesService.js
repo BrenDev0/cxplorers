@@ -103,7 +103,9 @@ class StagesService {
             stage_id: stage.stageId,
             pipeline_id: stage.pipelineId,
             name: stage.name,
-            position: stage.position && Number(stage.position)
+            position: stage.position && Number(stage.position),
+            in_funnel_chart: stage.inFunnelChart,
+            in_pie_chart: stage.inPieChart
         };
     }
     mapFromDb(stage) {
@@ -112,7 +114,9 @@ class StagesService {
             stageId: stage.stage_id,
             pipelineId: stage.pipeline_id,
             name: stage.name,
-            position: Number(stage.position)
+            position: Number(stage.position),
+            inFunnelChart: stage.in_funnel_chart,
+            inPieChart: stage.in_pie_chart
         };
     }
 }
