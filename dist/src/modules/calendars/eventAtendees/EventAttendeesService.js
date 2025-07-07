@@ -77,6 +77,18 @@ class EventAttendeesService {
             }
         });
     }
+    read(businessId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.getAll(businessId);
+                return result;
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "read", { businessId });
+                throw error;
+            }
+        });
+    }
     // async update(changes: EventAtendeeData): Promise<EventAtendee> {
     //     const mappedChanges = this.mapToDb(changes);
     //     const cleanedChanges = Object.fromEntries(

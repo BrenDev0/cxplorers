@@ -71,4 +71,17 @@ export default class EventAttendeesController {
   //     throw error;
   //   }
   // }
+
+  async readRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const user = req.user;
+      const businessId = req.businessId;
+
+      const data = await this.eventAttendeesService.read(businessId)
+      
+      res.status(200).json({ data });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

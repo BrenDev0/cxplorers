@@ -113,10 +113,20 @@ class BusinessesController {
             const block = `${this.block}.deleteRequest`;
             try {
                 const user = req.user;
-                const businessId = req.params.businessId;
+                const businessId = req.businessId;
                 this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
                 yield this.httpService.requestValidation.validateResource(businessId, "BusinessesService", "Business not found", block);
                 yield this.businessesService.delete(businessId);
+                const businessUsersService = Container_1.default.resolve("BusinessUsersService");
+                const businesses = yield businessUsersService.collection("user_id", user.user_id);
+                const tokenPayload = {
+                    userId: user.user_id
+                };
+                if (businesses.length !== 0) {
+                    tokenPayload.businessId = businesses[0].businessId;
+                }
+                const token = this.httpService.webtokenService.generateToken(tokenPayload, "7d");
+                res.status(200).json({ message: "Business deleted", token });
             }
             catch (error) {
                 throw error;

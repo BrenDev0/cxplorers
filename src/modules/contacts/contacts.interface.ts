@@ -8,6 +8,7 @@ export interface Contact {
   email: string;
   phone: string;
   source: string;
+  created_at: string;
 }
 
 export interface ContactData {
@@ -18,6 +19,7 @@ export interface ContactData {
   email: string;
   phone: string;
   source: string;
+  createdAt: string;
 }
 
 export interface IContactsRepository<Contact> extends IRepository<Contact>{

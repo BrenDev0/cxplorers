@@ -24,9 +24,15 @@ class EventsController {
     // }
     collectionRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.collectionRequest`;
             try {
                 const user = req.user;
-                const data = yield this.eventsService.collection(user.user_id);
+                const businessId = req.businessId;
+                const calendarId = req.params.calendarId;
+                this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+                const calendarResource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, calendarResource.businessId, block);
+                const data = yield this.eventsService.collection(calendarId);
                 res.status(200).json({ data: data });
             }
             catch (error) {

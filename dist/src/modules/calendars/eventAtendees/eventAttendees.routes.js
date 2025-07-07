@@ -12,21 +12,15 @@ const initializeEventAtendeesRouter = (customController) => {
     const middlewareService = Container_1.default.resolve("MiddlewareService");
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("EventAtendeesController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
-    /*
-       #swagger.tags = ['EventAtendees']
-       #swagger.path =  '/eventAtendees/secure'
-       #swagger.security = [{ "bearerAuth": [] }]
-       #swagger.description = 'Update eventAtendees'
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               "application/json": {
-                   schema: { $ref: "#/components/schemas/updateEventAtendees" }
-               }
-           }
-       }
-       */
     // protected Routes //
+    secureRouter.get("/read", middlewareService.verifyPermissions("calendars", ["read", "write"]), 
+    /*
+    #swagger.tags = ['EventAtendees']
+    #swagger.path =  '/eventAtendees/secure/collection'
+    #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.description = 'get all contacts with appointments'
+    */
+    controller.readRequest.bind(controller));
     // mounts //
     router.use("/secure", secureRouter);
     console.log("EventAtendees router initialized.");

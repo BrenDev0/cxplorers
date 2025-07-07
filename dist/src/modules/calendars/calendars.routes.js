@@ -13,7 +13,7 @@ const initializeCalendarsRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("CalendarsController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/create", 
+    secureRouter.post("/create", middlewareService.verifyPermissions("calendars", ["write"]), 
     /*
    #swagger.tags = ['Calendars']
    #swagger.path =  '/calendars/secure/create'
@@ -29,7 +29,7 @@ const initializeCalendarsRouter = (customController) => {
    }
    */
     controller.createRequest.bind(controller));
-    secureRouter.get("/resource/:calendarId", 
+    secureRouter.get("/resource/:calendarId", middlewareService.verifyPermissions("calendars", ["read", "write"]), 
     /*
    #swagger.tags = ['Calendars']
    #swagger.path =  '/calendars/secure/resource/{calendarId}'
@@ -37,7 +37,7 @@ const initializeCalendarsRouter = (customController) => {
    #swagger.description = 'get calendar by id'
    */
     controller.resourceRequest.bind(controller));
-    secureRouter.get("/collection", 
+    secureRouter.get("/collection", middlewareService.verifyPermissions("calendars", ["read", "write"]), 
     /*
    #swagger.tags = ['Calendars']
    #swagger.path =  '/calendars/secure/collection'
@@ -45,7 +45,7 @@ const initializeCalendarsRouter = (customController) => {
    #swagger.description = 'get users calendars'
    */
     controller.collectionRequest.bind(controller));
-    secureRouter.delete("/:calendarId", 
+    secureRouter.delete("/:calendarId", middlewareService.verifyPermissions("calendars", ["read", "write"]), 
     /*
    #swagger.tags = ['Calendars']
    #swagger.path =  '/calendars/secure/{calendarId}'

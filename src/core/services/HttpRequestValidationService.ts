@@ -78,8 +78,8 @@ export default class HttpRequestValidationService {
         return resource as T
     }
 
-    validateActionAuthorization(userId: string, resourceUserId: string, block: string) {
-        if(userId !== resourceUserId) {
+    validateActionAuthorization(id: string, resourceId: string, block: string) {
+        if(id !== resourceId) {
         throw new AuthorizationError(undefined, {
             block
         })

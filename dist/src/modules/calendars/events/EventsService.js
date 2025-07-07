@@ -65,15 +65,15 @@ class EventsService {
             }
         });
     }
-    collection(userId) {
+    collection(calendarId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.select("user_id", userId);
+                const result = yield this.repository.select("calendar_id", calendarId);
                 const data = result.map((event) => this.mapFromDb(event));
                 return data;
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { calendarId });
                 throw error;
             }
         });

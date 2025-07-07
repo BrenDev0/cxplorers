@@ -13,6 +13,7 @@ export const initializeCalendarsRouter = (customController?: CalendarsController
 
     // protected Routes //
     secureRouter.post("/create",
+        middlewareService.verifyPermissions("calendars", ["write"]),
          /*
         #swagger.tags = ['Calendars']
         #swagger.path =  '/calendars/secure/create'
@@ -31,6 +32,7 @@ export const initializeCalendarsRouter = (customController?: CalendarsController
     )
 
     secureRouter.get("/resource/:calendarId", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
          /*
         #swagger.tags = ['Calendars']
         #swagger.path =  '/calendars/secure/resource/{calendarId}'
@@ -41,6 +43,7 @@ export const initializeCalendarsRouter = (customController?: CalendarsController
     )
 
     secureRouter.get("/collection", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
          /*
         #swagger.tags = ['Calendars']
         #swagger.path =  '/calendars/secure/collection'
@@ -51,6 +54,7 @@ export const initializeCalendarsRouter = (customController?: CalendarsController
     )
 
     secureRouter.delete("/:calendarId", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
          /*
         #swagger.tags = ['Calendars']
         #swagger.path =  '/calendars/secure/{calendarId}'

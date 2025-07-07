@@ -54,15 +54,15 @@ export default class EventsService {
         }
     }
 
-    async collection(userId: string): Promise<EventData[]> {
+    async collection(calendarId: string): Promise<EventData[]> {
         try {
-            const result = await this.repository.select("user_id", userId);
+            const result = await this.repository.select("calendar_id", calendarId);
 
             const data = result.map((event) => this.mapFromDb(event));
 
             return data;
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", {userId})
+            handleServiceError(error as Error, this.block, "resource", {calendarId})
             throw error;
         }
     }

@@ -66,15 +66,15 @@ class ContactService {
             }
         });
     }
-    collection(userId) {
+    collection(businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.select("user_id", userId);
+                const result = yield this.repository.select("business_id", businessId);
                 const data = result.map((contact) => this.mapFromDb(contact));
                 return data;
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "collection", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { businessId });
                 throw error;
             }
         });
@@ -111,7 +111,8 @@ class ContactService {
             last_name: contact.lastName && encryptionService.encryptData(contact.lastName),
             email: contact.email && encryptionService.encryptData(contact.email),
             phone: contact.phone && encryptionService.encryptData(contact.phone),
-            source: contact.source
+            source: contact.source,
+            created_at: contact.createdAt
         };
     }
     mapFromDb(contact) {
@@ -123,7 +124,8 @@ class ContactService {
             lastName: contact.last_name && encryptionService.decryptData(contact.last_name),
             email: contact.email && encryptionService.decryptData(contact.email),
             phone: contact.phone && encryptionService.decryptData(contact.phone),
-            source: contact.source
+            source: contact.source,
+            createdAt: contact.created_at
         };
     }
 }

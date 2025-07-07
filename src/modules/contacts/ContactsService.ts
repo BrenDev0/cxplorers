@@ -55,15 +55,15 @@ export default class ContactService {
         }
     }
 
-    async collection(userId: string): Promise<ContactData[]> {
+    async collection(businessId: string): Promise<ContactData[]> {
         try {
-            const result = await this.repository.select("user_id", userId);
+            const result = await this.repository.select("business_id", businessId);
            
             const data = result.map((contact: Contact) => this.mapFromDb(contact));
 
             return data;
         } catch (error) {
-            handleServiceError(error as Error, this.block, "collection", {userId})
+            handleServiceError(error as Error, this.block, "collection", {businessId})
             throw error;
         }
     }
@@ -98,7 +98,8 @@ export default class ContactService {
             last_name: contact.lastName && encryptionService.encryptData(contact.lastName),
             email: contact.email && encryptionService.encryptData(contact.email),
             phone: contact.phone && encryptionService.encryptData(contact.phone),
-            source: contact.source
+            source: contact.source,
+            created_at: contact.createdAt
         }
     }
 
@@ -111,7 +112,8 @@ export default class ContactService {
             lastName: contact.last_name && encryptionService.decryptData(contact.last_name),
             email: contact.email && encryptionService.decryptData(contact.email),
             phone: contact.phone && encryptionService.decryptData(contact.phone),
-            source: contact.source
+            source: contact.source,
+            createdAt: contact.created_at
         }
     }
 }

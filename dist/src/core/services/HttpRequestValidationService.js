@@ -76,8 +76,8 @@ class HttpRequestValidationService {
             return resource;
         });
     }
-    validateActionAuthorization(userId, resourceUserId, block) {
-        if (userId !== resourceUserId) {
+    validateActionAuthorization(id, resourceId, block) {
+        if (id !== resourceId) {
             throw new errors_1.AuthorizationError(undefined, {
                 block
             });

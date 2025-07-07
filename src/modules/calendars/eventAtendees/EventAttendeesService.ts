@@ -5,6 +5,7 @@ import Container from '../../../core/dependencies/Container';
 import EncryptionService from '../../../core/services/EncryptionService';
 import EventAttendeesRepositoy from './EventAttendeesRepository';
 import ContactService from '../../contacts/ContactsService';
+import { rmSync } from 'fs';
 
 export default class EventAttendeesService {
     private repository: EventAttendeesRepositoy;
@@ -61,6 +62,16 @@ export default class EventAttendeesService {
             return result.map((attendee) => this.mapFromDb(attendee))
         } catch (error) {
             handleServiceError(error as Error, this.block, "collection", { whereCol, identifier })
+            throw error;
+        }
+    }
+
+    async read(businessId: string): Promise<Record<string, any>> {
+        try {
+            const result = await this.repository.getAll(businessId);
+            return result
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "read", { businessId })
             throw error;
         }
     }

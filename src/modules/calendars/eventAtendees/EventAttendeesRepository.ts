@@ -35,6 +35,21 @@ export default class EventAttendeesRepositoy extends BaseRepository<EventAttende
         return result.rows;
     }
 
+    async getAll(businessId: string): Promise<EventAttendee[]> {
+        const sqlRead =  `
+            SELECT event_attendees.status, contacts.name, events.summary, calendars.title
+            FROM event_attendees
+            JOIN events ON event_attendees.event_id = events.event_id
+            JOIN calendars ON events.calendar_id = calendars.calendar_id
+            JOIN businesses ON calendars.business_id = businesses.business_id
+            WHERE businesses.business_id = $1
+        `;
+
+        const result = await this.pool.query(sqlRead, [businessId]);
+
+        return result.rows;
+    }
+
     async deleteOne(contactId: string, eventId: string): Promise<EventAttendee> {
         const sqlDelete = `
             DELETE FROM event_attendees WHERE contact_id = $1 AND event_id = $2

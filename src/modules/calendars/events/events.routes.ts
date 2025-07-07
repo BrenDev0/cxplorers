@@ -11,27 +11,18 @@ export const initializeEventsRouter = (customController?: EventsController) => {
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
-    //  secureRouter.get("/collection", 
-    //     /*
-    //     #swagger.tags = ['Events']
-    //     #swagger.path =  '/events/secure/collection'
-    //     #swagger.security = [{ "bearerAuth": [] }] 
-    //     #swagger.description = 'get events for calender'
-    //     #swagger.requestBody = {
-    //         required: true,
-    //         content: {
-    //             "application/json": {
-    //                 schema: { $ref: "#/components/schemas/updateEvents" }
-    //             }
-    //         }
-    //     }
-    //     */
-    //     controller.collectionRequest.bind(controller)
-    // )
-
     // protected Routes //
 
-
+    secureRouter.get("/collection/:calendarId", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
+        /*
+        #swagger.tags = ['Events']
+        #swagger.path =  '/events/secure/collection/{calendarId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'get events for calender'
+        */
+        controller.collectionRequest.bind(controller)
+    )
   
 
     // mounts //

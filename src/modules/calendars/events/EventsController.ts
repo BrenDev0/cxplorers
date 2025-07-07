@@ -3,6 +3,7 @@ import HttpService from "../../../core/services/HttpService"
 import { BadRequestError, NotFoundError } from "../../../core/errors/errors";
 import EventsService from "./EventsService";
 import { EventData } from "./events.interface";
+import { CalendarData } from "../calendars.interface";
 
 export default class EventsController { 
   private httpService: HttpService;
@@ -25,10 +26,18 @@ export default class EventsController {
   // }
 
   async collectionRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.collectionRequest`
     try {
       const user = req.user;
+      const businessId = req.businessId;
 
-      const data = await this.eventsService.collection(user.user_id);
+      const calendarId = req.params.calendarId;
+      this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+
+      const calendarResource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found" , block)
+      this.httpService.requestValidation.validateActionAuthorization(businessId, calendarResource.businessId, block);
+
+      const data = await this.eventsService.collection(calendarId);
 
       res.status(200).json({ data: data });
     } catch (error) {

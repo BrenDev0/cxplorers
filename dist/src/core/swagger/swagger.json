@@ -417,6 +417,34 @@
                 ]
             }
         },
+        "/events/secure/collection/{calendarId}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "description": "get events for calender",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/google/secure/url": {
             "get": {
                 "tags": [

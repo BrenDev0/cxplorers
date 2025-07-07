@@ -16,6 +16,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     // general //
 
     secureRouter.get("/url", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
@@ -29,6 +30,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     // calendar //
 
     secureRouter.get("/calendars", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
@@ -40,7 +42,8 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
 
     // sync //
 
-    secureRouter.get("/calendars/sync/:calendarId", 
+    secureRouter.get("/calendars/sync/:calendarId",
+        middlewareService.verifyPermissions("calendars", ["read", "write"]), 
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
@@ -51,6 +54,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     )
 
     secureRouter.delete("/calendars/sync/:calendarId", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
@@ -65,6 +69,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     // events //
     
     secureRouter.post("/calendars/events/:calendarId", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
@@ -83,6 +88,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     )
 
     secureRouter.put("/calendars/events/:eventId", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
@@ -101,6 +107,7 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     )
 
     secureRouter.delete("/calendars/events/:eventId", 
+        middlewareService.verifyPermissions("calendars", ["read", "write"]),
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]

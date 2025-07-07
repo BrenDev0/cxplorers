@@ -60,7 +60,8 @@ class ContactsController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = req.user;
-                const data = yield this.contactsService.collection(user.user_id);
+                const businessId = req.businessId;
+                const data = yield this.contactsService.collection(businessId);
                 res.status(200).json({ data: data });
             }
             catch (error) {
@@ -74,8 +75,10 @@ class ContactsController {
             try {
                 const user = req.user;
                 const contactId = req.params.contactId;
+                const businessId = req.businessId;
                 this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(contactId, "ContactsService", "Contact not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 const allowedChanges = ["firstName", "lastName", "email", "phone"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.contactsService.update(contactId, filteredChanges);

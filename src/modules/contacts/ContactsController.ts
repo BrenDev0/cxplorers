@@ -60,8 +60,9 @@ export default class ContactsController {
   async collectionRequest(req: Request, res: Response): Promise<void> {
     try {
       const user = req.user;
+      const businessId = req.businessId
 
-      const data = await this.contactsService.collection(user.user_id);
+      const data = await this.contactsService.collection(businessId);
       
       res.status(200).json({ data: data });
     } catch (error) {
@@ -74,10 +75,12 @@ export default class ContactsController {
     try { 
       const user = req.user;
       const contactId = req.params.contactId;
+      const businessId = req.businessId;
 
       this.httpService.requestValidation.validateUuid(contactId, "contactId", block);
 
       const resource = await this.httpService.requestValidation.validateResource<ContactData>(contactId, "ContactsService", "Contact not found", block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
      
 
       const allowedChanges = ["firstName", "lastName", "email", "phone"];

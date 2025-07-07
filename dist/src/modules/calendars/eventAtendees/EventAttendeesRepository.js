@@ -39,6 +39,20 @@ class EventAttendeesRepositoy extends BaseRepository_1.default {
             return result.rows;
         });
     }
+    getAll(businessId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlRead = `
+            SELECT event_attendees.status, contacts.name, events.summary, calendars.title
+            FROM event_attendees
+            JOIN events ON event_attendees.event_id = events.event_id
+            JOIN calendars ON events.calendar_id = calendars.calendar_id
+            JOIN businesses ON calendars.business_id = businesses.business_id
+            WHERE businesses.business_id = $1
+        `;
+            const result = yield this.pool.query(sqlRead, [businessId]);
+            return result.rows;
+        });
+    }
     deleteOne(contactId, eventId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlDelete = `

@@ -5,7 +5,8 @@ import BusinessesService from "./BusinessesService";
 import { Business, BusinessData } from "./businesses.interface";
 import Container from "../../core/dependencies/Container";
 import BusinessUserService from "./businessUsers/BusinessUsersService";
-import { BusinessUserData } from "./businessUsers/businessUsers.interface";
+import { BusinessUser, BusinessUserData } from "./businessUsers/businessUsers.interface";
+import BusinessUsersService from "./businessUsers/BusinessUsersService";
 
 export default class BusinessesController { 
   private httpService: HttpService;
@@ -121,13 +122,27 @@ export default class BusinessesController {
     const block = `${this.block}.deleteRequest`;
     try {
       const user = req.user;
-
-      const businessId = req.params.businessId;
+      const businessId = req.businessId;
       this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
 
       await this.httpService.requestValidation.validateResource<BusinessData>(businessId, "BusinessesService", "Business not found", block);
 
-      await this.businessesService.delete(businessId)
+      await this.businessesService.delete(businessId);
+
+      const businessUsersService = Container.resolve<BusinessUsersService>("BusinessUsersService");
+      const businesses = await businessUsersService.collection("user_id", user.user_id);
+
+      const tokenPayload: any = {
+        userId: user.user_id
+      }
+
+      if(businesses.length !== 0) {
+        tokenPayload.businessId = businesses[0].businessId
+      }
+
+      const token = this.httpService.webtokenService.generateToken(tokenPayload, "7d");
+
+      res.status(200).json({ message: "Business deleted", token })
 
     } catch (error) {
       throw error;
