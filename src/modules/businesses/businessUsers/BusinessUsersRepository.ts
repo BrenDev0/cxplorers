@@ -21,7 +21,7 @@ export default class BusinessUsersRepository extends BaseRepository<BusinessUser
     async ownersCollection(userId: string): Promise<BusinessUser[]> {
         const sqlRead = `
             SELECT * FROM ${this.table}
-            WHERE user_id = $1 AND account_type = 'OWNER'
+            WHERE user_id = $1 AND role = 'owner'
         `;
 
         const result = await this.pool.query(sqlRead, [userId]);
@@ -35,7 +35,7 @@ export default class BusinessUsersRepository extends BaseRepository<BusinessUser
         const sqlUpdate = `
             UPDATE ${this.table}
             SET ${clauses}
-            WHERE user_id = $${Object.keys(changes).length + 1} AND bsuiness_id = $${Object.keys(changes).length + 2}
+            WHERE user_id = $${Object.keys(changes).length + 1} AND business_id = $${Object.keys(changes).length + 2}
             RETURNING *;
         `;
         

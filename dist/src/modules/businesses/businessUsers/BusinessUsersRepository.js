@@ -31,7 +31,7 @@ class BusinessUsersRepository extends BaseRepository_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `
             SELECT * FROM ${this.table}
-            WHERE user_id = $1 AND account_type = 'OWNER'
+            WHERE user_id = $1 AND role = 'owner'
         `;
             const result = yield this.pool.query(sqlRead, [userId]);
             return result.rows;
@@ -44,7 +44,7 @@ class BusinessUsersRepository extends BaseRepository_1.default {
             const sqlUpdate = `
             UPDATE ${this.table}
             SET ${clauses}
-            WHERE user_id = $${Object.keys(changes).length + 1} AND bsuiness_id = $${Object.keys(changes).length + 2}
+            WHERE user_id = $${Object.keys(changes).length + 1} AND business_id = $${Object.keys(changes).length + 2}
             RETURNING *;
         `;
             values.push(userId, businessId);

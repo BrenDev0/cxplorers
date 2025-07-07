@@ -953,12 +953,22 @@
         ]
       }
     },
-    "/permissions/secure/create": {
+    "/permissions/secure/create/{businessUserId}": {
       "post": {
         "tags": [
           "Permissions"
         ],
         "description": "create permissions",
+        "parameters": [
+          {
+            "name": "businessUserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -974,7 +984,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/createPermission"
+                "$ref": "#/components/schemas/createPermissions"
               }
             }
           }

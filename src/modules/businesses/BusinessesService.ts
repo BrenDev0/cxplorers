@@ -23,7 +23,7 @@ export default class BusinessesService {
 
     async resource(businessId: string): Promise<BusinessData | null> {
         try {
-            const result = await this.repository.selectOne("bsuiness_id", businessId);
+            const result = await this.repository.selectOne("business_id", businessId);
             if(!result) {
                 return null
             }

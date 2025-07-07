@@ -84,9 +84,39 @@ describe("USERS ROUTES", () => {
             .get(`/businesses/secure/resource`)
             .set('Authorization', businessToken);
 
-            console.log(res.body, "RESPONSE::::::::::::")
+           
             expect(res.status).toBe(200);
             expect(res.body.data).toHaveProperty('businessId');
+        });
+    });
+
+
+    describe('GET /businesses/secure/collection', () => {
+        it('should return 200 and list of businesses owned by user', async () => {
+            const res = await request(app)
+            .get('/businesses/secure/collection')
+            .set('Authorization', businessToken);
+
+             console.log(res.body, "RESPONSE::::::::::::")
+            expect(res.status).toBe(200);
+            expect(Array.isArray(res.body.data)).toBe(true);
+        });
+
+      
+    });
+
+    describe('PUT /secure/businesses/:businessId', () => {
+        it('should update a business if user has owner permissions', async () => {
+            const res = await request(app)
+            .put(`/businesses/secure`)
+            .set('Authorization', businessToken)
+            .send({
+                businessName: 'Updated Name',
+                businessEmail: 'new@email.com',
+            });
+
+            expect(res.status).toBe(200);
+            expect(res.body.message).toBe('Business updated');
         });
     });
 

@@ -34,7 +34,7 @@ class BusinessesService {
     resource(businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne("bsuiness_id", businessId);
+                const result = yield this.repository.selectOne("business_id", businessId);
                 if (!result) {
                     return null;
                 }

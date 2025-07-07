@@ -23,7 +23,7 @@ const initializePermissionsRouter = (customController) => {
         required: true,
         content: {
             "application/json": {
-                schema: { $ref: "#/components/schemas/createPermission" }
+                schema: { $ref: "#/components/schemas/createPermissions" }
             }
         }
     }
