@@ -4,14 +4,14 @@ export interface BusinessUser {
   business_user_id: string
   business_id: string;
   user_id: string;
-  account_type: string;
+  role: string;
 }
 
 export interface BusinessUserData {
   businessUserId: string
   businessId: string;
   userId: string;
-  accountType: string;
+  role: string;
 }
 
 export interface IBusinessUsersRepository extends IRepository<BusinessUser> {

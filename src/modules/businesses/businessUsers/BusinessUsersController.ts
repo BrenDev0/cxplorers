@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import HttpService from "../../../core/services/HttpService"
 import { BadRequestError, NotFoundError } from "../../../core/errors/errors";
-import BusinessUsersService from "./BusienssUsersService";
+import BusinessUsersService from "./BusinessUsersService";
 import { BusinessUserData } from "./businessUsers.interface";
 import Container from "../../../core/dependencies/Container";
 import UsersService from "../../users/UsersService";
@@ -25,20 +25,34 @@ export default class BusinessUsersController {
 
         const allowedAccountTypes = ["admin", "user"] 
 
-        const requiredFields = ["email", "password", "name", "phone", "accountType"];
+        const requiredFields = ["email", "password", "name", "phone", "role"];
         this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
-        const usersService = Container.resolve<UsersService>("UsersService");
-        const newUser = await usersService.create(req.body);
-        
-        const { accountType } = req.body;
+        const { email, password, role } = req.body;
 
-        if(!allowedAccountTypes.includes(accountType)) {
+        const encryptedEmail = this.httpService.encryptionService.encryptData(email);
+
+        const usersService = Container.resolve<UsersService>("UsersService");
+        
+        const emailInUse = await usersService.resource("email", encryptedEmail);
+        if(emailInUse) {
+          throw new BadRequestError("Email in use")
+        }
+
+        if(!allowedAccountTypes.includes(role)) {
           throw new BadRequestError("Invalid account type");
         }
 
+        const hashedPassword = await this.httpService.passwordService.hashPassword(password);
+        const newUser = await usersService.create({
+          ...req.body,
+          password: hashedPassword
+        });
+
+        
+
         const newBusinessUser = await this.businessUsersService.create({
-          accountType: accountType.toLowerCase(),
+          role: role.toLowerCase(),
           businessId,
           userId: newUser.user_id
         })

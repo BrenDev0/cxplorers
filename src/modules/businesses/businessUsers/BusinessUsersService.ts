@@ -99,7 +99,7 @@ export default class BusinessUsersService {
         return {
            business_id: businessUser.businessId,
            user_id: businessUser.userId,
-           account_type: businessUser.accountType
+           role: businessUser.role
         }
     }
 
@@ -109,7 +109,7 @@ export default class BusinessUsersService {
             businessUserId: businessUser.business_user_id,
             businessId: businessUser.business_id,
             userId: businessUser.user_id,
-            accountType: businessUser.account_type
+            role: businessUser.role
         }
     }
 }

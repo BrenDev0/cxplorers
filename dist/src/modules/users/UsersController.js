@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class UsersController {
     constructor(httpService, usersService, emailService) {
         this.block = "users.controller";
@@ -53,7 +57,7 @@ class UsersController {
                 const requiredFields = ["email", "password", "phone", "name"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const hashedPassword = yield this.httpService.passwordService.hashPassword(password);
-                const userData = Object.assign(Object.assign({}, req.body), { password: hashedPassword });
+                const userData = Object.assign(Object.assign({}, req.body), { password: hashedPassword, isAdmin: true });
                 yield this.usersService.create(userData);
                 res.status(200).json({ message: "User added." });
             }
@@ -108,6 +112,7 @@ class UsersController {
             const block = `${this.block}.verifiedUpdateRequest`;
             try {
                 const userId = req.params.userId;
+                this.httpService.requestValidation.validateUuid(userId, "userId", block);
                 const user = yield this.usersService.resource("user_id", userId);
                 if (!user) {
                     throw new errors_1.BadRequestError(undefined, {
@@ -146,8 +151,6 @@ class UsersController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.login`;
             try {
-                const businessId = req.params.businessId;
-                this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
                 const { email, password } = req.body;
                 const requiredFields = ["email", "password"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
@@ -169,13 +172,16 @@ class UsersController {
                     });
                 }
                 ;
-                const token = this.httpService.webtokenService.generateToken({
-                    userId: userExists.user_id,
-                    businessId: businessId
-                }, "7d");
-                res.status(200).json({
-                    token: token
-                });
+                const busienssUsersService = Container_1.default.resolve("BusinessUsersService");
+                const businesses = yield busienssUsersService.collection("user_id", userExists.user_id);
+                const tokenPayload = {
+                    userId: userExists.user_id
+                };
+                if (businesses.length !== 0) {
+                    tokenPayload.businessId = businesses[0].businessId;
+                }
+                const token = this.httpService.webtokenService.generateToken(tokenPayload, "7d");
+                res.status(200).json({ token });
             }
             catch (error) {
                 throw error;

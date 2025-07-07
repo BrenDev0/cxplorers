@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../../core/dependencies/Container"));
-class BusinessUserService {
+class BusinessUsersService {
     constructor(repository) {
         this.block = "businessUsers.service";
         this.repository = repository;
@@ -31,7 +31,22 @@ class BusinessUserService {
             }
         });
     }
-    resource(userId, businessId) {
+    resource(businessUserId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.selectOne("business_user_id", businessUserId);
+                if (!result) {
+                    return null;
+                }
+                return this.mapFromDb(result);
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "select by ids", { businessUserId });
+                throw error;
+            }
+        });
+    }
+    selectByIds(userId, businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield this.repository.resource(userId, businessId);
@@ -41,7 +56,31 @@ class BusinessUserService {
                 return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { userId, businessId });
+                (0, error_service_1.handleServiceError)(error, this.block, "select by ids", { userId, businessId });
+                throw error;
+            }
+        });
+    }
+    collection(col, identifier) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select(col, identifier);
+                return result.map((businessUser) => this.mapFromDb(businessUser));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { col, identifier });
+                throw error;
+            }
+        });
+    }
+    ownersCollection(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.ownersCollection(userId);
+                return result.map((businessUser) => this.mapFromDb(businessUser));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", {});
                 throw error;
             }
         });
@@ -75,16 +114,17 @@ class BusinessUserService {
         return {
             business_id: businessUser.businessId,
             user_id: businessUser.userId,
-            account_type: businessUser.accountType
+            role: businessUser.role
         };
     }
     mapFromDb(businessUser) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            businessUserId: businessUser.business_user_id,
             businessId: businessUser.business_id,
             userId: businessUser.user_id,
-            accountType: businessUser.account_type
+            role: businessUser.role
         };
     }
 }
-exports.default = BusinessUserService;
+exports.default = BusinessUsersService;

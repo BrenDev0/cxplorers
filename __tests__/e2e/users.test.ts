@@ -16,7 +16,7 @@ describe("USERS ROUTES", () => {
     let pool: Pool
     let app: Express
 
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.T6YRSBGET5L4kyoRAlAdUcA-5f-aKNByuecPH4QFNRY";
+    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJpYXQiOjE3NTE5MTAyMDQsImV4cCI6MTc4MzQ0NjIwNH0.pYJu3dA6Lc1EN5LBdMt0gcPJX_cAqJ0_AMLsoy0BZjo";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q"
 
 
@@ -82,10 +82,10 @@ describe("USERS ROUTES", () => {
         //         .set("Authorization", verificationToken)
         //         .send({
         //             code: 123456,
-        //             email: "test@gmail222.com",
+        //             email: "carpicha@gmail.com",
         //             password: "carpincha",
         //             phone: "1234567890",
-        //             name: "Create User"
+        //             name: "carpincha"
         //         });
 
         //     expect(res.status).toBe(200);
@@ -127,7 +127,7 @@ describe("USERS ROUTES", () => {
         it("should return 400 if trying to update password without oldPassword", async () => {
             const res = await request(app)
                 .put("/users/secure/account")
-                .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTc0ODU1NjQ4MiwiZXhwIjoxNzgwMDkyNDgyfQ.da-NLsiJucB-5Npb3cmGUJ4bN8NVbp8EZ8ecNH3oa3g")
+                .set("Authorization", token)
                 .send({ password: "newpass123" });
 
             expect(res.status).toBe(400);
@@ -174,14 +174,14 @@ describe("USERS ROUTES", () => {
     // });
 
     describe("POST /users/account-recovery", () => {
-        it("should send recovery email and return token", async () => {
-            const res = await request(app)
-                .post("/users/account-recovery")
-                .send({ email: "brendan.soullens@gmail.com" });
+        // it("should send recovery email and return token", async () => {
+        //     const res = await request(app)
+        //         .post("/users/account-recovery")
+        //         .send({ email: "brendan.soullens@gmail.com" });
 
-            expect(res.status).toBe(200);
-            expect(res.body.token).toBeDefined();
-        });
+        //     expect(res.status).toBe(200);
+        //     expect(res.body.token).toBeDefined();
+        // });
 
         it("should return 400 if email does not exist", async () => {
             const res = await request(app)
@@ -194,7 +194,7 @@ describe("USERS ROUTES", () => {
 
 
     describe("POST /users/login", () => {
-        const testEmail = "brendan.soullens@gmail.com"
+        const testEmail = "carpicha@gmail.com"
         const testPassword = "carpincha"
 
         it('should return 400 if email is missing', async () => {

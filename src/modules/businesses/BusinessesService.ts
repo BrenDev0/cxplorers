@@ -1,5 +1,4 @@
-import { Business, BusinessData } from './businesses.interface'
-import BaseRepository from "../../core/repository/BaseRepository";
+import { Business, BusinessData } from './businesses.interface';
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';

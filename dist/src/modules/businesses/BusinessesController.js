@@ -32,10 +32,14 @@ class BusinessesController {
                 const businessUserData = {
                     userId: user.user_id,
                     businessId: newBusiness.business_id,
-                    accountType: "owner"
+                    role: "owner"
                 };
                 yield businessUsersService.create(businessUserData);
-                res.status(200).json({ message: "Business added." });
+                const token = this.httpService.webtokenService.generateToken({
+                    userId: user.user_id,
+                    businessId: newBusiness.business_id
+                });
+                res.status(200).json({ message: "Business added.", token });
             }
             catch (error) {
                 throw error;
@@ -82,7 +86,7 @@ class BusinessesController {
             const block = `${this.block}.updateRequest`;
             try {
                 const user = req.user;
-                const businessId = req.params.businessId;
+                const businessId = req.businessId;
                 this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
                 yield this.httpService.requestValidation.validateResource(businessId, "BusinessesService", "Business not found", block);
                 yield this.verifyPermissions(user.user_id, businessId, ["OWNER"]);
@@ -127,7 +131,7 @@ class BusinessesController {
         return __awaiter(this, void 0, void 0, function* () {
             const businessUsersService = Container_1.default.resolve("BusinessUsersService");
             const businessUser = yield businessUsersService.selectByIds(userId, businessId);
-            if (!businessUser || !allowedRoles.includes(businessUser.accountType)) {
+            if (!businessUser || !allowedRoles.includes(businessUser.role)) {
                 throw new errors_1.AuthorizationError();
             }
         });

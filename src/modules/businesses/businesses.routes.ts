@@ -13,6 +13,7 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
 
     // protected Routes //
     secureRouter.post("/create", 
+        middlewareService.verifyAdminAccount(),
         /*
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/create'
@@ -30,7 +31,8 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         controller.createRequest.bind(controller)
     )
 
-    secureRouter.get("/resource/:businessId",
+    secureRouter.get("/resource", 
+        middlewareService.verifyRoles(["owner", "admin"]),
          /*
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/resource/{businessId}'
@@ -40,7 +42,8 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         controller.resourceRequest.bind(controller)
     )
 
-    secureRouter.get("/collection",
+    secureRouter.get("/collection", 
+        middlewareService.verifyAdminAccount(),
          /*
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/collection'
@@ -50,7 +53,8 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         controller.collectionRequest.bind(controller)
     )
 
-    secureRouter.put("/:businessId",
+    secureRouter.put("/",
+         middlewareService.verifyRoles(["owner", "admin"]),
         /*
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/{businessId}'

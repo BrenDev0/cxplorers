@@ -13,7 +13,7 @@ const initializeBusinessesRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("BusinessesController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/create", 
+    secureRouter.post("/create", middlewareService.verifyAdminAccount(), 
     /*
     #swagger.tags = ['Businesses']
     #swagger.path =  '/businesses/secure/create'
@@ -29,7 +29,7 @@ const initializeBusinessesRouter = (customController) => {
     }
     */
     controller.createRequest.bind(controller));
-    secureRouter.get("/resource/:businessId", 
+    secureRouter.get("/resource", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
    #swagger.tags = ['Businesses']
    #swagger.path =  '/businesses/secure/resource/{businessId}'
@@ -37,7 +37,7 @@ const initializeBusinessesRouter = (customController) => {
    #swagger.description = 'Get business by id'
    */
     controller.resourceRequest.bind(controller));
-    secureRouter.get("/collection", 
+    secureRouter.get("/collection", middlewareService.verifyAdminAccount(), 
     /*
    #swagger.tags = ['Businesses']
    #swagger.path =  '/businesses/secure/collection'
@@ -45,7 +45,7 @@ const initializeBusinessesRouter = (customController) => {
    #swagger.description = 'Get businesses by user'
    */
     controller.collectionRequest.bind(controller));
-    secureRouter.put("/:businessId", 
+    secureRouter.put("/", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
     #swagger.tags = ['Businesses']
     #swagger.path =  '/businesses/secure/{businessId}'

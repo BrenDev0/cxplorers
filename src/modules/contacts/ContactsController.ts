@@ -4,7 +4,7 @@ import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/e
 import ContactsService from "./ContactsService";
 import { ContactData } from "./contacts.interface";
 import Container from "../../core/dependencies/Container";
-import BusinessUsersService from "../businesses/businessUsers/BusienssUsersService";
+import BusinessUsersService from "../businesses/businessUsers/BusinessUsersService";
 
 export default class ContactsController { 
   private httpService: HttpService;

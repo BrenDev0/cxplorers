@@ -67,6 +67,7 @@ export default class UsersService {
            email: user.email && encryptionService.encryptData(user.email),
            name: user.name &&  encryptionService.encryptData(user.name),
            phone: user.phone && encryptionService.encryptData(user.phone),
+           is_admin: user.isAdmin,
            password: user.password
         }
     }
@@ -78,6 +79,7 @@ export default class UsersService {
             email: encryptionService.decryptData(user.email),
             name: encryptionService.decryptData(user.name),
             phone: encryptionService.decryptData(user.phone),
+            isAdmin: user.is_admin,
             createdAt: user.created_at
         }
     }

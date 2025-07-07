@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from "../../core/errors/errors";
 import PermissionsService from "./PermissionsService";
 import { PermissionData } from "./permissions.interface";
 import Container from "../../core/dependencies/Container";
-import BusinessUsersService from "../businesses/businessUsers/BusienssUsersService";
+import BusinessUsersService from "../businesses/businessUsers/BusinessUsersService";
 
 export default class PermissionsController { 
   private httpService: HttpService;

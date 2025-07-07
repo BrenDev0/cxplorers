@@ -9,7 +9,7 @@ import { isUUID } from "validator";
 
 import WebTokenService from "../services/WebtokenService";
 import Container from "../dependencies/Container";
-import BusinessUsersService from "../../modules/businesses/businessUsers/BusienssUsersService";
+import BusinessUsersService from "../../modules/businesses/businessUsers/BusinessUsersService";
 import { BusinessUserData } from "../../modules/businesses/businessUsers/businessUsers.interface";
 import { PermissionData } from "../../modules/permissions/permissions.interface";
 import PermissionsService from "../../modules/permissions/PermissionsService";
@@ -76,13 +76,14 @@ export default class MiddlewareService {
                 req.user = user;
                 req.businessId = decodedToken.businessId;
                 req.permissions = permissions;
-                req.role = businessUser.accountType
+                req.role = businessUser.role
                 return next();
             };
 
             req.user = user;
             next();
         } catch (error) {
+            console.log("MIDDLEWARE ERROR:::::::::::::", error)
             next(error); 
         }
     }
@@ -183,6 +184,24 @@ export default class MiddlewareService {
                 const role = req.role;
 
                 if (!role || !allowed.includes(role)) {
+                    throw new AuthorizationError(undefined, {
+                        block: "middleware.verifyRoles",
+                    });
+                }
+
+                return next();
+            } catch (error) {
+                return next(error);
+            }
+        };
+    }
+
+    verifyAdminAccount(){
+        return (req: Request, res: Response, next: NextFunction): void => {
+            try {
+                
+                const user = req.user;
+                if(!user.is_admin) {
                     throw new AuthorizationError(undefined, {
                         block: "middleware.verifyRoles",
                     });

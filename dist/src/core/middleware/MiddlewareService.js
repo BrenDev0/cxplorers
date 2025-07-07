@@ -67,7 +67,7 @@ class MiddlewareService {
                     req.user = user;
                     req.businessId = decodedToken.businessId;
                     req.permissions = permissions;
-                    req.role = businessUser.accountType;
+                    req.role = businessUser.role;
                     return next();
                 }
                 ;
@@ -75,6 +75,7 @@ class MiddlewareService {
                 next();
             }
             catch (error) {
+                console.log("MIDDLEWARE ERROR:::::::::::::", error);
                 next(error);
             }
         });
@@ -162,6 +163,22 @@ class MiddlewareService {
             try {
                 const role = req.role;
                 if (!role || !allowed.includes(role)) {
+                    throw new errors_1.AuthorizationError(undefined, {
+                        block: "middleware.verifyRoles",
+                    });
+                }
+                return next();
+            }
+            catch (error) {
+                return next(error);
+            }
+        };
+    }
+    verifyAdminAccount() {
+        return (req, res, next) => {
+            try {
+                const user = req.user;
+                if (!user.is_admin) {
                     throw new errors_1.AuthorizationError(undefined, {
                         block: "middleware.verifyRoles",
                     });

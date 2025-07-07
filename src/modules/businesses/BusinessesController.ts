@@ -4,7 +4,7 @@ import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/e
 import BusinessesService from "./BusinessesService";
 import { Business, BusinessData } from "./businesses.interface";
 import Container from "../../core/dependencies/Container";
-import BusinessUserService from "./businessUsers/BusienssUsersService";
+import BusinessUserService from "./businessUsers/BusinessUsersService";
 import { BusinessUserData } from "./businessUsers/businessUsers.interface";
 
 export default class BusinessesController { 
@@ -33,11 +33,16 @@ export default class BusinessesController {
       const businessUserData: Omit<BusinessUserData, "businessUserId"> =  {
         userId: user.user_id,
         businessId: newBusiness.business_id,
-        accountType: "owner"
+        role: "owner"
       }
-      await businessUsersService.create(businessUserData)
+      await businessUsersService.create(businessUserData);
 
-      res.status(200).json({ message: "Business added." });
+      const token = this.httpService.webtokenService.generateToken({
+        userId: user.user_id,
+        businessId: newBusiness.business_id
+      })
+
+      res.status(200).json({ message: "Business added.", token });
     } catch (error) {
       throw error;
     }
@@ -86,7 +91,7 @@ export default class BusinessesController {
     try { 
       const user = req.user;
       
-      const businessId = req.params.businessId;
+      const businessId = req.businessId;
       this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
 
       await this.httpService.requestValidation.validateResource<BusinessData>(businessId, "BusinessesService", "Business not found", block);
@@ -138,7 +143,7 @@ export default class BusinessesController {
     const businessUsersService = Container.resolve<BusinessUserService>("BusinessUsersService");
     const businessUser = await businessUsersService.selectByIds(userId, businessId);
 
-    if(!businessUser || !allowedRoles.includes(businessUser.accountType)) {
+    if(!businessUser || !allowedRoles.includes(businessUser.role)) {
       throw new AuthorizationError();
       }
   }

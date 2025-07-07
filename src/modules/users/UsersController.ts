@@ -4,6 +4,8 @@ import UsersService from "./UsersService";
 import { UserData } from "./users.interface";
 import EmailService from "../../core/services/EmailService";
 import HttpService from "../../core/services/HttpService";
+import Container from "../../core/dependencies/Container";
+import BusinessUsersService from "../businesses/businessUsers/BusinessUsersService";
 
 export default class UsersController { 
   private httpService: HttpService;
@@ -64,7 +66,7 @@ export default class UsersController {
       const userData = {
         ...req.body,
         password: hashedPassword,
-       
+        isAdmin: true
       };
 
       await this.usersService.create(userData);
@@ -79,7 +81,6 @@ export default class UsersController {
     const block = `${this.block}.resourceRequest`;
     try {
       const user = req.user;
-
       const data = this.usersService.mapFromDb(user);
       res.status(200).json({ data: data }); 
     } catch (error) {
@@ -123,6 +124,8 @@ export default class UsersController {
     const block = `${this.block}.verifiedUpdateRequest`;
     try {
       const userId = req.params.userId;
+      this.httpService.requestValidation.validateUuid(userId, "userId", block)
+
       const user = await this.usersService.resource("user_id", userId);
       if(!user) {
         throw new BadRequestError(undefined, {
@@ -162,9 +165,6 @@ export default class UsersController {
   async login(req: Request, res: Response): Promise<void> {
     const block  = `${this.block}.login`
     try {
-        const businessId = req.params.businessId;
-        this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
-
         const { email, password } = req.body;
         const requiredFields =  ["email", "password"];
 
@@ -190,14 +190,20 @@ export default class UsersController {
             })
         };
 
-        const token = this.httpService.webtokenService.generateToken({
-            userId: userExists.user_id,
-            businessId: businessId
-        }, "7d")
+        const busienssUsersService = Container.resolve<BusinessUsersService>("BusinessUsersService");
+        const businesses = await busienssUsersService.collection("user_id", userExists.user_id);
 
-        res.status(200).json({ 
-            token: token
-        })
+        const tokenPayload: any = {
+          userId: userExists.user_id
+        }
+
+        if(businesses.length !== 0) {
+          tokenPayload.businessId = businesses[0].businessId
+        }
+
+        const token = this.httpService.webtokenService.generateToken(tokenPayload, "7d");
+
+        res.status(200).json({ token })
     } catch (error) {
         throw error;
     }

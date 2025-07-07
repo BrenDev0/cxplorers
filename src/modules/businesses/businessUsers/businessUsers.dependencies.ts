@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import BusinessUsersService from "./BusienssUsersService";
+import BusinessUsersService from "./BusinessUsersService";
 import BusinessUsersController from "./BusinessUsersController";
 import Container from "../../../core/dependencies/Container";
 import HttpService from "../../../core/services/HttpService";

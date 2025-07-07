@@ -27,16 +27,22 @@ class BusinessUsersController {
                 const user = req.user;
                 const businessId = req.businessId;
                 const allowedAccountTypes = ["admin", "user"];
-                const requiredFields = ["email", "password", "name", "phone", "accountType"];
+                const requiredFields = ["email", "password", "name", "phone", "role"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const { email, password, role } = req.body;
+                const encryptedEmail = this.httpService.encryptionService.encryptData(email);
                 const usersService = Container_1.default.resolve("UsersService");
-                const newUser = yield usersService.create(req.body);
-                const { accountType } = req.body;
-                if (!allowedAccountTypes.includes(accountType)) {
+                const emailInUse = yield usersService.resource("email", encryptedEmail);
+                if (emailInUse) {
+                    throw new errors_1.BadRequestError("Email in use");
+                }
+                if (!allowedAccountTypes.includes(role)) {
                     throw new errors_1.BadRequestError("Invalid account type");
                 }
+                const hashedPassword = yield this.httpService.passwordService.hashPassword(password);
+                const newUser = yield usersService.create(Object.assign(Object.assign({}, req.body), { password: hashedPassword }));
                 const newBusinessUser = yield this.businessUsersService.create({
-                    accountType: accountType.toLowerCase(),
+                    role: role.toLowerCase(),
                     businessId,
                     userId: newUser.user_id
                 });

@@ -6,6 +6,7 @@ export interface User {
   password: string;
   name: string;
   phone: string;
+  is_admin: boolean;
   created_at?: Date;
 }
 
@@ -15,6 +16,7 @@ export interface UserData {
   name: string;
   phone: string;
   password: string;
+  isAdmin: boolean;
   createdAt?: Date;
 }
 
