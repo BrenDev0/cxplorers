@@ -83,6 +83,16 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         controller.deleteRequest.bind(controller)
     )
 
+    secureRouter.get("/login/:businessId", 
+        /*
+        #swagger.tags = ['Businesses']
+        #swagger.path =  '/businesses/secure/login/{businessId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Delete business'
+        */
+        controller.businessLogin.bind(controller)
+    )
+
     // mounts //
 
     router.use("/secure", secureRouter);

@@ -16,7 +16,7 @@ export const initializeBusinessUsersRouter = (customController?: BusinessUsersCo
         middlewareService.verifyRoles(["admin", "owner"]),
         /*
         #swagger.tags = ['Business Users']
-        #swagger.path =  '/business-users/secure/create/{businessId}'
+        #swagger.path =  '/business-users/secure/create/'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'Create businessUser'
         #swagger.requestBody = {

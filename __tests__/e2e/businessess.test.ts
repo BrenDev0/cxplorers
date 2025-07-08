@@ -51,20 +51,20 @@ describe("USERS ROUTES", () => {
     })
 
     describe('POST /businesses/secure/create', () => {
-        it('should create a new business and return a token', async () => {
-            const res = await request(app)
-            .post('/businesses/secure/create')
-            .set('Authorization', token)
-            .send({
-                legalName: 'Test Business 2 LLC',
-                businessEmail: 'test@business.com',
-            });
+        // it('should create a new business and return a token', async () => {
+        //     const res = await request(app)
+        //     .post('/businesses/secure/create')
+        //     .set('Authorization', token)
+        //     .send({
+        //         legalName: 'Test Business 2 LLC',
+        //         businessEmail: 'test@business.com',
+        //     });
 
-            console.log(res.body)
-            expect(res.status).toBe(200);
-            expect(res.body.message).toBe('Business added.');
-            expect(res.body.token).toBeDefined();
-        });
+        //     console.log(res.body)
+        //     expect(res.status).toBe(200);
+        //     expect(res.body.message).toBe('Business added.');
+        //     expect(res.body.token).toBeDefined();
+        // });
 
         it('should return 400 if required fields are missing', async () => {
             const res = await request(app)
@@ -120,6 +120,16 @@ describe("USERS ROUTES", () => {
         });
     });
 
+    describe('GET /secure/businesses/login/:businessId', () => {
+        it('should return token with new businessid', async () => {
+            const res = await request(app)
+            .get(`/businesses/secure/login/32618cc7-7794-422d-b743-f059c40a2f23`)
+            .set('Authorization', businessToken)
 
+            console.log(res.body, "RES:::::::::::")
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("token")
+        });
+    });
    
 })

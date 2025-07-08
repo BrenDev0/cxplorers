@@ -149,12 +149,12 @@
         ]
       }
     },
-    "/business-users/secure/create/{businessId}": {
-      "post": {
+    "/businesses/secure/login/{businessId}": {
+      "get": {
         "tags": [
-          "Business Users"
+          "Businesses"
         ],
-        "description": "Create businessUser",
+        "description": "Delete business",
         "parameters": [
           {
             "name": "businessId",
@@ -165,6 +165,24 @@
             }
           }
         ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/business-users/secure/create/": {
+      "post": {
+        "tags": [
+          "Business Users"
+        ],
+        "description": "Create businessUser",
         "responses": {
           "default": {
             "description": ""

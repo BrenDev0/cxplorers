@@ -148,4 +148,27 @@ export default class BusinessesController {
       throw error;
     }
   }
+
+  async businessLogin(req: Request, res: Response): Promise<void> {
+    try {
+      const user = req.user;
+      const businessId = req.params.businessId;
+
+      const businessUsersService = Container.resolve<BusinessUsersService>("BusinessUsersService");
+
+      const businessUser = await businessUsersService.selectByIds(user.user_id, businessId);
+      if(!businessUser) {
+        throw new AuthorizationError();
+      }
+
+      const token = this.httpService.webtokenService.generateToken({
+        userId: user.user_id,
+        businessId: businessId
+      }, "7d")
+
+      res.status(200).json({ token })
+    } catch (error) {
+      throw error;
+    }
+  }
 }

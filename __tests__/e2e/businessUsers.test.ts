@@ -50,14 +50,14 @@ describe("USERS ROUTES", () => {
     describe("POST CREATE BUSINESS USER", () => {
         it("SHOULD RETURN 200 AND CREATE USER AND BUSINESS USER", async() => {
             const res = await request(app)
-            .post("/business-users/secure/create/32618cc7-7794-422d-b743-f059c40a2f23")
+            .post("/business-users/secure/create")
             .set("Authorization", token)
             .send({
-                email: "test3@gmail.com",
+                email: "test4@gmail.com",
                 name: "testuser2",
                 password: "123abc",
                 phone: "123456789",
-                role: "user",
+                role: "admin",
             })
             console.log(res.body)
             expect(res.status).toBe(200)
