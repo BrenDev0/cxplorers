@@ -162,6 +162,7 @@ const doc = {
             },
             createBusinessUser: {
                 email: "required",
+                name: "required",
                 password: "required",
                 phone: "required",
                 role: "required"

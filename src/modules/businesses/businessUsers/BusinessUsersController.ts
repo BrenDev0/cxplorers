@@ -21,7 +21,7 @@ export default class BusinessUsersController {
       const block = `${this.block}.createRequest`;
       try {
         const user = req.user;
-        const businessId = req.businessId;
+        const businessId = req.params.businessId
 
         const requiredFields = ["email", "password", "name", "phone", "role"];
         this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);

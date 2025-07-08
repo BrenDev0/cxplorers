@@ -37,6 +37,32 @@ class BusinessUsersRepository extends BaseRepository_1.default {
             return result.rows;
         });
     }
+    getAllUsers(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlRead = `
+            SELECT 
+            business_users.role,
+            users.name,
+            users.email,
+            users.phone,
+            users.user_id,
+            business_users.business_user_id,
+            businesses.business_id,
+            businesses.business_name AS businessName
+        FROM business_users
+        JOIN users ON users.user_id = business_users.user_id
+        JOIN businesses ON businesses.business_id = business_users.business_id
+        WHERE business_users.business_id IN (
+            SELECT business_users.business_id
+            FROM business_users
+            WHERE business_users.user_id = $1 AND business_users.role = 'owner'
+        );
+
+    `;
+            const result = yield this.pool.query(sqlRead, [userId]);
+            return result.rows;
+        });
+    }
     updateByIds(userId, businessId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const clauses = Object.keys(changes).map((key, i) => `${key} = $${i + 1}`);

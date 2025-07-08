@@ -1806,6 +1806,10 @@
                         "type": "string",
                         "example": "required"
                     },
+                    "name": {
+                        "type": "string",
+                        "example": "required"
+                    },
                     "password": {
                         "type": "string",
                         "example": "required"

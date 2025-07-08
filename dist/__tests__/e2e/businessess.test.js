@@ -23,7 +23,7 @@ const businesses_routes_1 = require("../../src/modules/businesses/businesses.rou
 describe("USERS ROUTES", () => {
     let pool;
     let app;
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJpYXQiOjE3NTE5MTAyMDQsImV4cCI6MTc4MzQ0NjIwNH0.pYJu3dA6Lc1EN5LBdMt0gcPJX_cAqJ0_AMLsoy0BZjo";
+    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q";
     const nonAdminToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5Njk2MDIsImV4cCI6MTc4MDUwNTYwMn0.JiTqY9FHBaSofTdUnrxmGOLODvNLKvmsqpmOzFA5mSU";
     const businessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTE1MzcwLCJleHAiOjE3NTI1MjAxNzB9.ONgXdCRX5BhGS3Sh9H6M9W8QRaJNj-Ea3Ki2BUVOIKA";
@@ -48,19 +48,19 @@ describe("USERS ROUTES", () => {
         Container_1.default.clear();
     }));
     describe('POST /businesses/secure/create', () => {
-        // it('should create a new business and return a token', async () => {
-        //     const res = await request(app)
-        //     .post('/businesses/secure/create')
-        //     .set('Authorization', token)
-        //     .send({
-        //         legalName: 'Test Business LLC',
-        //         businessEmail: 'test@business.com',
-        //     });
-        //     console.log(res.body)
-        //     expect(res.status).toBe(200);
-        //     expect(res.body.message).toBe('Business added.');
-        //     expect(res.body.token).toBeDefined();
-        // });
+        it('should create a new business and return a token', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .post('/businesses/secure/create')
+                .set('Authorization', token)
+                .send({
+                legalName: 'Test Business 2 LLC',
+                businessEmail: 'test@business.com',
+            });
+            console.log(res.body);
+            expect(res.status).toBe(200);
+            expect(res.body.message).toBe('Business added.');
+            expect(res.body.token).toBeDefined();
+        }));
         it('should return 400 if required fields are missing', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
                 .post('/businesses/secure/create')

@@ -30,4 +30,5 @@ export interface BusinessData {
 
 export interface IBusinessesRepository extends IRepository<Business> {
   collectionByIds(businessIds: string[]): Promise<Business[]>;
+  
 } 
