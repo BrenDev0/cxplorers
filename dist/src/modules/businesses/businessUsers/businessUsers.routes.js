@@ -13,10 +13,10 @@ const initializeBusinessUsersRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("BusinessUsersController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/create", middlewareService.verifyRoles(["owner", "admin"]), 
+    secureRouter.post("/create", middlewareService.verifyRoles(["admin", "owner"]), 
     /*
     #swagger.tags = ['Business Users']
-    #swagger.path =  '/business-users/secure/create'
+    #swagger.path =  '/business-users/secure/create/{businessId}'
     #swagger.security = [{ "bearerAuth": [] }]
     #swagger.description = 'Create businessUser'
     #swagger.requestBody = {
@@ -29,6 +29,14 @@ const initializeBusinessUsersRouter = (customController) => {
     }
     */
     controller.createRequest.bind(controller));
+    secureRouter.get("/read", middlewareService.verifyAdminAccount(), 
+    /*
+    #swagger.tags = ['Business Users']
+    #swagger.path =  '/business-users/secure/read'
+    #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.description = 'Get all users for all buisness listed in an account'
+    */
+    controller.readRequest.bind(controller));
     // mounts //
     router.use("/secure", secureRouter);
     console.log("BusinessUsers router initialized.");

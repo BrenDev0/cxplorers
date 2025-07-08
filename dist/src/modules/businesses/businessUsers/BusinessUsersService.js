@@ -41,7 +41,19 @@ class BusinessUsersService {
                 return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "select by ids", { businessUserId });
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { businessUserId });
+                throw error;
+            }
+        });
+    }
+    read(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.getAllUsers(userId);
+                return result.map((businessUser) => this.mapFromDb(businessUser));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "read", { userId });
                 throw error;
             }
         });
@@ -56,7 +68,7 @@ class BusinessUsersService {
                 return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "select by ids", { userId, businessId });
+                (0, error_service_1.handleServiceError)(error, this.block, "selectByIds", { userId, businessId });
                 throw error;
             }
         });
@@ -123,7 +135,11 @@ class BusinessUsersService {
             businessUserId: businessUser.business_user_id,
             businessId: businessUser.business_id,
             userId: businessUser.user_id,
-            role: businessUser.role
+            role: businessUser.role,
+            name: businessUser.name && encryptionService.decryptData(businessUser.name),
+            email: businessUser.email && encryptionService.decryptData(businessUser.email),
+            phone: businessUser.phone && encryptionService.decryptData(businessUser.phone),
+            businessName: businessUser.business_name && encryptionService.decryptData(businessUser.business_name),
         };
     }
 }

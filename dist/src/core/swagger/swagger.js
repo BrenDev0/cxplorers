@@ -165,7 +165,7 @@ const doc = {
                 name: "required",
                 password: "required",
                 phone: "required",
-                role: "required"
+                role: "user || admin"
             },
             createPermissions: {
                 permissions: [

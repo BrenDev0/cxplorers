@@ -149,12 +149,22 @@
         ]
       }
     },
-    "/business-users/secure/create": {
+    "/business-users/secure/create/{businessId}": {
       "post": {
         "tags": [
           "Business Users"
         ],
         "description": "Create businessUser",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -175,6 +185,24 @@
             }
           }
         }
+      }
+    },
+    "/business-users/secure/read": {
+      "get": {
+        "tags": [
+          "Business Users"
+        ],
+        "description": "Get all users for all buisness listed in an account",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/calendars/secure/create": {
@@ -1820,7 +1848,7 @@
           },
           "role": {
             "type": "string",
-            "example": "required"
+            "example": "user || admin"
           }
         }
       },

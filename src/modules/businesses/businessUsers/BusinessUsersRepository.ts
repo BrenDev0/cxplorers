@@ -29,7 +29,7 @@ export default class BusinessUsersRepository extends BaseRepository<BusinessUser
         return result.rows
     }
 
-    async getAllUsers(userId: string): Promise<Record<string, string>[]> {
+    async getAllUsers(userId: string): Promise<BusinessUser[]> {
         const sqlRead = `
             SELECT 
             business_users.role,
@@ -40,14 +40,16 @@ export default class BusinessUsersRepository extends BaseRepository<BusinessUser
             business_users.business_user_id,
             businesses.business_id,
             businesses.business_name AS businessName
-        FROM business_users
-        JOIN users ON users.user_id = business_users.user_id
-        JOIN businesses ON businesses.business_id = business_users.business_id
-        WHERE business_users.business_id IN (
-            SELECT business_users.business_id
             FROM business_users
-            WHERE business_users.user_id = $1 AND business_users.role = 'owner'
-        );
+            JOIN users ON users.user_id = business_users.user_id
+            JOIN businesses ON businesses.business_id = business_users.business_id
+            WHERE business_users.business_id IN (
+                SELECT business_users.business_id
+                FROM business_users
+                WHERE business_users.user_id = $1 AND business_users.role = 'owner'
+            )
+            AND business_users.user_id != $1;    
+            ;
 
     `
 

@@ -25,7 +25,11 @@ class BusinessUsersController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const businessId = req.params.businessId;
+                const businessId = req.businessId;
+                const businessUser = yield this.businessUsersService.selectByIds(user.user_id, businessId);
+                if (!businessUser || businessUser.role !== "owner") {
+                    throw new errors_1.AuthorizationError();
+                }
                 const requiredFields = ["email", "password", "name", "phone", "role"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const { email, password, role } = req.body;
@@ -46,6 +50,18 @@ class BusinessUsersController {
                     message: "User added to business.",
                     businessUserId: newBusinessUser.business_user_id
                 });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    readRequest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = req.user;
+                const data = yield this.businessUsersService.read(user.user_id);
+                res.status(200).json({ data });
             }
             catch (error) {
                 throw error;

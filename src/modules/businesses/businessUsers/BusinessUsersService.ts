@@ -4,6 +4,7 @@ import { handleServiceError } from '../../../core/errors/error.service';
 import Container from '../../../core/dependencies/Container';
 import EncryptionService from '../../../core/services/EncryptionService';
 import BusinessUsersRepository from './BusinessUsersRepository';
+import { builtinModules } from 'module';
 
 export default class BusinessUsersService {
     private repository: BusinessUsersRepository;
@@ -31,7 +32,17 @@ export default class BusinessUsersService {
 
             return this.mapFromDb(result);
         } catch (error) {
-            handleServiceError(error as Error, this.block, "select by ids", {businessUserId})
+            handleServiceError(error as Error, this.block, "resource", {businessUserId})
+            throw error;
+        }
+    }
+    async read(userId: string): Promise<BusinessUserData[]> {
+        try {
+            const result = await this.repository.getAllUsers(userId);
+
+            return result.map((businessUser) => this.mapFromDb(businessUser));
+        } catch (error) {
+             handleServiceError(error as Error, this.block, "read", {userId})
             throw error;
         }
     }
@@ -44,7 +55,7 @@ export default class BusinessUsersService {
             }
             return this.mapFromDb(result);
         } catch (error) {
-            handleServiceError(error as Error, this.block, "select by ids", {userId, businessId})
+            handleServiceError(error as Error, this.block, "selectByIds", {userId, businessId})
             throw error;
         }
     }
@@ -109,7 +120,12 @@ export default class BusinessUsersService {
             businessUserId: businessUser.business_user_id,
             businessId: businessUser.business_id,
             userId: businessUser.user_id,
-            role: businessUser.role
+            role: businessUser.role,
+            name: businessUser.name && encryptionService.decryptData(businessUser.name),
+            email: businessUser.email && encryptionService.decryptData(businessUser.email),
+            phone: businessUser.phone && encryptionService.decryptData(businessUser.phone),
+            businessName: businessUser.business_name && encryptionService.decryptData(businessUser.business_name),
+
         }
     }
 }

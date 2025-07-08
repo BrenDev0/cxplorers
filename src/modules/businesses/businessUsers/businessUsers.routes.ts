@@ -12,10 +12,11 @@ export const initializeBusinessUsersRouter = (customController?: BusinessUsersCo
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
     // protected Routes //
-    secureRouter.post("/create", middlewareService.verifyRoles(["owner", "admin"]),
+    secureRouter.post("/create", 
+        middlewareService.verifyRoles(["admin", "owner"]),
         /*
         #swagger.tags = ['Business Users']
-        #swagger.path =  '/business-users/secure/create'
+        #swagger.path =  '/business-users/secure/create/{businessId}'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'Create businessUser'
         #swagger.requestBody = {
@@ -31,6 +32,16 @@ export const initializeBusinessUsersRouter = (customController?: BusinessUsersCo
         controller.createRequest.bind(controller)
     )
 
+    secureRouter.get("/read",
+        middlewareService.verifyAdminAccount(),
+        /*
+        #swagger.tags = ['Business Users']
+        #swagger.path =  '/business-users/secure/read'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Get all users for all buisness listed in an account'
+        */
+        controller.readRequest.bind(controller)
+    )
   
 
     // mounts //

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import HttpService from "../../../core/services/HttpService"
-import { BadRequestError, NotFoundError } from "../../../core/errors/errors";
+import { AuthorizationError, BadRequestError, NotFoundError } from "../../../core/errors/errors";
 import BusinessUsersService from "./BusinessUsersService";
 import { BusinessUserData } from "./businessUsers.interface";
 import Container from "../../../core/dependencies/Container";
@@ -21,7 +21,13 @@ export default class BusinessUsersController {
       const block = `${this.block}.createRequest`;
       try {
         const user = req.user;
-        const businessId = req.params.businessId
+        const businessId = req.businessId
+
+        const businessUser = await this.businessUsersService.selectByIds(user.user_id, businessId);
+       
+        if(!businessUser || businessUser.role !== "owner") {
+          throw new AuthorizationError()
+        }
 
         const requiredFields = ["email", "password", "name", "phone", "role"];
         this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
@@ -33,6 +39,7 @@ export default class BusinessUsersController {
         const usersService = Container.resolve<UsersService>("UsersService");
         
         const emailInUse = await usersService.resource("email", encryptedEmail);
+        
         if(emailInUse) {
           throw new BadRequestError("Email in use")
         }
@@ -57,6 +64,18 @@ export default class BusinessUsersController {
         });
       } catch (error) {
         throw error;
+      }
+    }
+
+    async readRequest(req: Request, res: Response): Promise<void> {
+      try {
+        const user = req.user;
+
+        const data = await this.businessUsersService.read(user.user_id);
+
+        res.status(200).json({ data })
+      } catch (error) {
+        throw error
       }
     }
 
