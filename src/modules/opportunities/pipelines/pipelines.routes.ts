@@ -12,7 +12,8 @@ export const initializePipelinesRouter = (customController?: PipelinesController
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
     // protected Routes //
-    secureRouter.post("/create",
+    secureRouter.post("/create", 
+        middlewareService.verifyRoles(["owner", "admin"]),
           /*
         #swagger.tags = ['Pipelines']
         #swagger.path =  '/pipelines/secure/create'
@@ -31,6 +32,7 @@ export const initializePipelinesRouter = (customController?: PipelinesController
     )
 
     secureRouter.get("/resource/:pipelineId",
+        middlewareService.verifyRoles(["owner", "admin"]),
          /*
         #swagger.tags = ['Pipelines']
         #swagger.path =  '/pipelines/secure/resource/{pipelineId}'
@@ -41,6 +43,7 @@ export const initializePipelinesRouter = (customController?: PipelinesController
     )
 
     secureRouter.get("/collection", 
+        middlewareService.verifyRoles(["owner", "admin"]),
         /*
         #swagger.tags = ['Pipelines']
         #swagger.path =  '/pipelines/secure/collection'
@@ -51,6 +54,7 @@ export const initializePipelinesRouter = (customController?: PipelinesController
     )
 
     secureRouter.put("/:pipelineId",
+        middlewareService.verifyRoles(["owner", "admin"]),
          /*
         #swagger.tags = ['Pipelines']
         #swagger.path =  '/pipelines/secure/{piplineId}'
@@ -69,6 +73,7 @@ export const initializePipelinesRouter = (customController?: PipelinesController
     )
 
     secureRouter.delete("/:pipelineId",
+        middlewareService.verifyRoles(["owner", "admin"]),
         /*
         #swagger.tags = ['Pipelines']
         #swagger.path =  '/pipelines/secure/{pipelineId}'

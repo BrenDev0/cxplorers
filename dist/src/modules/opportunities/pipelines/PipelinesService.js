@@ -46,14 +46,14 @@ class PipelinesService {
             }
         });
     }
-    collection(userId) {
+    collection(businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.select("user_id", userId);
+                const result = yield this.repository.select("business_id", businessId);
                 return result.map((pipeline) => this.mapFromDb(pipeline));
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { businessId });
                 throw error;
             }
         });
@@ -86,7 +86,9 @@ class PipelinesService {
     mapToDb(pipeline) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            user_id: pipeline.userId,
+            business_id: pipeline.businessId,
+            in_funnel_chart: pipeline.inFunnelChart,
+            in_pie_chart: pipeline.inPieChart,
             name: pipeline.name
         };
     }
@@ -94,8 +96,10 @@ class PipelinesService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             pipelineId: pipeline.pipeline_id,
-            userId: pipeline.user_id,
+            businessId: pipeline.business_id,
             name: pipeline.name,
+            inFunnelChart: pipeline.in_funnel_chart,
+            inPieChart: pipeline.in_pie_chart,
             createdAt: pipeline.created_at
         };
     }

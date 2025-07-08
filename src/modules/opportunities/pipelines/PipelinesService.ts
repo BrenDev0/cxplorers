@@ -34,13 +34,13 @@ export default class PipelinesService {
         }
     }
 
-    async collection(userId: string): Promise<PipelineData[]> {
+    async collection(businessId: string): Promise<PipelineData[]> {
         try {
-            const result = await this.repository.select("user_id", userId);
+            const result = await this.repository.select("business_id", businessId);
             
             return result.map((pipeline) => this.mapFromDb(pipeline))
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", {userId})
+            handleServiceError(error as Error, this.block, "collection", {businessId})
             throw error;
         }
     }
@@ -71,7 +71,9 @@ export default class PipelinesService {
     mapToDb(pipeline: Omit<PipelineData, "pipelineId">): Omit<Pipeline, "pipeline_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
-           user_id: pipeline.userId,
+           business_id: pipeline.businessId,
+           in_funnel_chart: pipeline.inFunnelChart,
+           in_pie_chart: pipeline.inPieChart,
            name: pipeline.name
         }
     }
@@ -80,8 +82,10 @@ export default class PipelinesService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             pipelineId: pipeline.pipeline_id,
-            userId: pipeline.user_id,
+            businessId: pipeline.business_id,
             name: pipeline.name,
+            inFunnelChart: pipeline.in_funnel_chart,
+            inPieChart: pipeline.in_pie_chart,
             createdAt: pipeline.created_at
         }
     }

@@ -20,6 +20,7 @@ class OpportunitiesController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const requiredFields = ["contactId", "stageId"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const { contactId, stageId } = req.body;
@@ -30,8 +31,8 @@ class OpportunitiesController {
                     this.httpService.requestValidation.validateResource(contactId, "ContactsService", "Contact not found", block)
                 ]);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
-                // this.httpService.requestValidation.validateActionAuthorization(user.user_id, contactResource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, contactResource.businessId, block);
                 yield this.opportuniesService.create(req.body);
                 res.status(200).json({ message: "Opportunity added." });
             }
@@ -45,12 +46,13 @@ class OpportunitiesController {
             const block = `${this.block}.resourceRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const opportunityId = req.params.opportunityId;
                 this.httpService.requestValidation.validateUuid(opportunityId, "opprotunityId", block);
                 const opportunityResource = yield this.httpService.requestValidation.validateResource(opportunityId, "OpportunitiesService", "Opportunity notfound", block);
                 const stageResource = yield this.httpService.requestValidation.validateResource(opportunityResource.stageId, "StagesService", "Stage not found", block);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
                 res.status(200).json({ data: opportunityResource });
             }
             catch (error) {
@@ -64,11 +66,12 @@ class OpportunitiesController {
             try {
                 const user = req.user;
                 const stageId = req.params.stageId;
+                const businessId = req.businessId;
                 this.httpService.requestValidation.validateUuid(stageId, "stageId", block);
                 const stageResource = yield this.httpService.requestValidation.validateResource(stageId, "StagesService", "Stage not found", block);
                 const dataPromise = this.opportuniesService.collection(stageId);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
                 const data = yield dataPromise;
                 res.status(200).json({ data });
             }
@@ -82,12 +85,13 @@ class OpportunitiesController {
             const block = `${this.block}.updateRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const opportunityId = req.params.opportunityId;
                 this.httpService.requestValidation.validateUuid(opportunityId, "opprotunityId", block);
                 const opportunityResource = yield this.httpService.requestValidation.validateResource(opportunityId, "OpportunitiesService", "Opportunity notfound", block);
                 const stageResource = yield this.httpService.requestValidation.validateResource(opportunityResource.stageId, "StagesService", "Stage not found", block);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
                 const allowedChanges = ["opportunityValue", "notes"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.opportuniesService.update(opportunityId, filteredChanges);
@@ -103,12 +107,13 @@ class OpportunitiesController {
             const block = `${this.block}.deleteRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const opportunityId = req.params.opportunityId;
                 this.httpService.requestValidation.validateUuid(opportunityId, "opprotunityId", block);
                 const opportunityResource = yield this.httpService.requestValidation.validateResource(opportunityId, "OpportunitiesService", "Opportunity notfound", block);
                 const stageResource = yield this.httpService.requestValidation.validateResource(opportunityResource.stageId, "StagesService", "Stage not found", block);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
                 yield this.opportuniesService.delete(opportunityId);
                 res.status(200).json({ message: "Opportunity deleted" });
             }

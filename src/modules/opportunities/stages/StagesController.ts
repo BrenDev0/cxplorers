@@ -4,6 +4,7 @@ import { BadRequestError} from "../../../core/errors/errors";
 import StagesService from "./StagesService";
 import { StageData } from "./stages.interface";
 import { PipelineData } from "../pipelines/pipelines.interface";
+import BusinessesController from "../../businesses/BusinessesController";
 
 export default class StagesController { 
   private httpService: HttpService;
@@ -70,12 +71,13 @@ export default class StagesController {
     const block = `${this.block}.collectionRequest`;
     try {
       const user = req.user;
+      const businessId = req.businessId;
       const pipelineId = req.params.pipelineId;
       this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
 
       const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelinesService", "Pipeline not found", block)
 
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block)
+      this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block)
 
       const data = await this.stagesService.collection(pipelineId);
 
@@ -113,13 +115,14 @@ export default class StagesController {
     const block = `${this.block}.deleteRequest`;
     try {
      const user = req.user;
+     const businessId = req.businessId;
       const stageId = req.params.stageId;
       this.httpService.requestValidation.validateUuid(stageId, "stageId", block);
 
       const stageResource = await this.httpService.requestValidation.validateResource<StageData>(stageId, "StagesService", "Stage not found", block);
       
       const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
 
       await this.stagesService.delete(stageId);
 

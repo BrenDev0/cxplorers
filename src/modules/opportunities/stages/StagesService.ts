@@ -23,8 +23,14 @@ export default class StagesService {
 
     async upsert(stages: StageData[]): Promise<Stage[]> {
         const mappedStages = stages.map((stage) => this.mapToDb(stage));
-        const cols = Object.keys(mappedStages[0]);
-        const values = mappedStages.flatMap(stage => cols.map(col => (stage as any)[col]))
+
+        const cols = Object.keys(mappedStages[0]).filter(key =>
+            mappedStages.every(stage => (stage as any)[key] !== undefined)
+        );
+
+        const values = mappedStages.flatMap(stage =>
+            cols.map(col => (stage as any)[col])
+        );
         try {
             const result = await this.repository.upsert(cols, values);
 
@@ -86,11 +92,11 @@ export default class StagesService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             stage_id: stage.stageId,
-           pipeline_id: stage.pipelineId,
-           name: stage.name,
-           position: stage.position && Number(stage.position),
-           in_funnel_chart: stage.inFunnelChart,
-           in_pie_chart: stage.inPieChart
+            pipeline_id: stage.pipelineId,
+            name: stage.name,
+            position: stage.position && Number(stage.position),
+            in_funnel_chart: stage.inFunnelChart,
+            in_pie_chart: stage.inPieChart
         }
     }
 

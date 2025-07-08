@@ -13,7 +13,7 @@ const initializePipelinesRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("PipelinesController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/create", 
+    secureRouter.post("/create", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
   #swagger.tags = ['Pipelines']
   #swagger.path =  '/pipelines/secure/create'
@@ -29,7 +29,7 @@ const initializePipelinesRouter = (customController) => {
   }
   */
     controller.createRequest.bind(controller));
-    secureRouter.get("/resource/:pipelineId", 
+    secureRouter.get("/resource/:pipelineId", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
    #swagger.tags = ['Pipelines']
    #swagger.path =  '/pipelines/secure/resource/{pipelineId}'
@@ -37,15 +37,15 @@ const initializePipelinesRouter = (customController) => {
    #swagger.description = 'get pipeline by id'
    */
     controller.resourceRequest.bind(controller));
-    secureRouter.get("/collection", 
+    secureRouter.get("/collection", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
     #swagger.tags = ['Pipelines']
     #swagger.path =  '/pipelines/secure/collection'
     #swagger.security = [{ "bearerAuth": [] }]
-    #swagger.description = 'get pipelines by user id in token'
+    #swagger.description = 'get pipelines by business id in token'
     */
     controller.collectionRequest.bind(controller));
-    secureRouter.put("/:pipelineId", 
+    secureRouter.put("/:pipelineId", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
    #swagger.tags = ['Pipelines']
    #swagger.path =  '/pipelines/secure/{piplineId}'
@@ -61,7 +61,7 @@ const initializePipelinesRouter = (customController) => {
    }
    */
     controller.updateRequest.bind(controller));
-    secureRouter.delete("/:pipelineId", 
+    secureRouter.delete("/:pipelineId", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
     #swagger.tags = ['Pipelines']
     #swagger.path =  '/pipelines/secure/{pipelineId}'

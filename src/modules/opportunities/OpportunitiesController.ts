@@ -6,6 +6,7 @@ import { OpportunityData } from "./opportunities.interface";
 import { StageData } from "./stages/stages.interface";
 import { PipelineData } from "./pipelines/pipelines.interface";
 import { ContactData } from "../contacts/contacts.interface";
+import { builtinModules } from "module";
 
 export default class OpportunitiesController { 
   private httpService: HttpService;
@@ -22,6 +23,7 @@ export default class OpportunitiesController {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
+      const businessId = req.businessId;
       const requiredFields = ["contactId", "stageId"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
       
@@ -35,8 +37,8 @@ export default class OpportunitiesController {
       ]);
       
       const pipelineResource =  await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
-      // this.httpService.requestValidation.validateActionAuthorization(user.user_id, contactResource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, contactResource.businessId, block);
 
       await this.opportuniesService.create(req.body);
 
@@ -50,6 +52,7 @@ export default class OpportunitiesController {
     const block = `${this.block}.resourceRequest`;
     try {
       const user = req.user;
+      const businessId = req.businessId;
       const opportunityId = req.params.opportunityId;
       this.httpService.requestValidation.validateUuid(opportunityId, "opprotunityId", block);
 
@@ -58,7 +61,7 @@ export default class OpportunitiesController {
       const stageResource = await this.httpService.requestValidation.validateResource<StageData>(opportunityResource.stageId, "StagesService", "Stage not found", block);
       
       const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
 
       res.status(200).json({ data: opportunityResource })
     } catch (error) {
@@ -72,13 +75,14 @@ export default class OpportunitiesController {
       const user = req.user;
       
       const stageId = req.params.stageId;
+      const businessId = req.businessId;
       this.httpService.requestValidation.validateUuid(stageId, "stageId", block);
 
       const stageResource = await this.httpService.requestValidation.validateResource<StageData>(stageId, "StagesService", "Stage not found", block);
       const dataPromise = this.opportuniesService.collection(stageId);
       
       const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
 
       const data = await dataPromise;
 
@@ -92,6 +96,7 @@ export default class OpportunitiesController {
     const block = `${this.block}.updateRequest`;
     try { 
       const user = req.user;
+      const businessId = req.businessId;
       const opportunityId = req.params.opportunityId;
       this.httpService.requestValidation.validateUuid(opportunityId, "opprotunityId", block);
 
@@ -100,7 +105,7 @@ export default class OpportunitiesController {
       const stageResource = await this.httpService.requestValidation.validateResource<StageData>(opportunityResource.stageId, "StagesService", "Stage not found", block);
       
       const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
       
       const allowedChanges = ["opportunityValue", "notes"];
 
@@ -118,6 +123,7 @@ export default class OpportunitiesController {
     const block = `${this.block}.deleteRequest`;
     try {
       const user = req.user;
+      const businessId = req.businessId;
       const opportunityId = req.params.opportunityId;
       this.httpService.requestValidation.validateUuid(opportunityId, "opprotunityId", block);
 
@@ -126,7 +132,7 @@ export default class OpportunitiesController {
       const stageResource = await this.httpService.requestValidation.validateResource<StageData>(opportunityResource.stageId, "StagesService", "Stage not found", block);
       
       const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
 
       await this.opportuniesService.delete(opportunityId);
 

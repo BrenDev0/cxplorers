@@ -23,7 +23,7 @@ const pipelines_routes_1 = require("../../src/modules/opportunities/pipelines/pi
 describe("USERS ROUTES", () => {
     let pool;
     let app;
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5Njk2MDIsImV4cCI6MTc4MDUwNTYwMn0.JiTqY9FHBaSofTdUnrxmGOLODvNLKvmsqpmOzFA5mSU";
+    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q";
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         pool = new pg_1.Pool({
@@ -50,7 +50,11 @@ describe("USERS ROUTES", () => {
         //   const res = await request(app)
         //     .post('/pipelines/secure/create')
         //     .set('Authorization', token)
-        //     .send({ name: 'no stages' });
+        //     .send({ 
+        //       name: 'no stages',
+        //       inFunnelChart: true,
+        //       inPieChart: false
+        //      });
         //   expect(res.status).toBe(200);
         //   expect(res.body.message).toBe('pipeline added.');
         // });
@@ -60,7 +64,9 @@ describe("USERS ROUTES", () => {
         //     .set('Authorization', token)
         //     .send({ 
         //       name: 'pipeline with stages',
-        //       stages: [{name: "stage one", position: 1}, {name: "stage 2", position: 2}] 
+        //       inPieChart: true, 
+        //       inFunnelChart: true,
+        //       stages: [{name: "stage one", position: 1, inPieChart: true, inFunnelChart: true}, {name: "stage 2", position: 2, inPieChart: true, inFunnelChart: true}] 
         //     });
         //   expect(res.status).toBe(200);
         //   expect(res.body.message).toBe('pipeline added.');
@@ -77,7 +83,7 @@ describe("USERS ROUTES", () => {
     describe('GET /pipelines/secure/resource/:pipelineId', () => {
         it('should return 200 and the pipeline data for a valid ID and authorized user', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .get('/pipelines/secure/resource/78f5ed70-56af-461f-a891-6a712242fee3')
+                .get('/pipelines/secure/resource/30e8f8f7-0e10-45fc-bcff-8f34d617955a')
                 .set('Authorization', token);
             expect(res.status).toBe(200);
             expect(res.body.data).toHaveProperty('name');
@@ -98,31 +104,33 @@ describe("USERS ROUTES", () => {
         }));
     });
     describe('PUT/pipelines/secure/:pipelineId', () => {
-        // it('should return 200 and update the pipeline with allowed fields', async () => {
-        //   const res = await request(app)
-        //     .put('/pipelines/secure/11cff2f9-96fa-4439-8c18-959e2f46976a')
-        //     .set('Authorization', token)
-        //     .send({ name: 'Updated Pipeline' });
-        //   expect(res.status).toBe(200);
-        //   expect(res.body.message).toBe('pipeline updated');
-        // });
-        it('should return 200 and update the pipeline and stages with allowed fields', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('should return 200 and update the pipeline with allowed fields', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .put('/pipelines/secure/11cff2f9-96fa-4439-8c18-959e2f46976a')
+                .put('/pipelines/secure/30e8f8f7-0e10-45fc-bcff-8f34d617955a')
                 .set('Authorization', token)
-                .send({
-                stages: [
-                    {
-                        pipelineId: "11cff2f9-96fa-4439-8c18-959e2f46976a",
-                        stageId: "3cf755a9-d471-4331-b6fc-60a25412b934",
-                        name: "Updated stage name6789",
-                        position: 3
-                    }
-                ]
-            });
+                .send({ name: 'Updated Pipeline' });
+            console.log("RES UPDATE pipeline:::::", res.body);
             expect(res.status).toBe(200);
             expect(res.body.message).toBe('pipeline updated');
         }));
+        // it('should return 200 and update the pipeline and stages with allowed fields', async () => {
+        //   const res = await request(app)
+        //     .put('/pipelines/secure/30e8f8f7-0e10-45fc-bcff-8f34d617955a')
+        //     .set('Authorization', token)
+        //     .send({ 
+        //       stages: [
+        //         {
+        //           pipelineId: "30e8f8f7-0e10-45fc-bcff-8f34d617955a",
+        //           stageId: "2c430516-4249-4764-ad6c-1e615eb2417e",
+        //           name: "Updated stage name6789",
+        //           position: 3
+        //         }
+        //       ]
+        //      });
+        //      console.log("RES UPDATE STAGES:::::", res.body)
+        //   expect(res.status).toBe(200);
+        //   expect(res.body.message).toBe('pipeline updated');
+        // });
         it('should return 404 if pipeline does not exist', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
                 .put('/pipelines/secure/123e4567-e89b-12d3-a456-426614174000')

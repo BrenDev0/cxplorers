@@ -34,7 +34,7 @@ class StagesService {
     upsert(stages) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedStages = stages.map((stage) => this.mapToDb(stage));
-            const cols = Object.keys(mappedStages[0]);
+            const cols = Object.keys(mappedStages[0]).filter(key => mappedStages.every(stage => stage[key] !== undefined));
             const values = mappedStages.flatMap(stage => cols.map(col => stage[col]));
             try {
                 const result = yield this.repository.upsert(cols, values);

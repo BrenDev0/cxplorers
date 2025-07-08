@@ -58,10 +58,11 @@ class StagesController {
             const block = `${this.block}.collectionRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const pipelineId = req.params.pipelineId;
                 this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
                 const data = yield this.stagesService.collection(pipelineId);
                 res.status(200).json({ data: data });
             }
@@ -92,11 +93,12 @@ class StagesController {
             const block = `${this.block}.deleteRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const stageId = req.params.stageId;
                 this.httpService.requestValidation.validateUuid(stageId, "stageId", block);
                 const stageResource = yield this.httpService.requestValidation.validateResource(stageId, "StagesService", "Stage not found", block);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, pipelineResource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
                 yield this.stagesService.delete(stageId);
                 res.status(200).json({ message: "Stage deleted" });
             }

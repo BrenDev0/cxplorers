@@ -20,13 +20,14 @@ export default class PipelinesController {
   async createRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.createRequest`;
     try {
-      const user = req.user
-      const requiredFields = ["name"];
+      const user = req.user;
+      const businessId = req.businessId;
+      const requiredFields = ["name", "inPieChart", "inFunnelChart"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
       const pipelineData = {
         ...req.body,
-        userId: req.user.user_id
+        businessId: businessId
       };
 
       const newPipeline = await this.pipelinesService.create(pipelineData);
@@ -64,10 +65,11 @@ export default class PipelinesController {
     const block = `${this.block}.resourceRequest`;
     try {
       const user = req.user;
+      const businessId = req.businessId;
       const pipelineId = req.params.pipelineId;
 
       const resource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
 
       res.status(200).json({ data: resource })
     } catch (error) {
@@ -78,7 +80,8 @@ export default class PipelinesController {
   async collectionRequest(req: Request, res: Response): Promise<void> {
     try {
       const user = req.user;
-      const data = await this.pipelinesService.collection(user.user_id);
+      const businessId = req.businessId;
+      const data = await this.pipelinesService.collection(businessId);
 
       res.status(200).json({ data })
     } catch (error) {
@@ -90,13 +93,14 @@ export default class PipelinesController {
     const block = `${this.block}.updateRequest`;
     try { 
       const user = req.user;
+      const businessId = req.businessId;
       const pipelineId = req.params.pipelineId;
       this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block)
 
      const resource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
 
-      const allowedChanges = ["name", "stages"];
+      const allowedChanges = ["name", "stages", "inPieChart", "inFunnelChart"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<PipelineData>(allowedChanges, req.body, block);
       
@@ -136,11 +140,12 @@ export default class PipelinesController {
     const block = `${this.block}.deleteRequest`;
     try {
      const user = req.user;
+     const businessId = req.businessId;
       const pipelineId = req.params.pipelineId;
       this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block)
 
      const resource = await this.httpService.requestValidation.validateResource<PipelineData>(pipelineId, "PipelinesService", "Pipeline not found", block);
-      this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+      this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
 
       await this.pipelinesService.delete(pipelineId);
 

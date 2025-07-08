@@ -25,9 +25,10 @@ class PipelinesController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["name"];
+                const businessId = req.businessId;
+                const requiredFields = ["name", "inPieChart", "inFunnelChart"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const pipelineData = Object.assign(Object.assign({}, req.body), { userId: req.user.user_id });
+                const pipelineData = Object.assign(Object.assign({}, req.body), { businessId: businessId });
                 const newPipeline = yield this.pipelinesService.create(pipelineData);
                 if (req.body.stages) {
                     const { stages } = req.body;
@@ -56,9 +57,10 @@ class PipelinesController {
             const block = `${this.block}.resourceRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const pipelineId = req.params.pipelineId;
                 const resource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -70,7 +72,8 @@ class PipelinesController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = req.user;
-                const data = yield this.pipelinesService.collection(user.user_id);
+                const businessId = req.businessId;
+                const data = yield this.pipelinesService.collection(businessId);
                 res.status(200).json({ data });
             }
             catch (error) {
@@ -83,11 +86,12 @@ class PipelinesController {
             const block = `${this.block}.updateRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const pipelineId = req.params.pipelineId;
                 this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
-                const allowedChanges = ["name", "stages"];
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
+                const allowedChanges = ["name", "stages", "inPieChart", "inFunnelChart"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 if (req.body.stages) {
                     const { stages } = req.body;
@@ -123,10 +127,11 @@ class PipelinesController {
             const block = `${this.block}.deleteRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const pipelineId = req.params.pipelineId;
                 this.httpService.requestValidation.validateUuid(pipelineId, "pipelineId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(pipelineId, "PipelinesService", "Pipeline not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 yield this.pipelinesService.delete(pipelineId);
                 res.status(200).json({ message: "Pipeline deleted" });
             }
