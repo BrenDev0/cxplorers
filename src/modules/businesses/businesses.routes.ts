@@ -53,6 +53,16 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         controller.collectionRequest.bind(controller)
     )
 
+    secureRouter.get("/login/:businessId", 
+        /*
+        #swagger.tags = ['Businesses']
+        #swagger.path =  '/businesses/secure/login/{businessId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Delete business'
+        */
+        controller.businessLogin.bind(controller)
+    )
+
     secureRouter.put("/",
          middlewareService.verifyRoles(["owner"]),
         /*
@@ -81,16 +91,6 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         #swagger.description = 'Delete business'
         */
         controller.deleteRequest.bind(controller)
-    )
-
-    secureRouter.get("/login/:businessId", 
-        /*
-        #swagger.tags = ['Businesses']
-        #swagger.path =  '/businesses/secure/login/{businessId}'
-        #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Delete business'
-        */
-        controller.businessLogin.bind(controller)
     )
 
     // mounts //

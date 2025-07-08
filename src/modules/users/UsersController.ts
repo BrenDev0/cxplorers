@@ -152,7 +152,7 @@ export default class UsersController {
   async deleteRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.deleteRequest`;
     try {
-     const user = (req as any).user;
+     const user = req.user;
 
      await this.usersService.delete(user.user_id);
 

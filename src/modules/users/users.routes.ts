@@ -16,7 +16,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
      
     // protected Routes //
 
-    secureRouter.get("/resource", 
+    secureRouter.get("/resource",
          /*
         #swagger.tags = ['Users']
         #swagger.path =  '/users/secure/resource'
@@ -27,6 +27,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
     );
 
     secureRouter.put("/account", 
+         middlewareService.verifyAdminAccount(),
         /*
         #swagger.tags = ['Users']
         #swagger.path =  '/users/secure/account'
@@ -45,6 +46,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
     );
 
     secureRouter.delete("/delete", 
+         middlewareService.verifyAdminAccount(),
         /*
         #swagger.tags = ['Users']
         #swagger.path =  '/users/secure/delete'
@@ -74,7 +76,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
         controller.createRequest.bind(controller)
     );
 
-    verifiedRouter.put("/account/:userId", 
+    verifiedRouter.put("/account/:userId",
         /*
         #swagger.tags = ['Users']
         #swagger.path =  '/users/verified/account/{userId}'

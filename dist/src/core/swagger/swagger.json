@@ -85,6 +85,34 @@
                 ]
             }
         },
+        "/businesses/secure/login/{businessId}": {
+            "get": {
+                "tags": [
+                    "Businesses"
+                ],
+                "description": "Delete business",
+                "parameters": [
+                    {
+                        "name": "businessId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/businesses/secure/{businessId}": {
             "put": {
                 "tags": [
@@ -123,34 +151,6 @@
                 }
             },
             "delete": {
-                "tags": [
-                    "Businesses"
-                ],
-                "description": "Delete business",
-                "parameters": [
-                    {
-                        "name": "businessId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/businesses/secure/login/{businessId}": {
-            "get": {
                 "tags": [
                     "Businesses"
                 ],

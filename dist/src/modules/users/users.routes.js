@@ -23,7 +23,7 @@ const initializeUsersRouter = (customController) => {
    #swagger.description = 'Get current user'
    */
     controller.resourceRequest.bind(controller));
-    secureRouter.put("/account", 
+    secureRouter.put("/account", middlewareService.verifyAdminAccount(), 
     /*
     #swagger.tags = ['Users']
     #swagger.path =  '/users/secure/account'
@@ -39,7 +39,7 @@ const initializeUsersRouter = (customController) => {
     }
     */
     controller.updateRequest.bind(controller));
-    secureRouter.delete("/delete", 
+    secureRouter.delete("/delete", middlewareService.verifyAdminAccount(), 
     /*
     #swagger.tags = ['Users']
     #swagger.path =  '/users/secure/delete'
