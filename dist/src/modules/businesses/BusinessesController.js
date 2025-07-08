@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = require("../../core/errors/errors");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class BusinessesController {
     constructor(httpService, businessesService) {
@@ -127,6 +128,30 @@ class BusinessesController {
                 }
                 const token = this.httpService.webtokenService.generateToken(tokenPayload, "7d");
                 res.status(200).json({ message: "Business deleted", token });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    businessLogin(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.businessLogin`;
+            try {
+                const user = req.user;
+                const businessId = req.params.businessId;
+                this.httpService.requestValidation.validateUuid(businessId, "businessId", block);
+                const businessUsersService = Container_1.default.resolve("BusinessUsersService");
+                yield this.httpService.requestValidation.validateResource(businessId, "BusinessesService", "Business not found", block);
+                const businessUser = yield businessUsersService.selectByIds(user.user_id, businessId);
+                if (!businessUser) {
+                    throw new errors_1.AuthorizationError();
+                }
+                const token = this.httpService.webtokenService.generateToken({
+                    userId: user.user_id,
+                    businessId: businessId
+                }, "7d");
+                res.status(200).json({ token });
             }
             catch (error) {
                 throw error;

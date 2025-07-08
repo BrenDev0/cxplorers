@@ -150,11 +150,14 @@ export default class BusinessesController {
   }
 
   async businessLogin(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.businessLogin`
     try {
       const user = req.user;
       const businessId = req.params.businessId;
+      this.httpService.requestValidation.validateUuid(businessId, "businessId", block)
 
       const businessUsersService = Container.resolve<BusinessUsersService>("BusinessUsersService");
+      await this.httpService.requestValidation.validateResource<BusinessData>(businessId, "BusinessesService", "Business not found", block)
 
       const businessUser = await businessUsersService.selectByIds(user.user_id, businessId);
       if(!businessUser) {
