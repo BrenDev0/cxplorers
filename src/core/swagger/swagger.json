@@ -846,7 +846,7 @@
         "tags": [
           "Pipelines"
         ],
-        "description": "get pipelines by user id in token",
+        "description": "get pipelines by business id in token",
         "responses": {
           "default": {
             "description": ""
@@ -1469,6 +1469,10 @@
             "type": "string",
             "example": "required"
           },
+          "contactType": {
+            "type": "string",
+            "example": "required"
+          },
           "lastName": {
             "type": "string",
             "example": "optional"
@@ -1487,6 +1491,10 @@
         "type": "object",
         "properties": {
           "firstName": {
+            "type": "string",
+            "example": "optional"
+          },
+          "contactType": {
             "type": "string",
             "example": "optional"
           },
@@ -1645,6 +1653,26 @@
           "notes": {
             "type": "string",
             "example": "optional"
+          },
+          "opportunityName": {
+            "type": "string",
+            "example": "optional"
+          },
+          "opportunitySource": {
+            "type": "string",
+            "example": "optional"
+          },
+          "opportunityStatus": {
+            "type": "string",
+            "example": "optional"
+          },
+          "opportunityBusinessName": {
+            "type": "string",
+            "example": "optional"
+          },
+          "userId": {
+            "type": "string",
+            "example": "optional"
           }
         }
       },
@@ -1656,6 +1684,26 @@
             "example": "optional"
           },
           "notes": {
+            "type": "string",
+            "example": "optional"
+          },
+          "opportunityName": {
+            "type": "string",
+            "example": "optional"
+          },
+          "opportunitySource": {
+            "type": "string",
+            "example": "optional"
+          },
+          "opportunityStatus": {
+            "type": "string",
+            "example": "optional"
+          },
+          "opportunityBusinessName": {
+            "type": "string",
+            "example": "optional"
+          },
+          "userId": {
             "type": "string",
             "example": "optional"
           }

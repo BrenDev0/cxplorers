@@ -73,12 +73,14 @@ const doc = {
             },
             createContact: {
                 firstName: "required",
+                contactType: "required",
                 lastName: "optional",
                 email: "optional",
                 phone: "optional"
             },
             updateContact: {
                 firstName: "optional",
+                contactType: "optional",
                 lastName: "optional",
                 email: "optional",
                 phone: "optional"
@@ -118,11 +120,21 @@ const doc = {
                 stageId: "required",
                 contactId: "required",
                 opportunityValue: "optional",
-                notes: "optional"
+                notes: "optional",
+                opportunityName: "optional",
+                opportunitySource: "optional",
+                opportunityStatus: "optional",
+                opportunityBusinessName: "optional",
+                userId: "optional"
             },
             updateOpportunity: {
                 opportunityValue: "optional",
-                notes: "optional"
+                notes: "optional",
+                opportunityName: "optional",
+                opportunitySource: "optional",
+                opportunityStatus: "optional",
+                opportunityBusinessName: "optional",
+                userId: "optional"
             },
             createBusiness: {
                 businessLogo: "optional",
