@@ -25,9 +25,10 @@ class ContactsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["firstName", "businessId"];
+                const businessId = req.businessId;
+                const requiredFields = ["firstName", "contactType"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                yield this.contactsService.create(req.body);
+                yield this.contactsService.create(Object.assign(Object.assign({}, req.body), { businessId: businessId }));
                 res.status(200).json({ message: "Contact added" });
             }
             catch (error) {

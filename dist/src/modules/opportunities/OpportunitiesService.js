@@ -90,7 +90,12 @@ class OpportunitiesService {
             opportunity_value: opportunity.opportunityValue !== undefined && opportunity.opportunityValue !== null
                 ? opportunity.opportunityValue.toFixed(2)
                 : null,
-            notes: opportunity.notes
+            notes: opportunity.notes,
+            opportunity_name: opportunity.opportunityName,
+            opportunity_source: opportunity.opportunitySource,
+            opportunity_status: opportunity.opportunityStatus,
+            opportunity_business_name: opportunity.opportunityBusinessName,
+            user_id: opportunity.userId
         };
     }
     mapFromDb(opportunity) {
@@ -102,7 +107,12 @@ class OpportunitiesService {
             opportunityValue: opportunity.opportunity_value !== null
                 ? Number(opportunity.opportunity_value)
                 : null,
-            notes: opportunity.notes
+            notes: opportunity.notes,
+            opportunityName: opportunity.opportunity_name,
+            opportunitySource: opportunity.opportunity_source,
+            opportunityStatus: opportunity.opportunity_status,
+            opportunityBusinessName: opportunity.opportunity_business_name,
+            userId: opportunity.user_id
         };
     }
 }

@@ -107,7 +107,7 @@ export default class OpportunitiesController {
       const pipelineResource = await this.httpService.requestValidation.validateResource<PipelineData>(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
       this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
       
-      const allowedChanges = ["opportunityValue", "notes"];
+      const allowedChanges = ["opportunityValue", "notes", "opportunityName", "opportunityStatus", "opportunitySource", "userId", "opportunityBusinessName"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<OpportunityData>(allowedChanges, req.body, block);
 

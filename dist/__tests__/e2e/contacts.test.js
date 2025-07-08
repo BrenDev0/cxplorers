@@ -23,7 +23,7 @@ const contacts_routes_1 = require("../../src/modules/contacts/contacts.routes");
 describe("USERS ROUTES", () => {
     let pool;
     let app;
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5MDMxODEsImV4cCI6MTc4MDQzOTE4MX0.arPjmKvtSO49QXP1j79CA3Q8kWji2wB9gBO1EHq9lSk";
+    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q";
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         pool = new pg_1.Pool({
@@ -46,19 +46,19 @@ describe("USERS ROUTES", () => {
         Container_1.default.clear();
     }));
     describe('POST /contacts/secure/create', () => {
-        //   it('should create a contact and return 200', async () => {
-        //     const res = await request(app)
-        //       .post('/contacts/secure/create')
-        //       .set('Authorization', token)
-        //       .send({
-        //         firstName: 'Delete Me',
-        //         lastName: 'Delete',
-        //         email: 'carpincha@example.com',
-        //         phone: '1234567890',
-        //       });
-        //     expect(res.status).toBe(200);
-        //     expect(res.body.message).toBe('Contact added');
-        //   });
+        // it('should create a contact and return 200', async () => {
+        //   const res = await request(app)
+        //     .post('/contacts/secure/create')
+        //     .set('Authorization', token)
+        //     .send({
+        //       firstName: 'Delete Me',
+        //       email: 'carpincha@example.com',
+        //       phone: '1234567890',
+        //       contactType: "lead"
+        //     });
+        //   expect(res.status).toBe(200);
+        //   expect(res.body.message).toBe('Contact added');
+        // });
         it('should return 400 if firstName is missing', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
                 .post('/contacts/secure/create')
@@ -71,7 +71,7 @@ describe("USERS ROUTES", () => {
         }));
     });
     describe('GET /contacts/secure/resource/:contactId', () => {
-        const validContactId = "6a0789b7-f536-47c6-861f-796365f925e5";
+        const validContactId = "7a4557aa-680b-473c-a4e0-028925f001e8";
         const nonexistentContactId = "6a0789b7-f536-47c6-861f-796365f925e4";
         it('should return 200 and contact data for a valid contactId', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
@@ -85,7 +85,7 @@ describe("USERS ROUTES", () => {
                 .get(`/contacts/secure/resource/${nonexistentContactId}`)
                 .set('Authorization', token);
             expect(res.status).toBe(404);
-            expect(res.body.message).toMatch("Resource not found");
+            expect(res.body.message).toMatch("Contact not found");
         }));
         //   it('should return 403 if user does not own the contact', async () => {
         //     const res = await request(app)
@@ -106,7 +106,7 @@ describe("USERS ROUTES", () => {
         }));
     });
     describe('PUT /contacts/secure/update/:contactId', () => {
-        const validContactId = "833cba4d-4ea0-41f4-b9d9-510893ac772e";
+        const validContactId = "7a4557aa-680b-473c-a4e0-028925f001e8";
         const nonexistentContactId = "833cba4d-4ea0-41f4-b9d9-510893ac7722";
         it('should update a contact and return 200', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
@@ -133,7 +133,7 @@ describe("USERS ROUTES", () => {
                 .set('Authorization', token)
                 .send({ firstName: 'Ghost' });
             expect(res.status).toBe(404);
-            expect(res.body.message).toBe("Resource not found");
+            expect(res.body.message).toBe("Contact not found");
         }));
     });
     describe('DELETE /contacts/secure/delete/:contactId', () => {
@@ -158,7 +158,7 @@ describe("USERS ROUTES", () => {
                 .delete(`/contacts/secure/${nonexistentContactId}`)
                 .set('Authorization', token);
             expect(res.status).toBe(404);
-            expect(res.body.message).toBe("Resource not found");
+            expect(res.body.message).toBe("Contact not found");
         }));
     });
 });

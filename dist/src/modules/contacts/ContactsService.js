@@ -21,6 +21,7 @@ class ContactService {
     }
     create(contact) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(contact, "CONTACT:::::::::::");
             const mappedContact = this.mapToDb(contact);
             try {
                 return this.repository.create(mappedContact);
@@ -111,7 +112,7 @@ class ContactService {
             last_name: contact.lastName && encryptionService.encryptData(contact.lastName),
             email: contact.email && encryptionService.encryptData(contact.email),
             phone: contact.phone && encryptionService.encryptData(contact.phone),
-            source: contact.source,
+            contact_type: contact.contactType,
             created_at: contact.createdAt
         };
     }
@@ -124,7 +125,7 @@ class ContactService {
             lastName: contact.last_name && encryptionService.decryptData(contact.last_name),
             email: contact.email && encryptionService.decryptData(contact.email),
             phone: contact.phone && encryptionService.decryptData(contact.phone),
-            source: contact.source,
+            contactType: contact.contact_type,
             createdAt: contact.created_at
         };
     }

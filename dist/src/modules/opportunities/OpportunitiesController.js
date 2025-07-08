@@ -92,7 +92,7 @@ class OpportunitiesController {
                 const stageResource = yield this.httpService.requestValidation.validateResource(opportunityResource.stageId, "StagesService", "Stage not found", block);
                 const pipelineResource = yield this.httpService.requestValidation.validateResource(stageResource.pipelineId, "PipelinesService", "Pipeline not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(businessId, pipelineResource.businessId, block);
-                const allowedChanges = ["opportunityValue", "notes"];
+                const allowedChanges = ["opportunityValue", "notes", "opportunityName", "opportunityStatus", "opportunitySource", "userId", "opportunityBusinessName"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.opportuniesService.update(opportunityId, filteredChanges);
                 res.status(200).json({ message: "Opportunity updated" });

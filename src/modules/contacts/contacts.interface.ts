@@ -7,7 +7,7 @@ export interface Contact {
   last_name: string;
   email: string;
   phone: string;
-  source: string;
+  contact_type: string;
   created_at: string;
 }
 
@@ -18,7 +18,7 @@ export interface ContactData {
   lastName: string;
   email: string;
   phone: string;
-  source: string;
+  contactType: string;
   createdAt: string;
 }
 
