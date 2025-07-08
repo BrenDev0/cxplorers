@@ -12,7 +12,7 @@ import { RedisClientType } from 'redis';
 import { initializeContactsRouter } from '../../src/modules/contacts/contacts.routes';
 
 
-describe("USERS ROUTES", () => {
+describe("CONTACTS ROUTES", () => {
     let pool: Pool
     let app: Express
 

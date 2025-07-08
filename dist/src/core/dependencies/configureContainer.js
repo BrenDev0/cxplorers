@@ -37,6 +37,7 @@ const opportunities_dependencies_1 = require("../../modules/opportunities/opport
 const businesses_dependencies_1 = require("../../modules/businesses/businesses.dependencies");
 const businessUsers_dependencies_1 = require("../../modules/businesses/businessUsers/businessUsers.dependencies");
 const permissions_dependencies_1 = require("../../modules/permissions/permissions.dependencies");
+const tasks_dependencies_1 = require("../../modules/tasks/tasks.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -82,6 +83,8 @@ function configureContainer(testPool, testRedis) {
         (0, opportunities_dependencies_1.configureOpportunitiesDependencies)(pool);
         (0, pipelines_dependencies_1.configurePipelinesDependencies)(pool);
         (0, stages_dependencies_1.configureStagesDependencies)(pool);
+        // tasks //
+        (0, tasks_dependencies_1.configureTasksDependencies)(pool);
         // tokens //
         (0, tokens_dependencies_1.configureTokensDependencies)(pool);
         // users //

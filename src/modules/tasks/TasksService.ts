@@ -34,6 +34,17 @@ export default class TasksService {
         }
     }
 
+    async collection(whereCol: string, identifier: string): Promise<TaskData[]> {
+        try {
+            const result = await this.repository.select(whereCol, identifier);
+            
+            return result.map((task) => this.mapFromDb(task))
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "collection", {whereCol, identifier})
+            throw error;
+        }
+    }
+
     async update(taskId: string, changes: TaskData): Promise<Task> {
         const mappedChanges = this.mapToDb(changes);
         const cleanedChanges = Object.fromEntries(
@@ -59,8 +70,9 @@ export default class TasksService {
     mapToDb(task: Omit<TaskData, "taskId">): Omit<Task, "task_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
+            business_id: task.businessId,
            contact_id: task.contactId,
-           user_id: task.userId,
+           business_user_id: task.businessUserId,
            task_title: task.taskTitle,
            task_description: task.taskDescription,
            task_due_date: task.taskDueDate
@@ -71,8 +83,9 @@ export default class TasksService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             taskId: task.task_id,
+            businessId: task.business_id,
             contactId: task.contact_id,
-            userId: task.user_id,
+            businessUserId: task.business_user_id,
             taskTitle: task.task_title,
             taskDescription: task.task_description,
             taskDueDate: task.task_due_date

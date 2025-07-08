@@ -46,6 +46,18 @@ class TasksService {
             }
         });
     }
+    collection(whereCol, identifier) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select(whereCol, identifier);
+                return result.map((task) => this.mapFromDb(task));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { whereCol, identifier });
+                throw error;
+            }
+        });
+    }
     update(taskId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
@@ -73,8 +85,9 @@ class TasksService {
     mapToDb(task) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            business_id: task.businessId,
             contact_id: task.contactId,
-            user_id: task.userId,
+            business_user_id: task.businessUserId,
             task_title: task.taskTitle,
             task_description: task.taskDescription,
             task_due_date: task.taskDueDate
@@ -84,8 +97,9 @@ class TasksService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             taskId: task.task_id,
+            businessId: task.business_id,
             contactId: task.contact_id,
-            userId: task.user_id,
+            businessUserId: task.business_user_id,
             taskTitle: task.task_title,
             taskDescription: task.task_description,
             taskDueDate: task.task_due_date

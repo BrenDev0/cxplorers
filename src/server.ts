@@ -14,6 +14,7 @@ import { initializeStagesRouter } from './modules/opportunities/stages/stages.ro
 import { initializeOpportunitiesRouter } from './modules/opportunities/opportunities.routes';
 import { initializeBusinessesRouter } from './modules/businesses/businesses.routes';
 import { initializeBusinessUsersRouter } from './modules/businesses/businessUsers/businessUsers.routes';
+import { initializeTasksRouter } from './modules/tasks/tasks.routes';
 
 
 const server = async() => {
@@ -30,6 +31,7 @@ const server = async() => {
     const opportunitiesRouter = initializeOpportunitiesRouter();
     const piplinesRouter = initializePipelinesRouter();
     const stagesRouter = initializeStagesRouter();
+    const tasksRouter = initializeTasksRouter();
     const tokensRouter = initializeTokensRouter();
     const usersRouter = initializeUsersRouter();
 
@@ -46,6 +48,7 @@ const server = async() => {
     app.use("/opportunities", opportunitiesRouter);
     app.use("/pipelines", piplinesRouter);
     app.use("/stages", stagesRouter);
+    app.use("/tasks", tasksRouter);
     app.use("/tokens", tokensRouter);
     app.use("/users", usersRouter);
 

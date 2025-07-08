@@ -66,6 +66,7 @@ class MiddlewareService {
                     const permissions = yield this.getUserPermissions(businessUser.businessUserId);
                     req.user = user;
                     req.businessId = decodedToken.businessId;
+                    req.businessUserId = businessUser.businessUserId;
                     req.permissions = permissions;
                     req.role = businessUser.role;
                     return next();

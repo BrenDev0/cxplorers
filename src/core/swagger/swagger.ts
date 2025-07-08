@@ -176,7 +176,24 @@ const doc = {
           action: "write || read"
         }
       ]
+    },
+
+    createTask: {
+      contactId: "required",
+      businessUserId: "required",
+      taskTitle: "required",
+      taskDescrition: "optional",
+      taskDueDate: "required"
+    },
+
+    updateTask: {
+      businessUserId: "optional",
+      taksTitle: "optional",
+      taskDescription: "optional",
+      taskDueDate: "optional"
     }
+
+
     }
   },
 };

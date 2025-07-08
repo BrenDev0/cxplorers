@@ -25,6 +25,7 @@ import { configureOpportunitiesDependencies } from '../../modules/opportunities/
 import { configureBusinessesDependencies } from '../../modules/businesses/businesses.dependencies';
 import { configureBusinessUsersDependencies } from '../../modules/businesses/businessUsers/businessUsers.dependencies';
 import { configurePermissionsDependencies } from '../../modules/permissions/permissions.dependencies';
+import { configureTasksDependencies } from '../../modules/tasks/tasks.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -86,6 +87,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     configureOpportunitiesDependencies(pool);
     configurePipelinesDependencies(pool);
     configureStagesDependencies(pool);
+
+    // tasks //
+    configureTasksDependencies(pool);
     
     // tokens //
     configureTokensDependencies(pool);

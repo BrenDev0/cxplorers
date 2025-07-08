@@ -20,7 +20,7 @@ const Container_1 = __importDefault(require("../../src/core/dependencies/Contain
 const configureContainer_1 = require("../../src/core/dependencies/configureContainer");
 const supertest_1 = __importDefault(require("supertest"));
 const contacts_routes_1 = require("../../src/modules/contacts/contacts.routes");
-describe("USERS ROUTES", () => {
+describe("CONTACTS ROUTES", () => {
     let pool;
     let app;
     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";

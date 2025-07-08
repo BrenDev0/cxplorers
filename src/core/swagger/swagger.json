@@ -1890,6 +1890,52 @@
             }
           }
         }
+      },
+      "createTask": {
+        "type": "object",
+        "properties": {
+          "contactId": {
+            "type": "string",
+            "example": "required"
+          },
+          "businessUserId": {
+            "type": "string",
+            "example": "required"
+          },
+          "taskTitle": {
+            "type": "string",
+            "example": "required"
+          },
+          "taskDescrition": {
+            "type": "string",
+            "example": "optional"
+          },
+          "taskDueDate": {
+            "type": "string",
+            "example": "required"
+          }
+        }
+      },
+      "updateTask": {
+        "type": "object",
+        "properties": {
+          "businessUserId": {
+            "type": "string",
+            "example": "optional"
+          },
+          "taksTitle": {
+            "type": "string",
+            "example": "optional"
+          },
+          "taskDescription": {
+            "type": "string",
+            "example": "optional"
+          },
+          "taskDueDate": {
+            "type": "string",
+            "example": "optional"
+          }
+        }
       }
     }
   }

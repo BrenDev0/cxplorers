@@ -10,6 +10,7 @@ declare global {
       permissions: PermissionData[]
       role: string;
       businessId: string;
+      businessUserId: string;
     }
   }
 }

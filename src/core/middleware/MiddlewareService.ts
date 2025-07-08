@@ -77,6 +77,7 @@ export default class MiddlewareService {
             
                 req.user = user;
                 req.businessId = decodedToken.businessId;
+                req.businessUserId = businessUser.businessUserId;
                 req.permissions = permissions;
                 req.role = businessUser.role
                 return next();

@@ -26,6 +26,7 @@ const stages_routes_1 = require("./modules/opportunities/stages/stages.routes");
 const opportunities_routes_1 = require("./modules/opportunities/opportunities.routes");
 const businesses_routes_1 = require("./modules/businesses/businesses.routes");
 const businessUsers_routes_1 = require("./modules/businesses/businessUsers/businessUsers.routes");
+const tasks_routes_1 = require("./modules/tasks/tasks.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
@@ -38,6 +39,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const opportunitiesRouter = (0, opportunities_routes_1.initializeOpportunitiesRouter)();
     const piplinesRouter = (0, pipelines_routes_1.initializePipelinesRouter)();
     const stagesRouter = (0, stages_routes_1.initializeStagesRouter)();
+    const tasksRouter = (0, tasks_routes_1.initializeTasksRouter)();
     const tokensRouter = (0, tokens_routes_1.initializeTokensRouter)();
     const usersRouter = (0, users_routes_1.initializeUsersRouter)();
     // Routes //
@@ -50,6 +52,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use("/opportunities", opportunitiesRouter);
     app.use("/pipelines", piplinesRouter);
     app.use("/stages", stagesRouter);
+    app.use("/tasks", tasksRouter);
     app.use("/tokens", tokensRouter);
     app.use("/users", usersRouter);
     app.use((req, res) => {
