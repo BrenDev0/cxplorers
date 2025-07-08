@@ -13,7 +13,7 @@ const initializeBusinessUsersRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("BusinessUsersController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/create", middlewareService.verifyRoles(["OWNER", "ADMIN"]), 
+    secureRouter.post("/create", middlewareService.verifyRoles(["owner", "admin"]), 
     /*
     #swagger.tags = ['Business Users']
     #swagger.path =  '/business-users/secure/create'

@@ -12,7 +12,7 @@ export const initializeBusinessUsersRouter = (customController?: BusinessUsersCo
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
     // protected Routes //
-    secureRouter.post("/create", middlewareService.verifyRoles(["OWNER", "ADMIN"]),
+    secureRouter.post("/create", middlewareService.verifyRoles(["owner", "admin"]),
         /*
         #swagger.tags = ['Business Users']
         #swagger.path =  '/business-users/secure/create'

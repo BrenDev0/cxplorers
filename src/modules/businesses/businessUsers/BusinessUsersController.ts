@@ -23,8 +23,6 @@ export default class BusinessUsersController {
         const user = req.user;
         const businessId = req.businessId;
 
-        const allowedAccountTypes = ["admin", "user"] 
-
         const requiredFields = ["email", "password", "name", "phone", "role"];
         this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
@@ -37,10 +35,6 @@ export default class BusinessUsersController {
         const emailInUse = await usersService.resource("email", encryptedEmail);
         if(emailInUse) {
           throw new BadRequestError("Email in use")
-        }
-
-        if(!allowedAccountTypes.includes(role)) {
-          throw new BadRequestError("Invalid account type");
         }
 
         const hashedPassword = await this.httpService.passwordService.hashPassword(password);
