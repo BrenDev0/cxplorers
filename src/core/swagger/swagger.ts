@@ -159,8 +159,8 @@ const doc = {
       businessNiche: "optional",
       platformLanguage: "optional",
       communicationLanguage: "optional",
-    }
     },
+
     createBusinessUser: {
       email: "required",
       password: "required",
@@ -175,6 +175,7 @@ const doc = {
           action: "write || read"
         }
       ]
+    }
     }
   },
 };

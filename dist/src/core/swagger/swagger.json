@@ -1798,21 +1798,49 @@
                         "example": "optional"
                     }
                 }
-            }
-        },
-        "createBusinessUser": {
-            "email": "required",
-            "password": "required",
-            "phone": "required",
-            "role": "required"
-        },
-        "createPermissions": {
-            "permissions": [
-                {
-                    "moduleName": "calendar || contacts",
-                    "action": "write || read"
+            },
+            "createBusinessUser": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "required"
+                    }
                 }
-            ]
+            },
+            "createPermissions": {
+                "type": "object",
+                "properties": {
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "moduleName": {
+                                    "type": "string",
+                                    "example": "calendar || contacts"
+                                },
+                                "action": {
+                                    "type": "string",
+                                    "example": "write || read"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

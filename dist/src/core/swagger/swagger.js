@@ -159,21 +159,21 @@ const doc = {
                 businessNiche: "optional",
                 platformLanguage: "optional",
                 communicationLanguage: "optional",
+            },
+            createBusinessUser: {
+                email: "required",
+                password: "required",
+                phone: "required",
+                role: "required"
+            },
+            createPermissions: {
+                permissions: [
+                    {
+                        moduleName: "calendar || contacts",
+                        action: "write || read"
+                    }
+                ]
             }
-        },
-        createBusinessUser: {
-            email: "required",
-            password: "required",
-            phone: "required",
-            role: "required"
-        },
-        createPermissions: {
-            permissions: [
-                {
-                    moduleName: "calendar || contacts",
-                    action: "write || read"
-                }
-            ]
         }
     },
 };
