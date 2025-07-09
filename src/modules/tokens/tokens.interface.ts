@@ -1,7 +1,7 @@
 export interface Token {
   token_id: string;
   token: string;
-  user_id: string;
+  business_id: string;
   type: string;
   service: string;
 }
@@ -9,7 +9,7 @@ export interface Token {
 export interface TokenData {
   tokenId: string;
   token: string;
-  userId: string;
+  businessId: string;
   type: string;
   service: string;
 }

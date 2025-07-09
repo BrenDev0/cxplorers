@@ -17,7 +17,7 @@ export interface GoogleAttendee {
   email: string;
   status: string;
   source?: string;
-  userId?: string
+  businessId?: string
 }
 
 export interface IEventAttendeesRepository<EventAttendee> extends IRepository<EventAttendee> {

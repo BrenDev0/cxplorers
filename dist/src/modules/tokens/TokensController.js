@@ -19,13 +19,14 @@ class TokensController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.createRequest`;
             try {
-                const { token, service, type } = req.body;
                 const user = req.user;
+                const businessId = req.businessId;
                 const requiredFields = ["token", "type", "service"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const usersTokens = yield this.tokensService.collection(user.user_id);
+                const { token, service, type } = req.body;
+                const usersTokens = yield this.tokensService.collection(businessId);
                 const tokenExist = usersTokens.find((token) => token.type === type && token.service === service);
-                const tokenData = Object.assign(Object.assign({}, req.body), { userId: user.user_id });
+                const tokenData = Object.assign(Object.assign({}, req.body), { businessId });
                 if (tokenExist) {
                     yield this.tokensService.update(tokenExist.tokenId, tokenData);
                     res.status(200).json({ message: "Token updated" });
@@ -44,10 +45,11 @@ class TokensController {
             const block = `${this.block}.resourceRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const tokenId = req.params.tokenId;
                 this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(tokenId, "TokensService", "Token not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -60,10 +62,11 @@ class TokensController {
             const block = `${this.block}.updateRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const tokenId = req.params.tokenId;
                 this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(tokenId, "TokensService", "Token not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 const allowedChanges = ["token", "type", "service"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.tokensService.update(tokenId, filteredChanges);
@@ -79,10 +82,11 @@ class TokensController {
             const block = `${this.block}.deleteRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const tokenId = req.params.tokenId;
                 this.httpService.requestValidation.validateUuid(tokenId, "tokenId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(tokenId, "TokensService", "Token not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 yield this.tokensService.delete(tokenId);
                 res.status(200).json({ message: "Token deleted" });
             }

@@ -24,10 +24,10 @@ class GoogleClientManager {
         const client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URI);
         return client;
     }
-    getcredentialedClient(userId) {
+    getcredentialedClient(businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             const client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URI);
-            const user = yield this.getUser(userId);
+            const user = yield this.getUser(businessId);
             client.setCredentials({
                 refresh_token: user.refresh_token
             });
@@ -50,15 +50,15 @@ class GoogleClientManager {
             }
         });
     }
-    getUser(userId) {
+    getUser(businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.getUser`;
             try {
-                const data = yield this.repository.getGoogleUser(userId);
+                const data = yield this.repository.getGoogleUser(businessId);
                 return this.mapGoogleUser(data);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "getUser", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "getUser", { businessId });
                 throw error;
             }
         });

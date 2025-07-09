@@ -1,7 +1,7 @@
 export interface Calendar {
   calendar_id: string;
   business_id: string;
-  user_id: string;
+  business_user_id: string;
   calendar_reference_id: string;
   title: string;
   description: string | null;
@@ -15,7 +15,7 @@ export interface Calendar {
 export interface CalendarData {
   calendarId: string;
   businessId: string;
-  userId: string;
+  businessUserId: string;
   calendarReferenceId: string;
   title: string;
   description: string | null;

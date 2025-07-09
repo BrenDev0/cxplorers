@@ -61,15 +61,15 @@ class CalendarsService {
             }
         });
     }
-    collection(userId) {
+    collection(businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.select("user_id", userId);
+                const result = yield this.repository.select("business_id", businessId);
                 const data = result.map((calendar) => this.mapFromDb(calendar));
                 return data;
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "collection", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { businessId });
                 throw error;
             }
         });
@@ -102,7 +102,7 @@ class CalendarsService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             business_id: calendar.businessId,
-            user_id: calendar.userId,
+            business_user_id: calendar.businessUserId,
             calendar_reference_id: calendar.calendarReferenceId && encryptionService.encryptData(calendar.calendarReferenceId),
             title: calendar.title,
             description: calendar.description,
@@ -122,7 +122,7 @@ class CalendarsService {
         return {
             calendarId: calendar.calendar_id,
             businessId: calendar.business_id,
-            userId: calendar.user_id,
+            businessUserId: calendar.business_user_id,
             calendarReferenceId: encryptionService.decryptData(calendar.calendar_reference_id),
             title: calendar.title,
             description: calendar.description,

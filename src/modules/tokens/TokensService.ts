@@ -34,15 +34,15 @@ export default class TokenService {
         }
     }
 
-    async collection(userId: string): Promise<TokenData[]> {
+    async collection(businessId: string): Promise<TokenData[]> {
         try {
-            const result = await this.repository.select("user_id", userId)
+            const result = await this.repository.select("business_id", businessId)
 
             const data = result.map((token) => this.mapFromDb(token));
 
             return data;
         } catch (error) {
-             handleServiceError(error as Error, this.block, "update", {userId})
+             handleServiceError(error as Error, this.block, "collection", {businessId})
             throw error;
         }
     }
@@ -73,7 +73,7 @@ export default class TokenService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             token: token.token,
-            user_id: token.userId,
+            business_id: token.businessId,
             type: token.type,
             service: token.service
         }
@@ -84,7 +84,7 @@ export default class TokenService {
         return {
             tokenId: token.token_id,
             token: encryptionService.decryptData(token.token),
-            userId: token.user_id,
+            businessId: token.business_id,
             type: token.type,
             service: token.service
         }

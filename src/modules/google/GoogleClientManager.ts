@@ -24,13 +24,13 @@ export default class GoogleClientManager {
         return client
     } 
 
-    async getcredentialedClient(userId: string): Promise<OAuth2Client> {
+    async getcredentialedClient(businessId: string): Promise<OAuth2Client> {
         const client = new google.auth.OAuth2(
             process.env.GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
             process.env.GOOGLE_REDIRECT_URI
         );
-        const user = await this.getUser(userId)
+        const user = await this.getUser(businessId)
         
         client.setCredentials({
             refresh_token: user.refresh_token
@@ -56,14 +56,14 @@ export default class GoogleClientManager {
         }
     }
 
-    async getUser(userId: string): Promise<GoogleUser> {
+    async getUser(businessId: string): Promise<GoogleUser> {
         const block = `${this.block}.getUser`
         try {
-            const data = await this.repository.getGoogleUser(userId);
+            const data = await this.repository.getGoogleUser(businessId);
           
             return this.mapGoogleUser(data);
         } catch (error) {
-            handleServiceError(error as Error, this.block, "getUser", {userId})
+            handleServiceError(error as Error, this.block, "getUser", {businessId})
             throw error;
         }
     }

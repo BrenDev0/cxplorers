@@ -20,9 +20,12 @@ class CalendarsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["referenceId", "title", "businessId"];
+                const businessId = req.businessId;
+                const businessUserId = req.businessUserId;
+                const requiredFields = ["referenceId", "title"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const calendarData = Object.assign(Object.assign({}, req.body), { userId: user.user_id });
+                const calendarData = Object.assign(Object.assign({}, req.body), { businessId,
+                    businessUserId });
                 const calendar = yield this.calendarsService.create(calendarData);
                 res.status(200).json({
                     message: "Calendar added.",
@@ -39,10 +42,11 @@ class CalendarsController {
             const block = `${this.block}.resourceRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarssService", "Calendar not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -54,6 +58,7 @@ class CalendarsController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = req.user;
+                const businessUserId = req.businessUserId;
                 const data = yield this.calendarsService.collection(user.user_id);
                 res.status(200).json({ data: data });
             }
@@ -94,10 +99,11 @@ class CalendarsController {
             const block = `${this.block}.deleteRequest`;
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarssService", "Calendar not found", block);
-                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
+                this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 yield this.calendarsService.delete(calendarId);
                 res.status(200).json({ message: "Calendar deleted" });
             }

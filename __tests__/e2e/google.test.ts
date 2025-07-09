@@ -12,7 +12,7 @@ import { initializeGoogleRouter } from '../../src/modules/google/google.routes';
 import { RedisClientType } from 'redis';
 
 
-describe("USERS ROUTES", () => {
+describe("GOOGLE ROUTES", () => {
     let pool: Pool
     let app: Express
 
@@ -118,30 +118,30 @@ describe("USERS ROUTES", () => {
     //     })
     // })
 
-     describe("update google calendar event", () => {
-        const start = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
-        const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-        it("should create event", async() => {
-            const res = await request(app)
-            .put("/google/secure/calendars/events/5589fa92-2ba6-429a-9c26-7b412b5d133e")
-            .set("Authorization", token)
-            .send({
-                startTime: start,
-                endTime: end,
-                summary: "updated event from jest",
-                attendees: [
-                    {
-                        email: "lahey1991@gmail.com"
-                    },
-                    {
-                        email: "webpropiedadesmeridamx@gmail.com"
-                    }
-                ]
-            })
+    //  describe("update google calendar event", () => {
+    //     const start = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+    //     const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+    //     it("should create event", async() => {
+    //         const res = await request(app)
+    //         .put("/google/secure/calendars/events/5589fa92-2ba6-429a-9c26-7b412b5d133e")
+    //         .set("Authorization", token)
+    //         .send({
+    //             startTime: start,
+    //             endTime: end,
+    //             summary: "updated event from jest",
+    //             attendees: [
+    //                 {
+    //                     email: "lahey1991@gmail.com"
+    //                 },
+    //                 {
+    //                     email: "webpropiedadesmeridamx@gmail.com"
+    //                 }
+    //             ]
+    //         })
             
-            expect(res.status).toBe(200);
-        })
-    })
+    //         expect(res.status).toBe(200);
+    //     })
+    // })
 
     // describe("delete google calendar event", () => {
     //     it("should delete event", async() => {

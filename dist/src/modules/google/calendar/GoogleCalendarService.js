@@ -33,7 +33,7 @@ class GoogleCalendarService {
             return calendars.filter((calendar) => calendar.accessRole === 'owner');
         });
     }
-    updateCalendar(oauth2Client, calendarReferenceId, calendarId, userId) {
+    updateCalendar(oauth2Client, calendarReferenceId, calendarId, businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateCalendar`;
             try {
@@ -52,7 +52,7 @@ class GoogleCalendarService {
                 const eventAttendees = [];
                 if (updatedEvents) {
                     const contactsService = Container_1.default.resolve("ContactsService");
-                    const contacts = yield contactsService.collection(userId);
+                    const contacts = yield contactsService.collection(businessId);
                     const contactsMap = new Map(contacts.map((contact) => [contact.email, contact.contactId]));
                     for (const eventInDb of updatedEvents) {
                         const eventFromGoogle = events.find((i) => i.id === encryptionService.decryptData(eventInDb.event_reference_id));
@@ -60,7 +60,6 @@ class GoogleCalendarService {
                             const inDbAttending = yield eventAttendeesService.collection("event_id", eventInDb.event_id);
                             const updatedAttending = eventFromGoogle.attendees.map((attendee) => contactsMap.get(attendee.email));
                             const attendeesToDelete = inDbAttending.filter((attendee) => !updatedAttending.includes(attendee.contactId));
-                            console.log(attendeesToDelete, "TO be deleted :::::::::::::::");
                             if (attendeesToDelete.length !== 0) {
                                 for (const attendee of attendeesToDelete) {
                                     yield eventAttendeesService.deleteOne(attendee.contactId, eventInDb.event_id);
@@ -72,7 +71,7 @@ class GoogleCalendarService {
                                     email: attendee.email,
                                     status: attendee.responseStatus,
                                     source: "GOOGLE",
-                                    userId: userId
+                                    businessId: businessId
                                 });
                             }
                         }
@@ -82,7 +81,6 @@ class GoogleCalendarService {
                 return;
             }
             catch (error) {
-                console.log(error, "ERROR::::::");
                 throw new google_errors_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message

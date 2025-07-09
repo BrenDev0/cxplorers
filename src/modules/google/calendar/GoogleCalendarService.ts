@@ -37,7 +37,7 @@ export default class GoogleCalendarService {
         return calendars.filter((calendar) => calendar.accessRole === 'owner');
     }
 
-    async updateCalendar(oauth2Client: OAuth2Client, calendarReferenceId: string, calendarId: string, userId: string) {
+    async updateCalendar(oauth2Client: OAuth2Client, calendarReferenceId: string, calendarId: string, businessId: string) {
         const block = `${this.block}.updateCalendar`
         try {
             const events = await this.listEvents(oauth2Client, calendarReferenceId) as GoogleEvent[]
@@ -63,7 +63,7 @@ export default class GoogleCalendarService {
 
             if(updatedEvents){
                 const contactsService = Container.resolve<ContactService>("ContactsService");
-                const contacts = await contactsService.collection(userId);
+                const contacts = await contactsService.collection(businessId);
                 const contactsMap = new Map(
                     contacts.map((contact) =>  [contact.email, contact.contactId])
                 )
@@ -76,7 +76,6 @@ export default class GoogleCalendarService {
                         const updatedAttending = eventFromGoogle.attendees.map((attendee) => contactsMap.get(attendee.email));
                         const attendeesToDelete = inDbAttending.filter((attendee) =>  !updatedAttending.includes(attendee.contactId))
 
-                        console.log(attendeesToDelete, "TO be deleted :::::::::::::::")
                         if(attendeesToDelete.length !== 0) {
                             for(const attendee of attendeesToDelete) {
                                 await eventAttendeesService.deleteOne(attendee.contactId, eventInDb.event_id)
@@ -89,7 +88,7 @@ export default class GoogleCalendarService {
                                 email: attendee.email,
                                 status: attendee.responseStatus,
                                 source: "GOOGLE",
-                                userId: userId
+                                businessId: businessId
                             })
                         }
                     }
@@ -101,7 +100,6 @@ export default class GoogleCalendarService {
 
             return;
         } catch (error) {
-            console.log(error, "ERROR::::::")
              throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message

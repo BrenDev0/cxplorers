@@ -48,14 +48,14 @@ export default class CalendarsService {
         }
     }
 
-    async collection(userId: string): Promise<CalendarData[]> {
+    async collection(businessId: string): Promise<CalendarData[]> {
         try {
-            const result = await this.repository.select("user_id", userId);
+            const result = await this.repository.select("business_id", businessId);
             const data = result.map((calendar: Calendar) => this.mapFromDb(calendar));
 
             return data;
         } catch (error) {
-            handleServiceError(error as Error, this.block, "collection", {userId})
+            handleServiceError(error as Error, this.block, "collection", {businessId})
             throw error;
         }
     }
@@ -86,7 +86,7 @@ export default class CalendarsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             business_id: calendar.businessId,
-            user_id: calendar.userId,
+            business_user_id: calendar.businessUserId,
             calendar_reference_id: calendar.calendarReferenceId && encryptionService.encryptData(calendar.calendarReferenceId),
             title: calendar.title,
             description: calendar.description,
@@ -107,7 +107,7 @@ export default class CalendarsService {
         return {
             calendarId: calendar.calendar_id,
             businessId: calendar.business_id,
-            userId: calendar.user_id,
+            businessUserId: calendar.business_user_id,
             calendarReferenceId: encryptionService.decryptData(calendar.calendar_reference_id),
             title: calendar.title,
             description: calendar.description ,

@@ -8,14 +8,14 @@ export class GoogleRepository implements IGoogleRepository {
  
     }
 
-    async getGoogleUser(userId: string): Promise<GoogleUser> {
+    async getGoogleUser(businessId: string): Promise<GoogleUser> {
          const sqlRead =  `
             SELECT token AS refresh_token
             FROM tokens
-            WHERE user_id = $1
+            WHERE business_id = $1
         `
 
-        const result = await this.pool.query(sqlRead, [userId])
+        const result = await this.pool.query(sqlRead, [businessId])
 
         return result.rows[0];
     }

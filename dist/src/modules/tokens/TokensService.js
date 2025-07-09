@@ -46,15 +46,15 @@ class TokenService {
             }
         });
     }
-    collection(userId) {
+    collection(businessId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.select("user_id", userId);
+                const result = yield this.repository.select("business_id", businessId);
                 const data = result.map((token) => this.mapFromDb(token));
                 return data;
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "update", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { businessId });
                 throw error;
             }
         });
@@ -87,7 +87,7 @@ class TokenService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             token: token.token,
-            user_id: token.userId,
+            business_id: token.businessId,
             type: token.type,
             service: token.service
         };
@@ -97,7 +97,7 @@ class TokenService {
         return {
             tokenId: token.token_id,
             token: encryptionService.decryptData(token.token),
-            userId: token.user_id,
+            businessId: token.business_id,
             type: token.type,
             service: token.service
         };
