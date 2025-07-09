@@ -206,6 +206,7 @@ const endpointsFiles = [
   '../../modules/contacts/contacts.routes.ts',
   '../../modules/calendars/events/events.routes.ts',
   '../../modules/google/google.routes.ts',
+  '../../modules/google/calendar/google.calendar.routes.ts',
   '../../modules/opportunities/opportunities.routes.ts',
   '../../modules/opportunities/pipelines/pipelines.routes.ts',
   '../../modules/opportunities/stages/stages.routes.ts',

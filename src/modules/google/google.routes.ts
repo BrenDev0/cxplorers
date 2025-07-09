@@ -8,7 +8,6 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     const router = Router();
     const secureRouter = Router();
     const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
-    const calendarController = Container.resolve<GoogleCalendarController>("GoogleCalendarController");
     const controller = customController ?? Container.resolve<GoogleController>("GoogleController");
     
     secureRouter.use(middlewareService.auth.bind(middlewareService));
@@ -26,97 +25,9 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
         controller.getUrl.bind(controller)
     );
     
-
-    // calendar //
-
-    secureRouter.get("/calendars", 
-        middlewareService.verifyPermissions("calendars", ["read", "write"]),
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars' 
-        #swagger.description = 'get users calendars from drive'
-        */
-        calendarController.getCalendars.bind(controller)
-    )
-
-    // sync //
-
-    secureRouter.get("/calendars/sync/:calendarId",
-        middlewareService.verifyPermissions("calendars", ["read", "write"]), 
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
-        #swagger.description = 'sync users calendar'
-        */
-        calendarController.syncCalendar.bind(calendarController)
-    )
-
-    secureRouter.delete("/calendars/sync/:calendarId", 
-        middlewareService.verifyPermissions("calendars", ["read", "write"]),
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars/sync/{calendarId}' 
-        #swagger.description = 'unSync users calendar'
-        */
-        calendarController.unSyncCalendar.bind(calendarController)
-    )
-
     
 
-    // events //
-    
-    secureRouter.post("/calendars/events/:calendarId", 
-        middlewareService.verifyPermissions("calendars", ["read", "write"]),
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/secure/calendars/events/{calendarId}' 
-        #swagger.description = 'create event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters'
-        #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: { $ref: "#/components/schemas/createEvent" }
-                }
-            }
-        }
-        */
-        calendarController.createEventRequest.bind(calendarController)
-    )
-
-    secureRouter.put("/calendars/events/:eventId", 
-        middlewareService.verifyPermissions("calendars", ["read", "write"]),
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/secure/calendars/events/{calendarId}' 
-        #swagger.description = 'update event, for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters'
-        #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: { $ref: "#/components/schemas/createEvent" }
-                }
-            }
-        }
-        */
-        calendarController.updateEventRequest.bind(calendarController)
-    )
-
-    secureRouter.delete("/calendars/events/:eventId", 
-        middlewareService.verifyPermissions("calendars", ["read", "write"]),
-        /*
-        #swagger.tags = ['Google'] 
-         #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/google/secure/calendars/events/{eventId}' 
-        #swagger.description = 'delete an event'
-        */
-        calendarController.deleteEventRequest.bind(calendarController)
-    )
-
+ 
     // secureRouter.get("/calendars/events/:calendarId", 
     //     /*
     //     #swagger.tags = ['Google'] 
@@ -128,19 +39,6 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     // )
 
     
-
-    // for google use //
-
-    router.get("/callback", 
-        // #swagger.ignore = true    
-        controller.callback.bind(controller)
-    );
-
-    router.post("/calendars/notifications", 
-
-        calendarController.handleCalendarNotifications.bind(calendarController)
-    )
-
     // mounts // 
     router.use("/secure", secureRouter);
     

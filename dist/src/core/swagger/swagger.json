@@ -509,7 +509,7 @@
                 ]
             }
         },
-        "/google/secure/calendars": {
+        "/google/calendars/secure": {
             "get": {
                 "tags": [
                     "Google"
@@ -527,7 +527,7 @@
                 ]
             }
         },
-        "/google/secure/calendars/sync/{calendarId}": {
+        "/google/calendars/secure/sync/{calendarId}": {
             "get": {
                 "tags": [
                     "Google"
@@ -581,7 +581,7 @@
                 ]
             }
         },
-        "/secure/calendars/events/{calendarId}": {
+        "/calendars/secure/events/{calendarId}": {
             "post": {
                 "tags": [
                     "Google"
@@ -655,7 +655,7 @@
                 }
             }
         },
-        "/google/secure/calendars/events/{eventId}": {
+        "/google/calendars/secure/events/{eventId}": {
             "delete": {
                 "tags": [
                     "Google"
@@ -683,7 +683,7 @@
                 ]
             }
         },
-        "/calendars/notifications": {
+        "/notifications": {
             "post": {
                 "description": "",
                 "responses": {

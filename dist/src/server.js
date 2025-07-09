@@ -27,6 +27,7 @@ const opportunities_routes_1 = require("./modules/opportunities/opportunities.ro
 const businesses_routes_1 = require("./modules/businesses/businesses.routes");
 const businessUsers_routes_1 = require("./modules/businesses/businessUsers/businessUsers.routes");
 const tasks_routes_1 = require("./modules/tasks/tasks.routes");
+const google_calendar_routes_1 = require("./modules/google/calendar/google.calendar.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
@@ -36,6 +37,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const businessUsersRouter = (0, businessUsers_routes_1.initializeBusinessUsersRouter)();
     const calendarsRouter = (0, calendars_routes_1.initializeCalendarsRouter)();
     const googleRouter = (0, google_routes_1.initializeGoogleRouter)();
+    const googleCalendarRouter = (0, google_calendar_routes_1.initializeGoogleCalendarRouter)();
     const opportunitiesRouter = (0, opportunities_routes_1.initializeOpportunitiesRouter)();
     const piplinesRouter = (0, pipelines_routes_1.initializePipelinesRouter)();
     const stagesRouter = (0, stages_routes_1.initializeStagesRouter)();
@@ -49,6 +51,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use("/business-users", businessUsersRouter);
     app.use("/calendars", calendarsRouter);
     app.use("/google", googleRouter);
+    app.use("/google/calendars", googleCalendarRouter);
     app.use("/opportunities", opportunitiesRouter);
     app.use("/pipelines", piplinesRouter);
     app.use("/stages", stagesRouter);

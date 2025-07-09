@@ -15,6 +15,7 @@ import { initializeOpportunitiesRouter } from './modules/opportunities/opportuni
 import { initializeBusinessesRouter } from './modules/businesses/businesses.routes';
 import { initializeBusinessUsersRouter } from './modules/businesses/businessUsers/businessUsers.routes';
 import { initializeTasksRouter } from './modules/tasks/tasks.routes';
+import { initializeGoogleCalendarRouter } from './modules/google/calendar/google.calendar.routes';
 
 
 const server = async() => {
@@ -28,6 +29,7 @@ const server = async() => {
     const businessUsersRouter = initializeBusinessUsersRouter();
     const calendarsRouter = initializeCalendarsRouter();
     const googleRouter = initializeGoogleRouter();
+    const googleCalendarRouter = initializeGoogleCalendarRouter();
     const opportunitiesRouter = initializeOpportunitiesRouter();
     const piplinesRouter = initializePipelinesRouter();
     const stagesRouter = initializeStagesRouter();
@@ -45,6 +47,7 @@ const server = async() => {
     app.use("/business-users", businessUsersRouter);
     app.use("/calendars",   calendarsRouter);
     app.use("/google", googleRouter);
+    app.use("/google/calendars", googleCalendarRouter);
     app.use("/opportunities", opportunitiesRouter);
     app.use("/pipelines", piplinesRouter);
     app.use("/stages", stagesRouter);
