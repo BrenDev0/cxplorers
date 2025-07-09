@@ -18,11 +18,13 @@ const pg_1 = require("pg");
 const createApp_1 = __importDefault(require("../../src/createApp"));
 const Container_1 = __importDefault(require("../../src/core/dependencies/Container"));
 const configureContainer_1 = require("../../src/core/dependencies/configureContainer");
+const supertest_1 = __importDefault(require("supertest"));
 const google_routes_1 = require("../../src/modules/google/google.routes");
+const google_calendar_routes_1 = require("../../src/modules/google/calendar/google.calendar.routes");
 describe("GOOGLE ROUTES", () => {
     let pool;
     let app;
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5Njk2MDIsImV4cCI6MTc4MDUwNTYwMn0.JiTqY9FHBaSofTdUnrxmGOLODvNLKvmsqpmOzFA5mSU";
+    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q";
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         pool = new pg_1.Pool({
@@ -35,7 +37,9 @@ describe("GOOGLE ROUTES", () => {
         yield (0, configureContainer_1.configureContainer)(pool, process.env.REDIS_URL);
         const middlewareService = Container_1.default.resolve("MiddlewareService");
         const router = (0, google_routes_1.initializeGoogleRouter)();
+        const calendarRouter = (0, google_calendar_routes_1.initializeGoogleCalendarRouter)();
         app.use("/google", router);
+        app.use("/google/calendars", calendarRouter);
         app.use(middlewareService.handleErrors.bind(middlewareService));
     }));
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -63,14 +67,14 @@ describe("GOOGLE ROUTES", () => {
     //         expect(res.body).toHaveProperty("data")
     //     })
     // })
-    // describe("sync google  calendar", () => {
-    //     it("should sync calendar", async() => {
-    //         const res = await request(app)
-    //         .get("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-    //         .set("Authorization", token)
-    //         expect(res.status).toBe(200);
-    //     })
-    // })
+    describe("sync google  calendar", () => {
+        it("should sync calendar", () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get("/google/calendars/secure/sync/87cb1db8-792a-43b4-b05f-d76044225117")
+                .set("Authorization", token);
+            expect(res.status).toBe(200);
+        }));
+    });
     // describe("unSync google  calendar", () => {
     //     it("should cancel sync", async() => {
     //         const res = await request(app)

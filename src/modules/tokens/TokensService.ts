@@ -72,7 +72,7 @@ export default class TokenService {
     mapToDb(token: Omit<TokenData, "tokenId">): Omit<Token, "token_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
-            token: token.token,
+            token: token.token && encryptionService.encryptData(token.token),
             business_id: token.businessId,
             type: token.type,
             service: token.service

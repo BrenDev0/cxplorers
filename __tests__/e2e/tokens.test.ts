@@ -15,7 +15,7 @@ describe("USERS ROUTES", () => {
     let pool: Pool
     let app: Express
 
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5MDMxODEsImV4cCI6MTc4MDQzOTE4MX0.arPjmKvtSO49QXP1j79CA3Q8kWji2wB9gBO1EHq9lSk";
+     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q"
 
 
@@ -53,19 +53,19 @@ const authHeader = { Authorization: token };
 
 describe("TokensController", () => {
   describe("POST /secure/tokens", () => {
-    // it("should create a token successfully", async () => {
-    //   const res = await request(app)
-    //     .post(`${baseUrl}/create`)
-    //     .set(authHeader)
-    //     .send({
-    //       token: "1//055b09mnpFHQICgYIARAAGAUSNwF-L9IrU6vFnsKp0GeOIzw0m4cdDNQ2HPDN4Ti-I0IO1a-IWYtN_GiEFfphuksST2OXCP2ylg8",
-    //       type: "refresh",
-    //       service: "google"
-    //     });
+    it("should create a token successfully", async () => {
+      const res = await request(app)
+        .post(`${baseUrl}/create`)
+        .set(authHeader)
+        .send({
+          token: "1//05WY9k_pUKZygCgYIARAAGAUSNwF-L9IrOnMBzLMYOPVxt8mLco_bCZcxQrSrj924MBqT6WDVzaYFs3lmfIl-B9ugXjksGNBYBNU",
+          type: "refresh",
+          service: "google"
+        });
 
-    //   expect(res.status).toBe(200);
-    //   expect(res.body.message).toBe("Token added.");
-    // });
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe("Token added.");
+    });
 
     it("should return 400 if required fields are missing", async () => {
       const res = await request(app)

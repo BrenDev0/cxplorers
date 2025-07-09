@@ -10,13 +10,14 @@ import request from 'supertest'
 import { initializeTokensRouter } from '../../src/modules/tokens/tokens.routes';
 import { initializeGoogleRouter } from '../../src/modules/google/google.routes';
 import { RedisClientType } from 'redis';
+import { initializeGoogleCalendarRouter } from '../../src/modules/google/calendar/google.calendar.routes';
 
 
 describe("GOOGLE ROUTES", () => {
     let pool: Pool
     let app: Express
 
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzYmQzNzc2NC00Y2QzLTRlNzktODVkMC01MGYxYzBjMzg0MjEiLCJpYXQiOjE3NDg5Njk2MDIsImV4cCI6MTc4MDUwNTYwMn0.JiTqY9FHBaSofTdUnrxmGOLODvNLKvmsqpmOzFA5mSU";
+     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q"
 
 
@@ -34,8 +35,10 @@ describe("GOOGLE ROUTES", () => {
         const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
 
         const router = initializeGoogleRouter();
+        const calendarRouter = initializeGoogleCalendarRouter();
 
         app.use("/google", router)
+        app.use("/google/calendars", calendarRouter)
 
         app.use(middlewareService.handleErrors.bind(middlewareService))
     })
@@ -71,16 +74,16 @@ describe("GOOGLE ROUTES", () => {
     //     })
     // })
 
-    // describe("sync google  calendar", () => {
-    //     it("should sync calendar", async() => {
-    //         const res = await request(app)
-    //         .get("/google/secure/calendars/sync/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
-    //         .set("Authorization", token)
+    describe("sync google  calendar", () => {
+        it("should sync calendar", async() => {
+            const res = await request(app)
+            .get("/google/calendars/secure/sync/87cb1db8-792a-43b4-b05f-d76044225117")
+            .set("Authorization", token)
 
             
-    //         expect(res.status).toBe(200);
-    //     })
-    // })
+            expect(res.status).toBe(200);
+        })
+    })
 
     // describe("unSync google  calendar", () => {
     //     it("should cancel sync", async() => {

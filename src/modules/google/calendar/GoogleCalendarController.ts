@@ -25,6 +25,8 @@ export default class GoogleCalendarController {
         const block = `${this.block}.handleNotifications`;
         try {
             const headers = req.headers;
+
+            console.log(headers, "HEADER::::")
           
             const channelId = headers['x-goog-channel-id'] as string;
 
@@ -70,7 +72,7 @@ export default class GoogleCalendarController {
             const calendarResource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
             this.httpService.requestValidation.validateActionAuthorization(businessId, calendarResource.businessId, block);
 
-            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+            const client = await this.googleService.clientManager.getcredentialedClient(businessId);
 
             const result = await this.googleService.calendarService.requestCalendarNotifications(calendarResource.calendarReferenceId, client);
             const changes = {
@@ -79,7 +81,7 @@ export default class GoogleCalendarController {
                 channelExpiration: result.expiration
             }
            
-            await this.platformCalendarService.update(calendarResource.calendarId!, changes as CalendarData);
+            await this.platformCalendarService.update(calendarResource.calendarId, changes as CalendarData);
             await this.googleService.calendarService.updateCalendar(client, calendarResource.calendarReferenceId, calendarResource.calendarId!, businessId);
             
             res.status(200).json({ message: "calendar synced"})

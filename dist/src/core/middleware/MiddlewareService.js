@@ -179,7 +179,6 @@ class MiddlewareService {
         return (req, res, next) => {
             try {
                 const user = req.user;
-                console.log("USER::::", user);
                 if (!user.is_admin) {
                     throw new errors_1.AuthorizationError(undefined, {
                         block: "middleware.verifyRoles",

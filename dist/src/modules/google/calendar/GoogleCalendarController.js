@@ -23,6 +23,7 @@ class GoogleCalendarController {
             const block = `${this.block}.handleNotifications`;
             try {
                 const headers = req.headers;
+                console.log(headers, "HEADER::::");
                 const channelId = headers['x-goog-channel-id'];
                 if (!channelId) {
                     res.status(200).send();
@@ -60,7 +61,7 @@ class GoogleCalendarController {
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const calendarResource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(businessId, calendarResource.businessId, block);
-                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
+                const client = yield this.googleService.clientManager.getcredentialedClient(businessId);
                 const result = yield this.googleService.calendarService.requestCalendarNotifications(calendarResource.calendarReferenceId, client);
                 const changes = {
                     watchChannel: result.watchId,

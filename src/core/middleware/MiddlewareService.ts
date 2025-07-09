@@ -203,7 +203,7 @@ export default class MiddlewareService {
         return (req: Request, res: Response, next: NextFunction): void => {
             try {
                 const user = req.user;
-                console.log("USER::::", user)
+                
                 if(!user.is_admin) {
                     throw new AuthorizationError(undefined, {
                         block: "middleware.verifyRoles",

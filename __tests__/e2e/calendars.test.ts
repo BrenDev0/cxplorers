@@ -17,7 +17,7 @@ describe("USERS ROUTES", () => {
     let pool: Pool
     let app: Express
 
-    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJpYXQiOjE3NTE5MTAyMDQsImV4cCI6MTc4MzQ0NjIwNH0.pYJu3dA6Lc1EN5LBdMt0gcPJX_cAqJ0_AMLsoy0BZjo";
+     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYWUzNjRkMS02MTU1LTRiNzUtYjAwMy1iM2E1YmFjMjhlYzYiLCJidXNpbmVzc0lkIjoiM2EwNDVhMTEtYWY5Ni00ZTM1LTk5MTUtYzcyOGEzYjBlYjJhIiwiaWF0IjoxNzUxOTkxMTYwLCJleHAiOjE3ODM1MjcxNjB9.HCy_dqPjFQwpti6RfRjeEEO-eAV69R7XqysrbEG4sbs";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0ODU1NTA2OSwiZXhwIjoxNzgwMDkxMDY5fQ.uBTTn3CM6VVCN0fuN9LOOEodHzxUNGqaScx7HFwSi-Q"
 
 
@@ -55,7 +55,7 @@ describe("USERS ROUTES", () => {
         .post('/calendars/secure/create')
         .set('Authorization', token)
         .send({ 
-            referenceId: '31ab5f2d1d183690b964a7bc9ba1b8fbd94e280f24823659e972ca6be393bda2@group.calendar.google.com', 
+            calendarReferenceId: '31ab5f2d1d183690b964a7bc9ba1b8fbd94e280f24823659e972ca6be393bda2@group.calendar.google.com', 
             title: 'testing cxplorers' ,
             description: 'test calendar',
             backgroundColor: '#4986e7',

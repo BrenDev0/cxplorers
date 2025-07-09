@@ -86,7 +86,7 @@ class TokenService {
     mapToDb(token) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            token: token.token,
+            token: token.token && encryptionService.encryptData(token.token),
             business_id: token.businessId,
             type: token.type,
             service: token.service

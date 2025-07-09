@@ -22,7 +22,7 @@ class CalendarsController {
                 const user = req.user;
                 const businessId = req.businessId;
                 const businessUserId = req.businessUserId;
-                const requiredFields = ["referenceId", "title"];
+                const requiredFields = ["calendarReferenceId", "title"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const calendarData = Object.assign(Object.assign({}, req.body), { businessId,
                     businessUserId });
@@ -45,7 +45,7 @@ class CalendarsController {
                 const businessId = req.businessId;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
-                const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarssService", "Calendar not found", block);
+                const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 res.status(200).json({ data: resource });
             }
@@ -102,7 +102,7 @@ class CalendarsController {
                 const businessId = req.businessId;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
-                const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarssService", "Calendar not found", block);
+                const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
                 yield this.calendarsService.delete(calendarId);
                 res.status(200).json({ message: "Calendar deleted" });

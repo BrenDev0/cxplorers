@@ -21,7 +21,7 @@ export default class CalendarsController {
       const user = req.user;
       const businessId = req.businessId;
       const businessUserId =  req.businessUserId;
-      const requiredFields = ["referenceId", "title"];
+      const requiredFields = ["calendarReferenceId", "title"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
       const calendarData = {
@@ -49,7 +49,7 @@ export default class CalendarsController {
       const calendarId = req.params.calendarId;
       this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
-      const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarssService", "Calendar not found", block);
+      const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
       this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
 
       res.status(200).json({ data: resource })
@@ -112,7 +112,7 @@ export default class CalendarsController {
       const calendarId = req.params.calendarId;
       this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
-     const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarssService", "Calendar not found", block);
+     const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
       this.httpService.requestValidation.validateActionAuthorization(businessId, resource.businessId, block);
 
       await this.calendarsService.delete(calendarId);
