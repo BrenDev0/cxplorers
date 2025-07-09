@@ -50,7 +50,6 @@ export default class GoogleService {
             access_type: 'offline',
             prompt: 'consent',
             scope: scopes,
-            redirect_uri: `${process.env.HOST}/google/calback`,
           
             include_granted_scopes: true,
            
