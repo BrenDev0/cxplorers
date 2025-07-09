@@ -67,7 +67,7 @@ class TasksController {
                 let whereCol;
                 let identifier;
                 const allwedQueries = ["business", "user"];
-                const query = req.query.col;
+                const query = req.query.filter;
                 if (!allwedQueries.includes(query)) {
                     throw new errors_1.BadRequestError("invalid query");
                 }

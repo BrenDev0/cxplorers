@@ -43,9 +43,9 @@ const initializeTasksRouter = (customController) => {
     #swagger.path =  '/tasks/secure/collection'
     #swagger.security = [{ "bearerAuth": [] }]
     #swagger.description = 'get taks by user or by business'
-    #swagger.parameters['col'] = {
+    #swagger.parameters['filter'] = {
         in: 'query',
-        description: 'column name for db search user || business',
+        description: 'user || business',
         type: 'string',
         required: true
     */

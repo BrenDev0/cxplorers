@@ -180,13 +180,13 @@ const doc = {
                 businessUserId: "required",
                 taskTitle: "required",
                 taskDescrition: "optional",
-                taskDueDate: "required"
+                taskDueDate: "required ISODATESTRING"
             },
             updateTask: {
                 businessUserId: "optional",
                 taksTitle: "optional",
                 taskDescription: "optional",
-                taskDueDate: "optional"
+                taskDueDate: "optional ISODATESTRING"
             }
         }
     },

@@ -2050,7 +2050,7 @@
           },
           "taskDueDate": {
             "type": "string",
-            "example": "required"
+            "example": "required ISODATESTRING"
           }
         }
       },
@@ -2071,7 +2071,7 @@
           },
           "taskDueDate": {
             "type": "string",
-            "example": "optional"
+            "example": "optional ISODATESTRING"
           }
         }
       }

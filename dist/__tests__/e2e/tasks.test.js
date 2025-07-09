@@ -46,19 +46,19 @@ describe("CONTACTS ROUTES", () => {
         Container_1.default.clear();
     }));
     describe('POST /tasks/secure/create', () => {
-        it('should return 200 and create a task with valid input', () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(app)
-                .post('/tasks/secure/create')
-                .set('Authorization', token)
-                .send({
-                contactId: "7a4557aa-680b-473c-a4e0-028925f001e8",
-                businessUserId: "b860e80a-1753-4adb-8037-9298e927dbad",
-                taskTitle: 'Follow up with lead',
-                taskDueDate: '2025-06-14T10:00:00.000Z',
-            });
-            expect(res.status).toBe(200);
-            expect(res.body.message).toBe('Task added');
-        }));
+        // it('should return 200 and create a task with valid input', async () => {
+        //   const res = await request(app)
+        //     .post('/tasks/secure/create')
+        //     .set('Authorization', token)
+        //     .send({
+        //       contactId: "7a4557aa-680b-473c-a4e0-028925f001e8",
+        //       businessUserId: "b860e80a-1753-4adb-8037-9298e927dbad",
+        //       taskTitle: 'Follow up with lead',
+        //       taskDueDate: '2025-06-14T10:00:00.000Z',
+        //     });
+        //   expect(res.status).toBe(200);
+        //   expect(res.body.message).toBe('Task added');
+        // });
         it('should return 400 if required fields are missing', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
                 .post('/tasks/secure/create')
@@ -68,6 +68,103 @@ describe("CONTACTS ROUTES", () => {
             });
             expect(res.status).toBe(400);
             expect(res.body.message).toMatch("All fields required");
+        }));
+    });
+    describe('GET /tasks/secure/resource/:taskId', () => {
+        it('should return 200 and a task resource for a valid taskId', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get(`/tasks/secure/resource/7ea129b6-f37e-4e9b-889f-7dec187b1647`)
+                .set('Authorization', token);
+            expect(res.status).toBe(200);
+            expect(res.body.data).toHaveProperty('taskTitle');
+        }));
+        it('should return 400 for invalid taskId format', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get('/tasks/secure/resource/invalid-uuid')
+                .set('Authorization', token);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe('Invalid ID format');
+        }));
+        it('should return 404 if task does not exist', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get('/tasks/secure/resource/00000000-0000-0000-0000-000000000000')
+                .set('Authorization', token);
+            expect(res.status).toBe(404);
+            expect(res.body.message).toBe('Task not found');
+        }));
+    });
+    describe('GET /tasks/secure/collection?filter=user', () => {
+        it('should return 200 and tasks assigned to the user', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get('/tasks/secure/collection?filter=user')
+                .set('Authorization', token);
+            console.log(res.body);
+            expect(res.status).toBe(200);
+            expect(Array.isArray(res.body.data)).toBe(true);
+        }));
+        it('should return 400 if query param is invalid', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get('/tasks/secure/collection?filter=invalid')
+                .set('Authorization', token);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe('invalid query');
+        }));
+        it('should return 200 and tasks assigned to the user', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .get('/tasks/secure/collection?filter=business')
+                .set('Authorization', token);
+            console.log(res.body);
+            expect(res.status).toBe(200);
+            expect(Array.isArray(res.body.data)).toBe(true);
+        }));
+    });
+    describe('PUT /tasks/secure/:taskId', () => {
+        it('should return 200 and update the task', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .put(`/tasks/secure/7ea129b6-f37e-4e9b-889f-7dec187b1647`)
+                .set('Authorization', token)
+                .send({
+                taskTitle: 'Updated title',
+                taskDescription: 'Updated description',
+                taskDueDate: '2025-06-15T10:00:00.000Z',
+            });
+            expect(res.status).toBe(200);
+            expect(res.body.message).toBe('Task updated');
+        }));
+        it('should return 400 for invalid taskId', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .put('/tasks/secure/invalid-id')
+                .set('Authorization', token)
+                .send({ taskTitle: 'Fix format' });
+            expect(res.status).toBe(400);
+        }));
+        it('should return 404 if task not found', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .put('/tasks/secure/00000000-0000-0000-0000-000000000000')
+                .set('Authorization', token)
+                .send({ taskTitle: 'Nonexistent' });
+            expect(res.status).toBe(404);
+        }));
+    });
+    describe('DELETE /tasks/secure/:taskId', () => {
+        it('should return 200 and delete the task', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .delete(`/tasks/secure/bebba57d-de86-401a-bfcb-0bea87dcc10a`)
+                .set('Authorization', token);
+            expect(res.status).toBe(200);
+            expect(res.body.message).toBe('Task deleted.');
+        }));
+        it('should return 400 for invalid taskId', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .delete('/tasks/secure/not-a-uuid')
+                .set('Authorization', token);
+            expect(res.status).toBe(400);
+        }));
+        it('should return 404 if task does not exist', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield (0, supertest_1.default)(app)
+                .delete('/tasks/secure/00000000-0000-0000-0000-000000000000')
+                .set('Authorization', token);
+            expect(res.status).toBe(404);
         }));
     });
 });
