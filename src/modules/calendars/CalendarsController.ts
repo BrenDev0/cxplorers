@@ -61,9 +61,10 @@ export default class CalendarsController {
   async collectionRequest(req: Request, res: Response): Promise<void> {
     try {
       const user = req.user;
+      const businessId = req.businessId;
       const businessUserId = req.businessUserId;
 
-      const data = await this.calendarsService.collection(user.user_id);
+      const data = await this.calendarsService.collection(businessId);
   
       res.status(200).json({ data: data });
     } catch (error) {

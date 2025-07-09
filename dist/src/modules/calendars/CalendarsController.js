@@ -58,8 +58,9 @@ class CalendarsController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = req.user;
+                const businessId = req.businessId;
                 const businessUserId = req.businessUserId;
-                const data = yield this.calendarsService.collection(user.user_id);
+                const data = yield this.calendarsService.collection(businessId);
                 res.status(200).json({ data: data });
             }
             catch (error) {
