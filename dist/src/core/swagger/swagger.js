@@ -203,6 +203,7 @@ const endpointsFiles = [
     '../../modules/opportunities/pipelines/pipelines.routes.ts',
     '../../modules/opportunities/stages/stages.routes.ts',
     '../../modules/permissions/permissions.routes.ts',
+    '../../modules/tasks/tasks.routes.ts',
     '../../modules/tokens/tokens.routes.ts',
     '../../modules/users/users.routes.ts'
 ];
