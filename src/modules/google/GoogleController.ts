@@ -31,10 +31,9 @@ export default class GoogleController {
             throw new BadRequestError('Invalid or expired state');
         };
 
-        console.log(code, "CODE::::::::::::")
-
         // Exchange authorization code for access token
         const { tokens } = await client.getToken(code as string);
+        console.log(tokens)
         client.setCredentials(tokens);
 
         if(!tokens.refresh_token) {
@@ -47,12 +46,10 @@ export default class GoogleController {
     
         }
 
-        console.log(tokens)
-
         await redisClient.setEx(`oauth_state:${state}`, 900, JSON.stringify(sessionData))
        
         
-        res.redirect(`https://broker-app-pearl.vercel.app/account/create/${state}`);
+        res.status(200).send()
     }
 
     async getUrl(req: Request, res: Response): Promise<void> {
