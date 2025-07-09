@@ -1093,6 +1093,144 @@
                 }
             }
         },
+        "/tags/secure/create": {
+            "post": {
+                "tags": [
+                    "Tags"
+                ],
+                "description": "Create tags",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createTag"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/secure/resource/{tagId}": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "description": "get tag by id",
+                "parameters": [
+                    {
+                        "name": "tagId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tags/secure/collection": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "description": "get tags by buisness",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tags/secure/{tagId}": {
+            "put": {
+                "tags": [
+                    "Tags"
+                ],
+                "description": "Update tags",
+                "parameters": [
+                    {
+                        "name": "tagId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateTag"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tags"
+                ],
+                "description": "delete tag by id",
+                "parameters": [
+                    {
+                        "name": "tagId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tasks/secure/create": {
             "post": {
                 "tags": [
