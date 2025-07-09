@@ -71,13 +71,13 @@ describe("USERS ROUTES", () => {
             .get("/business-users/secure/read")
             .set("Authorization", token)
 
-            console.log(res.body)
+            
             expect(res.status).toBe(200)
         })
     })
 
        
-    describe("GET GET ALL USERS", () => {
+    describe("GET GET ALL USERS FRO BUSINESS", () => {
         it("SHOULD RETURN 200 WITH ALL USERS", async() => {
             const res = await request(app)
             .get("/business-users/secure/collection")

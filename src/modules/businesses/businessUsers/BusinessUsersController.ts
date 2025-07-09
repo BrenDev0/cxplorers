@@ -72,7 +72,7 @@ export default class BusinessUsersController {
       const user = req.user;
       const buisnessId = req.businessId;
 
-      const data = await this.businessUsersService.collection("business_id", buisnessId);
+      const data = await this.businessUsersService.getBusinessUsers(buisnessId);
 
       res.status(200).json({ data })
     } catch (error) {

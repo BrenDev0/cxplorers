@@ -66,11 +66,10 @@ describe("USERS ROUTES", () => {
             const res = yield (0, supertest_1.default)(app)
                 .get("/business-users/secure/read")
                 .set("Authorization", token);
-            console.log(res.body);
             expect(res.status).toBe(200);
         }));
     });
-    describe("GET GET ALL USERS", () => {
+    describe("GET GET ALL USERS FRO BUSINESS", () => {
         it("SHOULD RETURN 200 WITH ALL USERS", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
                 .get("/business-users/secure/collection")

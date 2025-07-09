@@ -32,7 +32,7 @@ export default class BusinessUsersRepository extends BaseRepository<BusinessUser
 
     async getBusinessUsers(businessId: string): Promise<BusinessUser[]> {
         const sqlRead = `
-            SELECT business_user.*, users.name, users.email, users.phone
+            SELECT business_users.*, users.name, users.email, users.phone
             FROM business_users 
             JOIN users ON business_users.user_id = users.user_id
             WHERE business_users.business_id = $1;
