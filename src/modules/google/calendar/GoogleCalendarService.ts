@@ -41,6 +41,7 @@ export default class GoogleCalendarService {
         const block = `${this.block}.updateCalendar`
         try {
             const events = await this.listEvents(oauth2Client, calendarReferenceId) as GoogleEvent[]
+            console.log(events, "::::::::::::::::::EVENTS")
             
             const mappedEvents = events.length !== 0 ? events.map((event) => {
                 return {

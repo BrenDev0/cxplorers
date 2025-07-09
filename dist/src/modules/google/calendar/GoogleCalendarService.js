@@ -38,6 +38,7 @@ class GoogleCalendarService {
             const block = `${this.block}.updateCalendar`;
             try {
                 const events = yield this.listEvents(oauth2Client, calendarReferenceId);
+                console.log(events, "::::::::::::::::::EVENTS");
                 const mappedEvents = events.length !== 0 ? events.map((event) => {
                     return Object.assign(Object.assign({}, event), { calendarId: calendarId });
                 }) : [];

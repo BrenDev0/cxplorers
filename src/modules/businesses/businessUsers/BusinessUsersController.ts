@@ -65,19 +65,32 @@ export default class BusinessUsersController {
       } catch (error) {
         throw error;
       }
+  }
+
+  async collectionRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const user = req.user;
+      const buisnessId = req.businessId;
+
+      const data = await this.businessUsersService.collection("business_id", buisnessId);
+
+      res.status(200).json({ data })
+    } catch (error) {
+      throw error;
     }
+  }
 
-    async readRequest(req: Request, res: Response): Promise<void> {
-      try {
-        const user = req.user;
+  async readRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const user = req.user;
 
-        const data = await this.businessUsersService.read(user.user_id);
+      const data = await this.businessUsersService.read(user.user_id);
 
-        res.status(200).json({ data })
-      } catch (error) {
-        throw error
-      }
+      res.status(200).json({ data })
+    } catch (error) {
+      throw error
     }
+  }
 
  
   // async resourceRequest(req: Request, res: Response): Promise<void> {

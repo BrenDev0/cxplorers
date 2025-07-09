@@ -32,6 +32,17 @@ export const initializeBusinessUsersRouter = (customController?: BusinessUsersCo
         controller.createRequest.bind(controller)
     )
 
+    secureRouter.get("/collection",
+        middlewareService.verifyRoles(["admin", "owner"]),
+        /*
+        #swagger.tags = ['Business Users']
+        #swagger.path =  '/business-users/secure/collection'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Get all users for a business'
+        */
+        controller.collectionRequest.bind(controller)
+    )
+
     secureRouter.get("/read",
         middlewareService.verifyAdminAccount(),
         /*

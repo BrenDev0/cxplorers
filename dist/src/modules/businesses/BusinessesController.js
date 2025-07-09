@@ -151,7 +151,10 @@ class BusinessesController {
                     userId: user.user_id,
                     businessId: businessId
                 }, "7d");
-                res.status(200).json({ token });
+                res.status(200).json({
+                    token,
+                    role: businessUser.role
+                });
             }
             catch (error) {
                 throw error;

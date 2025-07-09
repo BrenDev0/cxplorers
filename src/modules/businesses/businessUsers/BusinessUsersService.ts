@@ -66,7 +66,18 @@ export default class BusinessUsersService {
             
             return result.map((businessUser) => this.mapFromDb(businessUser));
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", {col, identifier})
+            handleServiceError(error as Error, this.block, "collection", {col, identifier})
+            throw error;
+        }
+    }
+
+    async getBusinessUsers(businessId: string): Promise<BusinessUserData[]> {
+        try {
+            const result = await this.repository.getBusinessUsers(businessId);
+
+            return result.map((bu) => this.mapFromDb(bu));
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "getBusinessUsers", {businessId})
             throw error;
         }
     }

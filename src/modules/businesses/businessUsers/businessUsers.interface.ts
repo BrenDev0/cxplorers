@@ -27,5 +27,6 @@ export interface IBusinessUsersRepository extends IRepository<BusinessUser> {
   deleteByIds(userId: string, businessId: string): Promise<BusinessUser>;
   resource(userId: string, businessId: string): Promise<BusinessUser | null>;
   ownersCollection(userId: string): Promise<BusinessUser[]>;
-  getAllUsers(userId: string): Promise<BusinessUser[]>
+  getAllUsers(userId: string): Promise<BusinessUser[]>;
+  getBusinessUsers(businessId: string): Promise<BusinessUser[]>
 }

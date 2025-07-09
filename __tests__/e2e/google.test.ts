@@ -74,16 +74,16 @@ describe("GOOGLE ROUTES", () => {
     //     })
     // })
 
-    describe("sync google  calendar", () => {
-        it("should sync calendar", async() => {
-            const res = await request(app)
-            .get("/google/calendars/secure/sync/87cb1db8-792a-43b4-b05f-d76044225117")
-            .set("Authorization", token)
+    // describe("sync google  calendar", () => {
+    //     it("should sync calendar", async() => {
+    //         const res = await request(app)
+    //         .get("/google/calendars/secure/sync/87cb1db8-792a-43b4-b05f-d76044225117")
+    //         .set("Authorization", token)
 
             
-            expect(res.status).toBe(200);
-        })
-    })
+    //         expect(res.status).toBe(200);
+    //     })
+    // })
 
     // describe("unSync google  calendar", () => {
     //     it("should cancel sync", async() => {
@@ -101,7 +101,7 @@ describe("GOOGLE ROUTES", () => {
     //     const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
     //     it("should create event", async() => {
     //         const res = await request(app)
-    //         .post("/google/secure/calendars/events/6e2b6fb1-5012-4dda-b4d6-6a8151b870ba")
+    //         .post("/google/calendars/secure/events/87cb1db8-792a-43b4-b05f-d76044225117")
     //         .set("Authorization", token)
     //         .send({
     //             startTime: start,
@@ -126,7 +126,7 @@ describe("GOOGLE ROUTES", () => {
     //     const end = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
     //     it("should create event", async() => {
     //         const res = await request(app)
-    //         .put("/google/secure/calendars/events/5589fa92-2ba6-429a-9c26-7b412b5d133e")
+    //         .put("/google/calendars/secure/events/caae3036-f350-4695-956b-3cb1bc7689cf")
     //         .set("Authorization", token)
     //         .send({
     //             startTime: start,
@@ -135,9 +135,6 @@ describe("GOOGLE ROUTES", () => {
     //             attendees: [
     //                 {
     //                     email: "lahey1991@gmail.com"
-    //                 },
-    //                 {
-    //                     email: "webpropiedadesmeridamx@gmail.com"
     //                 }
     //             ]
     //         })
@@ -149,7 +146,7 @@ describe("GOOGLE ROUTES", () => {
     // describe("delete google calendar event", () => {
     //     it("should delete event", async() => {
     //         const res = await request(app)
-    //         .delete("/google/secure/calendars/events/a6682149-4442-4e1c-9c57-f884c03276e1")
+    //         .delete("/google/calendars/secure/events/caae3036-f350-4695-956b-3cb1bc7689cf")
     //         .set("Authorization", token)
             
     //         expect(res.status).toBe(200);

@@ -205,6 +205,24 @@
                 }
             }
         },
+        "/business-users/secure/collection": {
+            "get": {
+                "tags": [
+                    "Business Users"
+                ],
+                "description": "Get all users for a business",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/business-users/secure/read": {
             "get": {
                 "tags": [

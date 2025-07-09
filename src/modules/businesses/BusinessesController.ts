@@ -169,7 +169,10 @@ export default class BusinessesController {
         businessId: businessId
       }, "7d")
 
-      res.status(200).json({ token })
+      res.status(200).json({ 
+        token,
+        role: businessUser.role
+       })
     } catch (error) {
       throw error;
     }

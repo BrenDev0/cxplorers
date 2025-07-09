@@ -2,6 +2,7 @@ import { Pool } from "pg"
 import BaseRepository from "../../../core/repository/BaseRepository"
 import { BusinessUser, IBusinessUsersRepository } from "./businessUsers.interface"
 import { UserData } from "../../users/users.interface";
+import { sql_v1beta4 } from "googleapis";
 
 export default class BusinessUsersRepository extends BaseRepository<BusinessUser> implements IBusinessUsersRepository {
     constructor(pool: Pool) {
@@ -27,6 +28,18 @@ export default class BusinessUsersRepository extends BaseRepository<BusinessUser
 
         const result = await this.pool.query(sqlRead, [userId]);
         return result.rows
+    }
+
+    async getBusinessUsers(businessId: string): Promise<BusinessUser[]> {
+        const sqlRead = `
+            SELECT business_user.*, users.name, users.email, users.phone
+            FROM business_users 
+            JOIN users ON business_users.user_id = users.user_id
+            WHERE business_users.business_id = $1;
+        `
+        const result = await this.pool.query(sqlRead, [businessId]);
+
+        return result.rows;
     }
 
     async getAllUsers(userId: string): Promise<BusinessUser[]> {

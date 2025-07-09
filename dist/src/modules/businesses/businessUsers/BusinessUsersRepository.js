@@ -37,6 +37,18 @@ class BusinessUsersRepository extends BaseRepository_1.default {
             return result.rows;
         });
     }
+    getBusinessUsers(businessId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlRead = `
+            SELECT business_user.*, users.name, users.email, users.phone
+            FROM business_users 
+            JOIN users ON business_users.user_id = users.user_id
+            WHERE business_users.business_id = $1;
+        `;
+            const result = yield this.pool.query(sqlRead, [businessId]);
+            return result.rows;
+        });
+    }
     getAllUsers(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `

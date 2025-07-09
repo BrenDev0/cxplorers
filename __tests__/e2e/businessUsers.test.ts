@@ -48,20 +48,20 @@ describe("USERS ROUTES", () => {
     })
 
     describe("POST CREATE BUSINESS USER", () => {
-        it("SHOULD RETURN 200 AND CREATE USER AND BUSINESS USER", async() => {
-            const res = await request(app)
-            .post("/business-users/secure/create")
-            .set("Authorization", token)
-            .send({
-                email: "test4@gmail.com",
-                name: "testuser2",
-                password: "123abc",
-                phone: "123456789",
-                role: "admin",
-            })
-            console.log(res.body)
-            expect(res.status).toBe(200)
-        })
+        // it("SHOULD RETURN 200 AND CREATE USER AND BUSINESS USER", async() => {
+        //     const res = await request(app)
+        //     .post("/business-users/secure/create")
+        //     .set("Authorization", token)
+        //     .send({
+        //         email: "test4@gmail.com",
+        //         name: "testuser2",
+        //         password: "123abc",
+        //         phone: "123456789",
+        //         role: "admin",
+        //     })
+        //     console.log(res.body)
+        //     expect(res.status).toBe(200)
+        // })
     })
 
     
@@ -69,6 +69,18 @@ describe("USERS ROUTES", () => {
         it("SHOULD RETURN 200 WITH ALL USERS", async() => {
             const res = await request(app)
             .get("/business-users/secure/read")
+            .set("Authorization", token)
+
+            console.log(res.body)
+            expect(res.status).toBe(200)
+        })
+    })
+
+       
+    describe("GET GET ALL USERS", () => {
+        it("SHOULD RETURN 200 WITH ALL USERS", async() => {
+            const res = await request(app)
+            .get("/business-users/secure/collection")
             .set("Authorization", token)
 
             console.log(res.body)

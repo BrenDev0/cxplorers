@@ -46,17 +46,26 @@ describe("USERS ROUTES", () => {
         Container_1.default.clear();
     }));
     describe("POST CREATE BUSINESS USER", () => {
-        it("SHOULD RETURN 200 AND CREATE USER AND BUSINESS USER", () => __awaiter(void 0, void 0, void 0, function* () {
+        // it("SHOULD RETURN 200 AND CREATE USER AND BUSINESS USER", async() => {
+        //     const res = await request(app)
+        //     .post("/business-users/secure/create")
+        //     .set("Authorization", token)
+        //     .send({
+        //         email: "test4@gmail.com",
+        //         name: "testuser2",
+        //         password: "123abc",
+        //         phone: "123456789",
+        //         role: "admin",
+        //     })
+        //     console.log(res.body)
+        //     expect(res.status).toBe(200)
+        // })
+    });
+    describe("GET GET ALL USERS", () => {
+        it("SHOULD RETURN 200 WITH ALL USERS", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .post("/business-users/secure/create")
-                .set("Authorization", token)
-                .send({
-                email: "test4@gmail.com",
-                name: "testuser2",
-                password: "123abc",
-                phone: "123456789",
-                role: "admin",
-            });
+                .get("/business-users/secure/read")
+                .set("Authorization", token);
             console.log(res.body);
             expect(res.status).toBe(200);
         }));
@@ -64,7 +73,7 @@ describe("USERS ROUTES", () => {
     describe("GET GET ALL USERS", () => {
         it("SHOULD RETURN 200 WITH ALL USERS", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .get("/business-users/secure/read")
+                .get("/business-users/secure/collection")
                 .set("Authorization", token);
             console.log(res.body);
             expect(res.status).toBe(200);

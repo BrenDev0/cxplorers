@@ -56,6 +56,19 @@ class BusinessUsersController {
             }
         });
     }
+    collectionRequest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = req.user;
+                const buisnessId = req.businessId;
+                const data = yield this.businessUsersService.collection("business_id", buisnessId);
+                res.status(200).json({ data });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     readRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

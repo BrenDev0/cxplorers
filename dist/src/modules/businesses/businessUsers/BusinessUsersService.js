@@ -80,7 +80,19 @@ class BusinessUsersService {
                 return result.map((businessUser) => this.mapFromDb(businessUser));
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { col, identifier });
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { col, identifier });
+                throw error;
+            }
+        });
+    }
+    getBusinessUsers(businessId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.getBusinessUsers(businessId);
+                return result.map((bu) => this.mapFromDb(bu));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "getBusinessUsers", { businessId });
                 throw error;
             }
         });
