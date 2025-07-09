@@ -33,6 +33,7 @@ class GoogleController {
                 throw new errors_1.BadRequestError('Invalid or expired state');
             }
             ;
+            console.log(code, "CODE::::::::::::");
             // Exchange authorization code for access token
             const { tokens } = yield client.getToken(code);
             client.setCredentials(tokens);

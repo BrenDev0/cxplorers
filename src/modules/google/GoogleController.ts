@@ -31,6 +31,8 @@ export default class GoogleController {
             throw new BadRequestError('Invalid or expired state');
         };
 
+        console.log(code, "CODE::::::::::::")
+
         // Exchange authorization code for access token
         const { tokens } = await client.getToken(code as string);
         client.setCredentials(tokens);
