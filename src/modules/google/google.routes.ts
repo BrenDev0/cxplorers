@@ -38,6 +38,11 @@ export const initializeGoogleRouter = (customController?: GoogleController) => {
     //     calendarController.getCalendarEvents.bind(calendarController)
     // )
 
+    router.get("/callback", 
+
+        controller.callback.bind(controller)
+    )
+
     
     // mounts // 
     router.use("/secure", secureRouter);
