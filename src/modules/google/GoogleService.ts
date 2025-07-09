@@ -49,9 +49,7 @@ export default class GoogleService {
             // 'online' (default) or 'offline' (gets refresh_token)
             access_type: 'offline',
             prompt: 'consent',
-            scope: scopes,
-            redirect_uri: `https://${process.env.HOST}/google/callback`,
-          
+            scope: scopes,          
             include_granted_scopes: true,
            
             state: state
