@@ -186,6 +186,7 @@ class UsersController {
                 };
                 if (businesses.length !== 0) {
                     responsePayload.role = businesses[0].role;
+                    responsePayload.businessId = businesses[0].businessId;
                 }
                 res.status(200).json(responsePayload);
             }
