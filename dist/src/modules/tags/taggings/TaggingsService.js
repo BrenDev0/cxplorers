@@ -31,41 +31,52 @@ class TaggingsService {
             }
         });
     }
-    resource(taggingId) {
+    resource(tagId, contactId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne("tagging_id", taggingId);
+                const result = yield this.repository.resource(tagId, contactId);
                 if (!result) {
                     return null;
                 }
                 return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { taggingId });
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { tagId, contactId });
                 throw error;
             }
         });
     }
-    update(taggingId, changes) {
+    collection(whereCol, identifier) {
         return __awaiter(this, void 0, void 0, function* () {
-            const mappedChanges = this.mapToDb(changes);
-            const cleanedChanges = Object.fromEntries(Object.entries(mappedChanges).filter(([_, value]) => value !== undefined));
             try {
-                return yield this.repository.update("tagging_id", taggingId, cleanedChanges);
+                const result = yield this.repository.select(whereCol, identifier);
+                return result.map((tagging) => this.mapFromDb(tagging));
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "update", cleanedChanges);
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { whereCol, identifier });
                 throw error;
             }
         });
     }
-    delete(taggingId) {
+    // async update(taggingId: string, changes: TaggingData): Promise<Tagging> {
+    //     const mappedChanges = this.mapToDb(changes);
+    //     const cleanedChanges = Object.fromEntries(
+    //         Object.entries(mappedChanges).filter(([_, value]) => value !== undefined)
+    //     );
+    //     try {
+    //         return await this.repository.update("tagging_id", taggingId, cleanedChanges);
+    //     } catch (error) {
+    //         handleServiceError(error as Error, this.block, "update", cleanedChanges)
+    //         throw error;
+    //     }
+    // }
+    delete(tagId, contactId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield this.repository.delete("tagging_id", taggingId);
+                return yield this.repository.deleteByIds(tagId, contactId);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "delete", { taggingId });
+                (0, error_service_1.handleServiceError)(error, this.block, "delete", { tagId, contactId });
                 throw error;
             }
         });

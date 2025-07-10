@@ -39,6 +39,7 @@ const businessUsers_dependencies_1 = require("../../modules/businesses/businessU
 const permissions_dependencies_1 = require("../../modules/permissions/permissions.dependencies");
 const tasks_dependencies_1 = require("../../modules/tasks/tasks.dependencies");
 const tags_dependencies_1 = require("../../modules/tags/tags.dependencies");
+const taggings_dependencies_1 = require("../../modules/tags/taggings/taggings.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -86,6 +87,7 @@ function configureContainer(testPool, testRedis) {
         (0, stages_dependencies_1.configureStagesDependencies)(pool);
         // tags //
         (0, tags_dependencies_1.configureTagsDependencies)(pool);
+        (0, taggings_dependencies_1.configureTaggingsDependencies)(pool);
         // tasks //
         (0, tasks_dependencies_1.configureTasksDependencies)(pool);
         // tokens //

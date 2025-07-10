@@ -1093,6 +1093,100 @@
                 }
             }
         },
+        "/taggings/secure/create": {
+            "post": {
+                "tags": [
+                    "Taggings"
+                ],
+                "description": "Tag a contact",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createTagging"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/taggings/secure/collection": {
+            "get": {
+                "tags": [
+                    "Taggings"
+                ],
+                "description": "get collection of contacts tagged or a contacts tags",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "contact || tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "identifier",
+                        "in": "query",
+                        "description": "id of the tag or contact",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/taggings/secure/delete": {
+            "delete": {
+                "tags": [
+                    "Taggings"
+                ],
+                "description": "Tag a contact",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createTagging"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/tags/secure/create": {
             "post": {
                 "tags": [
@@ -2238,6 +2332,19 @@
                     "taskDueDate": {
                         "type": "string",
                         "example": "optional ISODATESTRING"
+                    }
+                }
+            },
+            "createTagging": {
+                "type": "object",
+                "properties": {
+                    "contactId": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "tagId": {
+                        "type": "string",
+                        "example": "required"
                     }
                 }
             }

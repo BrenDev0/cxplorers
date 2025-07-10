@@ -13,5 +13,4 @@ export interface TaggingData {
 export interface ITaggingsRepository extends IRepository<Tagging> {
   resource(tagId: string, resourceId: string): Promise<Tagging | null>;
   deleteByIds(tagId: string, resourceId: string): Promise<Tagging>;
-  collection(businessId: string, filterKey: string, filterValue: string): Promise<Tagging[]>;
 }

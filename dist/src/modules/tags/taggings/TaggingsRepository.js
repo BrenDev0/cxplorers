@@ -15,38 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const BaseRepository_1 = __importDefault(require("../../../core/repository/BaseRepository"));
 class TaggingsRepository extends BaseRepository_1.default {
     constructor(pool) {
-        super(pool, "tagged_items");
+        super(pool, "taggings");
     }
-    resource(tagId, resourceId) {
+    resource(tagId, contactId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `
             SELECT * FROM ${this.table}
-            WHERE tag_id = $1 AND resource_id = $2;
+            WHERE tag_id = $1 AND contact_id = $2;
         `;
-            const result = yield this.pool.query(sqlRead, [tagId, resourceId]);
+            const result = yield this.pool.query(sqlRead, [tagId, contactId]);
             return result.rows[0] || null;
         });
     }
-    collection(businessId, filterKey, filterValue) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const sqlRead = `
-            SELECT ${this.table}.*  
-            from ${this.table}
-            JOIN tags ON ${this.table}.tag_id = tags.tag_id
-            JOIN businesses ON tags.business_id = businesses.business_id
-            WHERE businesses.business_id = $1 AND  = ${this.table}.${filterKey} = $2;
-        `;
-            const result = yield this.pool.query(sqlRead, [businessId, filterValue]);
-            return result.rows;
-        });
-    }
-    deleteByIds(tagId, resourceId) {
+    deleteByIds(tagId, contactId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlDelete = `
             DELETE FROM ${this.table}
-            WHERE tag_id = $1 AND resource_id = $2
+            WHERE tag_id = $1 AND contact_id = $2
         `;
-            const result = yield this.pool.query(sqlDelete, [tagId, resourceId]);
+            const result = yield this.pool.query(sqlDelete, [tagId, contactId]);
             return result.rows[0];
         });
     }

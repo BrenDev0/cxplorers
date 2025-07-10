@@ -3,11 +3,12 @@ import BaseRepository from "../../../core/repository/BaseRepository";
 import { handleServiceError } from '../../../core/errors/error.service';
 import Container from '../../../core/dependencies/Container';
 import EncryptionService from '../../../core/services/EncryptionService';
+import TaggingsRepository from './TaggingsRepository';
 
 export default class TaggingsService {
-    private repository: BaseRepository<Tagging>;
+    private repository: TaggingsRepository;
     private block = "taggings.service"
-    constructor(repository: BaseRepository<Tagging>) {
+    constructor(repository: TaggingsRepository) {
         this.repository = repository
     }
 
@@ -21,37 +22,48 @@ export default class TaggingsService {
         }
     }
 
-    async resource(taggingId: string): Promise<TaggingData | null> {
+    async resource(tagId: string, contactId: string): Promise<TaggingData | null> {
         try {
-            const result = await this.repository.selectOne("tagging_id", taggingId);
+            const result = await this.repository.resource(tagId, contactId);
             if(!result) {
                 return null
             }
             return this.mapFromDb(result)
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", {taggingId})
+            handleServiceError(error as Error, this.block, "resource", {tagId, contactId})
             throw error;
         }
     }
 
-    async update(taggingId: string, changes: TaggingData): Promise<Tagging> {
-        const mappedChanges = this.mapToDb(changes);
-        const cleanedChanges = Object.fromEntries(
-            Object.entries(mappedChanges).filter(([_, value]) => value !== undefined)
-        );
+    async collection(whereCol: string, identifier: string): Promise<TaggingData[]>{
         try {
-            return await this.repository.update("tagging_id", taggingId, cleanedChanges);
+            const result = await this.repository.select(whereCol, identifier);
+
+            return result.map((tagging) => this.mapFromDb(tagging));
         } catch (error) {
-            handleServiceError(error as Error, this.block, "update", cleanedChanges)
+            handleServiceError(error as Error, this.block, "collection", {whereCol, identifier})
             throw error;
         }
     }
 
-    async delete(taggingId: string): Promise<Tagging> {
+    // async update(taggingId: string, changes: TaggingData): Promise<Tagging> {
+    //     const mappedChanges = this.mapToDb(changes);
+    //     const cleanedChanges = Object.fromEntries(
+    //         Object.entries(mappedChanges).filter(([_, value]) => value !== undefined)
+    //     );
+    //     try {
+    //         return await this.repository.update("tagging_id", taggingId, cleanedChanges);
+    //     } catch (error) {
+    //         handleServiceError(error as Error, this.block, "update", cleanedChanges)
+    //         throw error;
+    //     }
+    // }
+
+    async delete( tagId: string, contactId: string): Promise<Tagging> {
         try {
-            return await this.repository.delete("tagging_id", taggingId) as Tagging;
+            return await this.repository.deleteByIds(tagId, contactId)
         } catch (error) {
-            handleServiceError(error as Error, this.block, "delete", {taggingId})
+            handleServiceError(error as Error, this.block, "delete", {tagId, contactId})
             throw error;
         }
     }

@@ -191,9 +191,12 @@ const doc = {
       taksTitle: "optional",
       taskDescription: "optional",
       taskDueDate: "optional ISODATESTRING"
+    },
+
+    createTagging: {
+      contactId: "required",
+      tagId: "required"
     }
-
-
     }
   },
 };
@@ -211,6 +214,7 @@ const endpointsFiles = [
   '../../modules/opportunities/pipelines/pipelines.routes.ts',
   '../../modules/opportunities/stages/stages.routes.ts',
   '../../modules/permissions/permissions.routes.ts',
+  '../../modules/tags/taggings/taggings.routes.ts',
   '../../modules/tags/tags.routes.ts',
   '../../modules/tasks/tasks.routes.ts',
   '../../modules/tokens/tokens.routes.ts',
