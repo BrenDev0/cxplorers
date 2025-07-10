@@ -193,7 +193,7 @@ export default class UsersController {
         const busienssUsersService = Container.resolve<BusinessUsersService>("BusinessUsersService");
         const businesses = await busienssUsersService.collection("user_id", userExists.user_id);
 
-        const tokenPayload: any = {
+        const tokenPayload: Record<string, string> = {
           userId: userExists.user_id
         }
 
@@ -203,7 +203,15 @@ export default class UsersController {
 
         const token = this.httpService.webtokenService.generateToken(tokenPayload, "7d");
 
-        res.status(200).json({ token })
+        const responsePayload: Record<string, string> = {
+          token
+        }
+
+        if(businesses.length !== 0) {
+          responsePayload.role = businesses[0].role
+        }
+
+        res.status(200).json(responsePayload)
     } catch (error) {
         throw error;
     }

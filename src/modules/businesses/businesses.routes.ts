@@ -43,7 +43,6 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
     )
 
     secureRouter.get("/collection", 
-        middlewareService.verifyAdminAccount(),
          /*
         #swagger.tags = ['Businesses']
         #swagger.path =  '/businesses/secure/collection'
@@ -52,6 +51,8 @@ export const initializeBusinessesRouter = (customController?: BusinessesControll
         */
         controller.collectionRequest.bind(controller)
     )
+
+
 
     secureRouter.get("/login/:businessId", 
         /*

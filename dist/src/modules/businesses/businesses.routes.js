@@ -37,7 +37,7 @@ const initializeBusinessesRouter = (customController) => {
    #swagger.description = 'Get business by id'
    */
     controller.resourceRequest.bind(controller));
-    secureRouter.get("/collection", middlewareService.verifyAdminAccount(), 
+    secureRouter.get("/collection", 
     /*
    #swagger.tags = ['Businesses']
    #swagger.path =  '/businesses/secure/collection'

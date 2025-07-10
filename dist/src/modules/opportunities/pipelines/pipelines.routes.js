@@ -29,7 +29,7 @@ const initializePipelinesRouter = (customController) => {
   }
   */
     controller.createRequest.bind(controller));
-    secureRouter.get("/resource/:pipelineId", middlewareService.verifyRoles(["owner", "admin"]), 
+    secureRouter.get("/resource/:pipelineId", 
     /*
    #swagger.tags = ['Pipelines']
    #swagger.path =  '/pipelines/secure/resource/{pipelineId}'

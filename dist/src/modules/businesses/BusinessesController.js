@@ -66,7 +66,7 @@ class BusinessesController {
             try {
                 const user = req.user;
                 const businessUsersService = Container_1.default.resolve("BusinessUsersService");
-                const usersBusinesses = yield businessUsersService.ownersCollection(user.user_id);
+                let usersBusinesses = yield businessUsersService.collection("user_id", user.user_id);
                 if (usersBusinesses.length === 0) {
                     res.status(200).json({ data: [] });
                     return;

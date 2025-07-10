@@ -70,7 +70,8 @@ export default class BusinessesController {
       const user = req.user;
 
       const businessUsersService = Container.resolve<BusinessUserService>("BusinessUsersService");
-      const usersBusinesses = await businessUsersService.ownersCollection(user.user_id);
+      let usersBusinesses = await businessUsersService.collection("user_id", user.user_id);
+      
       if(usersBusinesses.length === 0) {
         res.status(200).json({ data: []});
         return;

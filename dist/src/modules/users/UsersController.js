@@ -181,7 +181,13 @@ class UsersController {
                     tokenPayload.businessId = businesses[0].businessId;
                 }
                 const token = this.httpService.webtokenService.generateToken(tokenPayload, "7d");
-                res.status(200).json({ token });
+                const responsePayload = {
+                    token
+                };
+                if (businesses.length !== 0) {
+                    responsePayload.role = businesses[0].role;
+                }
+                res.status(200).json(responsePayload);
             }
             catch (error) {
                 throw error;
