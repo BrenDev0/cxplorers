@@ -53,7 +53,7 @@ class OpportunitiesService {
                 return result.map((opportunity) => this.mapFromDb(opportunity));
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { stageId });
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { stageId });
                 throw error;
             }
         });

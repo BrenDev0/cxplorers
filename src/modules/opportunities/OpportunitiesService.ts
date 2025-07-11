@@ -11,7 +11,7 @@ export default class OpportunitiesService {
         this.repository = repository
     }
 
-    async create(opportunity: Omit<OpportunityData, "opportunityID">): Promise<Opportunity> {
+    async create(opportunity: Omit<OpportunityData, "opportunityId">): Promise<Opportunity> {
         const mappedOpportunity = this.mapToDb(opportunity);
         try {
             return this.repository.create(mappedOpportunity as Opportunity);
@@ -40,7 +40,7 @@ export default class OpportunitiesService {
             
             return result.map((opportunity) => this.mapFromDb(opportunity));
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", {stageId})
+            handleServiceError(error as Error, this.block, "collection", {stageId})
             throw error;
         }
     }
